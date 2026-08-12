@@ -4,16 +4,17 @@
 
 ## 1. Why this exists
 
-David Zurita's CV proves operations and delivery, but every artifact is invisible:
-Temenos tooling is internal, the GTC platform is closed, the PUCE C# apps are gone.
-Nothing on the CV proves **architecture design**, and the LLM line reads as
-"in progress".
+Twelve years of enterprise incident management, ITSM and internal tooling:
+production support for banking clients, a university service desk running ~200
+incidents a month, internal tools built in C#, Python and Docker. Nearly all of
+it lives behind corporate walls, where nobody outside those companies can read a
+line of it.
 
-This project fixes exactly that, and nothing else:
+This project rebuilds that experience in the open, and does nothing else:
 
-- Makes the invisible **verifiable** — public code, public evals, public reasoning.
-- Proves **system design**, not just repair — ADRs and C4 diagrams that say *why*.
-- Sits in his **real domain** — enterprise incident triage, not a to-do app.
+- Makes the work **verifiable** — public code, public evals, public reasoning.
+- Demonstrates **system design end to end** — ADRs and C4 diagrams that say *why*.
+- Stays in its **real domain** — enterprise incident triage, not a to-do app.
 
 **The one-sentence pitch:** *An incident triage assistant, with public architecture
 decision records explaining every choice, and a CI eval suite proving the prompts
@@ -242,8 +243,8 @@ fixture instead of erroring.
 - EN/ES, Lighthouse ≥95, README with a GIF above the fold
 - Custom domain if wanted
 - Update the CV to two pages with a "Selected AI Project" section and public URL
-- Make email, LinkedIn and portfolio URLs clickable; set correct PDF title/author
-  metadata and repair role-breaking page breaks
+- Ensure email, LinkedIn and portfolio URLs are clickable, PDF title/author
+  metadata is set, and no role is split across a page break
 
 ## 6. Deliberately deferred
 
@@ -280,7 +281,7 @@ close it.
 | OPEN → ph4 | P2 | The hosting choice did not explain how promised security response headers would be applied. | Host the Astro/Starlight build on Cloudflare Pages and commit a tested `_headers` file. | Deployed responses include the documented CSP, `nosniff` and referrer policy. |
 | **CLOSED** | P2 | "Pinned" supply-chain dependencies used mutable version tags. | Pin GitHub Actions by commit SHA and the gitleaks container by digest; document the update process. | CI configuration contains immutable references and Dependabot/Renovate can propose reviewed updates. |
 | **CLOSED** | P2 | The README linked to future ADRs that do not exist, weakening trust at the first visit. | Ship one real ADR in phase 1; render future items as roadmap text until their files exist. | Every rendered README/docs link resolves. |
-| OPEN → ph6 | P2 | The CV proves support leadership but not a shipped AI outcome, and its AI section is mainly a tool list. | After the vertical slice launches, add a quantified Selected AI Project section and tighten the headline around AI systems for support operations. | The two-page PDF includes the public project URL, measurable evidence, clickable contact links and correct metadata. |
+| OPEN → ph6 | P2 | The CV cannot yet cite a public, quantified AI outcome — this project is that outcome, and it does not exist until the slice ships. | Once the vertical slice launches, add a Selected AI Project section with measurable results, and focus the headline on AI systems for support operations. | The two-page PDF includes the public project URL, measurable evidence, clickable contact links and correct metadata. |
 | OPEN → ph6 | P2 | No frontend exists, so accessibility, performance, theming and responsive scores are not yet measurable. | Run the technical UI audit after the phase-1 page and again before launch. | Lighthouse and manual keyboard/responsive checks have recorded results; final Lighthouse target is ≥95. |
 
 ### Phase 0 closure notes — 2026-08-12

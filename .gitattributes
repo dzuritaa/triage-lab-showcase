@@ -1,0 +1,3 @@
+# Normalise to LF. Developed on Windows, runs in Linux containers and CI —
+# a CRLF shell script fails there with an opaque "bad interpreter" error.
+* text=auto eol=lf

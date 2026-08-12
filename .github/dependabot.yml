@@ -1,0 +1,12 @@
+version: 2
+updates:
+  # Keeps SHA-pinned actions current; Dependabot rewrites the pin and updates
+  # the trailing version comment.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+
+# NOT covered here: the gitleaks container digest in ci.yml. Dependabot's docker
+# ecosystem reads Dockerfiles and compose files, not images invoked inside a
+# `run:` step. That pin is updated by hand — see docs/MAINTENANCE.md.

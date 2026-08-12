@@ -150,6 +150,36 @@ This constraint is deliberate and documented, not accidental.
 - Minimal dependencies; every one justified in the README.
 - Lockfiles committed, `npm ci` in CI, Dependabot enabled.
 
+### Git identity — check before every push
+
+**This project commits under a personal GitHub noreply address, never a work
+account.** Commit metadata is public and permanent: rewriting history orphans the
+old commits but they stay reachable by direct SHA until garbage collection, so
+the only reliable fix is deleting the repository. Cheap to get right up front,
+expensive afterwards.
+
+The machine's **global** git config points at a work email, so this repository
+relies on a local override. It does not survive a fresh clone. Set it before the
+first commit in any new clone or sibling repo for this project:
+
+```bash
+git config user.name "David Zurita"
+git config user.email "7770739+dzuritaa@users.noreply.github.com"
+```
+
+Verify before pushing anything public:
+
+```bash
+git log --all --format='%an <%ae> | %cn <%ce>' | sort -u
+```
+
+That must print the noreply address only — and it checks the *committer* as well
+as the author, since amending or rebasing can leave the two disagreeing.
+
+Beyond privacy, this also keeps a personal portfolio project from being
+attributed to an employer identity, which invites avoidable questions about who
+owns the work.
+
 ### Data handling
 
 - Synthetic data only. No PII anywhere in the repo.
@@ -260,6 +290,7 @@ fixture instead of erroring.
 
 ## 7. Open items
 
+- [ ] Recreate the GitHub repository and push the clean history
 - [ ] Confirm the name `triage-lab`
 - [ ] Domain, or start on the Cloudflare Pages subdomain
 - [ ] Anthropic API key with its **own spend cap** set in the console — a

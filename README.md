@@ -40,7 +40,8 @@ reasoning and the evals can actually be read.
 
 The interesting part is not the demo. It's `docs/` — the decision records,
 including why this deliberately has **no vector database** and what its
-**threat model** is.
+**threat model** is, the [evaluation case study](docs/CASE_STUDY.md) with the
+experiments that failed, and [what is left](docs/PLAN.md).
 
 ## No real data, ever
 

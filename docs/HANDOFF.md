@@ -105,7 +105,16 @@ pip install -r requirements.txt
 # copy .env.example to .env, put a real key in it
 python -m core.triage "ticket text here"
 python -m core.triage --record EVAL-03      # re-record the fixture
+python -m evals.live                        # score the model, ~15 calls, ~$0.05
+python -m evals.live --ambiguous            # the 5 abstention cases only, ~$0.02
 ```
+
+`evals/live.py` is the only thing that scores the *model*; everything in
+`evals/run.py` measures what retrieval can do alone. It writes
+`evals/live-results.json` so the numbers are citable rather than living in a
+console scrollback. It is deliberately not wired into CI — that needs a trusted
+workflow holding the secret, and it spends money on every push. Phase 2's
+workflow-split item covers it.
 
 **PowerShell note:** `&&` is not a statement separator in Windows PowerShell 5.1.
 Run the commands separately.
@@ -328,9 +337,17 @@ plus `checkout -- .` discards work in progress.
       it. The page, ADR-001, `PRODUCT.md` and the metrics above were reconciled
       to the new call in the same commit; `scripts/check_page.py` caught the
       drift, which is the first time that guard has earned its place.
-- [ ] **Record what the model actually does on the five ambiguous cases.** The
-      capability and the eval exist; the score does not. Until then the landing
-      page publishes the baseline only, and says so.
+- [ ] **Run `python -m evals.live` and publish what it says.** The runner now
+      exists and is proven end to end against a stubbed model call; what is
+      missing is a real run, which needs David's key and costs about $0.05.
+      This is the first measurement of the model itself — category and priority
+      have only ever been scored for the *retriever*, and the baselines were
+      built to be beaten by something nobody has yet run. Until then the landing
+      page publishes baselines only, and says so.
+      **The result is worth publishing whichever way it goes.** A model that
+      fails to abstain, or that abstains on answerable tickets, is a finding
+      about a design this repository argues for in public — and the argument for
+      abstention is stronger with a number against it than with no number at all.
 - [ ] Abstention has no regression floor, deliberately — the measured baseline
       is 0% and a floor of zero asserts nothing. Add one once there is a model
       score to protect.

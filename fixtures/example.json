@@ -1,37 +1,37 @@
 {
-  "source_case": "EVAL-02",
-  "ticket": "We have a contractor starting on the audit tomorrow morning and he cannot open the finance application. He can log into the network and email fine. The audit runs Tuesday to Thursday and he only has those three days on site, so if this is not sorted before 9am tomorrow we lose a day of billable audit time.",
+  "source_case": "EVAL-03",
+  "ticket": "The supplier payment file has not reached the bank. It should have gone across at 20:00 and the bank confirm nothing has landed. Payment run has to be acknowledged by 07:00 or the whole run slips a day and we breach terms with about 200 suppliers. The file is in the outbound folder, timestamped 20:00, so it generated fine.",
   "result": {
-    "category": "access-identity",
-    "priority": "P2",
-    "reasoning": "Single contractor account cannot access finance application before a dated, fixed deadline (audit start tomorrow at 9am); losing tomorrow costs one of three billable days—this is a business commitment at immediate risk despite affecting one user.",
-    "root_cause_direction": "Check whether the contractor's account exists in the finance application's directory or SSO, whether it has been provisioned to the finance app group, and whether any password synchronization or session cache is blocking their first login after account creation.",
-    "draft_reply": "We've identified this as an account provisioning issue for your contractor ahead of the audit tomorrow. Since network and email access work, the problem is likely that the finance application hasn't received the new contractor's user record yet or group membership isn't assigned. We're checking now whether the account was synced to the finance app's directory and adding the required group. Please confirm the contractor's username and email so we can verify provisioning status and clear any stale session cache. We'll prioritize this to unblock access before 9am tomorrow.",
-    "sla_hours": 8,
+    "category": "integration",
+    "priority": "P1",
+    "reasoning": "Payroll-equivalent dated deadline (07:00 cutoff) with 200 suppliers at risk of term breach; file generated but not delivered is a transfer failure blocking a critical business process.",
+    "root_cause_direction": "Check the outbound integration job logs and API/SFTP credentials to the bank; verify the transfer attempt succeeded or failed, and whether authentication or connectivity is the blocker.",
+    "draft_reply": "We see the file generated at 20:00 but did not reach the bank. We need to check the transfer job logs immediately to see whether the send attempt failed and why. Can you provide: (1) the exact filename and size of the file in the outbound folder, (2) whether your bank credential or API key for this payment file transfer has been rotated or renewed recently, and (3) access to the integration job logs covering 20:00–21:30 last night. If the transfer failed due to credential expiry or rotation (similar to INC-1003), we may need to refresh those with the bank and retry. We're treating this as blocking and will prioritize the log review now.",
+    "sla_hours": 4,
     "similar": [
       {
-        "id": "KB-209",
-        "type": "kb",
-        "title": "Branch office slowness and WAN saturation",
-        "score": 9.8654
-      },
-      {
-        "id": "INC-1001",
+        "id": "INC-1003",
         "type": "incident",
-        "title": "I changed my password this morning like it asked me to and now I cant get into a",
-        "score": 7.8417
+        "title": "URGENT - the payroll file did not go over to the provider last night. We send it",
+        "score": 19.4391
       },
       {
-        "id": "KB-214",
+        "id": "INC-1007",
+        "type": "incident",
+        "title": "After the supplier list import on the 3rd we now have a lot of near duplicate su",
+        "score": 14.1042
+      },
+      {
+        "id": "KB-210",
         "type": "kb",
-        "title": "Change freeze calendar",
-        "score": 7.4227
+        "title": "Supplier and customer record deduplication",
+        "score": 13.0588
       }
     ],
     "_meta": {
       "model": "claude-haiku-4-5-20251001",
-      "input_tokens": 1126,
-      "output_tokens": 243
+      "input_tokens": 1254,
+      "output_tokens": 263
     }
   }
 }

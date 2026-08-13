@@ -1,0 +1,552 @@
+<!doctype html>
+<!--
+  DIRECTION CONTRACT — triage-lab, Persuade
+
+  THESIS: IT triage borrows its name and its logic from emergency medicine, and
+  the paper triage tag is the support ticket's ancestor: a card for assigning
+  priority fast, under pressure, on incomplete information. Refuses the dark AI
+  dashboard and the cream editorial portfolio alike.
+
+  OWN-WORLD: Signal red, hazard amber, triage green, stamp blue, heavy black
+  rules and perforations on warm-grey card stock. Condensed grotesque for
+  printed form matter, Courier for what was written in. No gradient, glass,
+  radius or soft shadow.
+
+  STORY: A visitor sees a real recorded result on a real ticket, learns it was
+  measured against published baselines, sees the case it gets wrong, and knows
+  how to make contact.
+
+  FIRST VIEWPORT: The tag at full width. Detachable stub on the left carries the
+  scorecard; body carries ticket in, triage out. Severity strip tears to P1.
+  Contact reachable from the masthead.
+
+  FORM: Paper triage tag — candidate 5 of 7 by resonance, assigned by
+  concept-seed (key edc67d86, scope direction, mode persuade).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>triage-lab — an incident triage assistant that publishes its own scorecard</title>
+<meta name="description" content="An enterprise IT incident triage assistant with public architecture decisions and a CI evaluation suite. Built by David Zurita.">
+<style>
+  :root {
+    --card:       #F2F0EB;
+    --stock-edge: #E3E0D8;
+    --ink:        #141414;
+    --ink-soft:   #4A4741;
+    --immediate:  #C8102E;
+    --urgent:     #B4761A;
+    --delayed:    #2E7D4F;
+    --stamp:      #2B4C7E;
+
+    --form: 'Arial Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --data: 'Courier New', 'Nimbus Mono PS', Courier, monospace;
+
+    --rule: 2px solid var(--ink);
+    --gap: clamp(2.5rem, 6vw, 5rem);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--stock-edge);
+    color: var(--ink);
+    font-family: var(--data);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .sheet {
+    max-width: 78rem;
+    margin: 0 auto;
+    background: var(--card);
+    border-left: 1px solid var(--stock-edge);
+    border-right: 1px solid var(--stock-edge);
+  }
+
+  /* Printed form matter: labels, headings, tag furniture. Uppercase with wide
+     tracking is this world's register for field labels, not a decorative
+     eyebrow — every instance below labels an actual field. */
+  .label, h1, h2, h3, .strip b, .stamp, .masthead nav a, .btn {
+    font-family: var(--form);
+    font-stretch: 75%;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+  }
+
+  .label {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    color: var(--ink-soft);
+    display: block;
+    margin-bottom: 0.35rem;
+  }
+
+  a { color: var(--stamp); }
+  a:focus-visible, .btn:focus-visible {
+    outline: 3px solid var(--immediate);
+    outline-offset: 2px;
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem 1.5rem;
+    padding: 1.1rem clamp(1rem, 4vw, 2.5rem);
+    border-bottom: 3px solid var(--ink);
+  }
+  .wordmark {
+    font-family: var(--form);
+    font-stretch: 75%;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 1.05rem;
+    margin: 0;
+  }
+  .masthead .serial {
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.05em;
+  }
+  .masthead nav {
+    margin-left: auto;
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .masthead nav a { font-size: 0.72rem; text-decoration: none; border-bottom: 1px solid currentColor; }
+  .masthead nav a:hover { color: var(--immediate); }
+
+  /* ---------- shared blocks ---------- */
+
+  section { padding: var(--gap) clamp(1rem, 4vw, 2.5rem); border-bottom: var(--rule); }
+
+  h1 {
+    font-size: clamp(1.9rem, 5.2vw, 3.4rem);
+    line-height: 1.02;
+    letter-spacing: 0.01em;
+    margin: 0 0 1rem;
+    max-width: 22ch;
+    text-wrap: balance;
+  }
+  h2 {
+    font-size: clamp(1.3rem, 3vw, 1.9rem);
+    line-height: 1.1;
+    margin: 0 0 1.4rem;
+    letter-spacing: 0.06em;
+  }
+  h3 { font-size: 0.85rem; margin: 0 0 0.6rem; letter-spacing: 0.14em; }
+
+  p { max-width: 68ch; margin: 0 0 1rem; }
+  .lede { font-size: 1.02rem; }
+  .note { font-size: 0.85rem; color: var(--ink-soft); max-width: 62ch; }
+
+  /* ---------- the tag ---------- */
+
+  .tag {
+    border: 3px solid var(--ink);
+    background: var(--card);
+    display: grid;
+    grid-template-columns: 15rem 1fr;
+  }
+  @media (max-width: 62rem) { .tag { grid-template-columns: 1fr; } }
+
+  /* Detachable stub: perforation is used only where something is genuinely
+     separable in meaning. The scorecard is the part you keep. */
+  .stub {
+    padding: 1.4rem 1.2rem;
+    border-right: 2px dashed var(--ink);
+    background:
+      repeating-linear-gradient(
+        to bottom, transparent 0 6px, rgba(20,20,20,.05) 6px 7px);
+  }
+  @media (max-width: 62rem) {
+    .stub { border-right: 0; border-bottom: 2px dashed var(--ink); }
+  }
+
+  .score { margin: 0 0 1.15rem; }
+  .score:last-of-type { margin-bottom: 0; }
+  .score dt {
+    font-family: var(--form); font-stretch: 75%; text-transform: uppercase;
+    letter-spacing: 0.13em; font-size: 0.68rem; color: var(--ink-soft);
+  }
+  .score dd { margin: 0.1rem 0 0; display: flex; align-items: baseline; gap: 0.5rem; }
+  .score .val { font-size: 1.75rem; font-weight: 700; line-height: 1; }
+  .score .base { font-size: 0.78rem; color: var(--ink-soft); }
+
+  .meter {
+    margin-top: 0.45rem; height: 9px; border: 1px solid var(--ink);
+    display: flex; background: transparent;
+  }
+  .meter i { display: block; background: var(--ink); }
+  .meter i.base-mark { background: repeating-linear-gradient(45deg, var(--ink) 0 2px, transparent 2px 4px); }
+
+  .tag-body { padding: 1.5rem clamp(1rem, 3vw, 2rem); }
+
+  .tag-head {
+    display: flex; flex-wrap: wrap; gap: 0.6rem 1.4rem;
+    align-items: baseline; border-bottom: var(--rule);
+    padding-bottom: 0.9rem; margin-bottom: 1.2rem;
+  }
+  .tag-head .no { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.06em; }
+
+  .stamp {
+    font-size: 0.66rem; letter-spacing: 0.16em;
+    border: 2px solid var(--stamp); color: var(--stamp);
+    padding: 0.22rem 0.5rem; transform: rotate(-2.5deg);
+    display: inline-block; white-space: nowrap;
+  }
+  .stamp.warn { border-color: var(--immediate); color: var(--immediate); transform: rotate(1.5deg); }
+
+  blockquote.ticket {
+    margin: 0 0 1.5rem; padding: 0.9rem 1.1rem;
+    border: 1px solid var(--ink); background: rgba(20,20,20,.035);
+    font-size: 0.95rem;
+  }
+  blockquote.ticket p:last-child { margin-bottom: 0; }
+
+  /* severity strip: priority is carried by position AND printed label, never by
+     colour alone — the tag must read correctly in greyscale. */
+  .strip { display: grid; grid-template-columns: repeat(4, 1fr); border: 2px solid var(--ink); margin-bottom: 1.4rem; }
+  .strip div {
+    padding: 0.55rem 0.5rem; text-align: center; border-right: 2px dashed var(--ink);
+    font-family: var(--form); font-stretch: 75%; text-transform: uppercase;
+    letter-spacing: 0.1em; font-size: 0.72rem; color: var(--ink-soft);
+  }
+  .strip div:last-child { border-right: 0; }
+  .strip div.torn { opacity: 0.28; text-decoration: line-through; }
+  .strip div.kept { background: var(--immediate); color: #fff; opacity: 1; text-decoration: none; }
+  .strip b { display: block; font-size: 1.05rem; letter-spacing: 0.08em; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .strip div.torn { animation: tear 700ms cubic-bezier(.16,1,.3,1) both; }
+    .strip div.torn:nth-child(2) { animation-delay: 260ms; }
+    .strip div.torn:nth-child(3) { animation-delay: 340ms; }
+    .strip div.torn:nth-child(4) { animation-delay: 420ms; }
+    @keyframes tear {
+      from { opacity: 1; transform: none; text-decoration-color: transparent; }
+      to   { opacity: .28; transform: translateY(3px); }
+    }
+  }
+
+  .fields { display: grid; gap: 1.25rem 2rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); }
+  .fields > div { min-width: 0; }
+  .fields p { margin: 0; font-size: 0.93rem; }
+
+  .hits { list-style: none; margin: 0; padding: 0; }
+  .hits li { display: flex; gap: 0.7rem; align-items: baseline; padding: 0.3rem 0; border-bottom: 1px dotted var(--ink); font-size: 0.9rem; }
+  .hits li:last-child { border-bottom: 0; }
+  .hits .id { font-weight: 700; min-width: 5.5rem; }
+  .hits .sc { margin-left: auto; color: var(--ink-soft); font-size: 0.82rem; }
+  .hits .used { color: var(--delayed); font-weight: 700; }
+
+  .reply { border-top: var(--rule); margin-top: 1.4rem; padding-top: 1.2rem; }
+  .reply p { font-size: 0.93rem; }
+
+  /* ---------- measurement table ---------- */
+
+  table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+  caption { text-align: left; font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 0.7rem; }
+  th, td { text-align: left; padding: 0.6rem 0.8rem 0.6rem 0; border-bottom: 1px solid var(--ink); }
+  thead th {
+    font-family: var(--form); font-stretch: 75%; text-transform: uppercase;
+    letter-spacing: 0.13em; font-size: 0.7rem; border-bottom: var(--rule);
+  }
+  td.n { font-weight: 700; }
+  .wrap { overflow-x: auto; }
+
+  /* ---------- the miss ---------- */
+
+  .miss { border: 3px solid var(--immediate); padding: 1.4rem clamp(1rem, 3vw, 1.8rem); background: rgba(200,16,46,.04); }
+  .miss h3 { color: var(--immediate); }
+  .vs { display: grid; gap: 1rem 2rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); margin: 1.1rem 0; }
+  .vs code { font-size: 0.86rem; display: block; padding: 0.5rem 0.65rem; border: 1px solid var(--ink); background: var(--card); }
+
+  /* ---------- contact ---------- */
+
+  .contact { display: flex; flex-wrap: wrap; gap: 0.9rem; margin: 1.4rem 0 0; padding: 0; list-style: none; }
+  .btn {
+    display: inline-block; text-decoration: none; font-size: 0.78rem;
+    border: 2px solid var(--ink); color: var(--ink); padding: 0.7rem 1.1rem; background: transparent;
+  }
+  .btn:hover { background: var(--ink); color: var(--card); }
+  .btn.primary { background: var(--immediate); border-color: var(--immediate); color: #fff; }
+  .btn.primary:hover { background: var(--ink); border-color: var(--ink); }
+
+  footer { padding: 2rem clamp(1rem, 4vw, 2.5rem) 3rem; font-size: 0.82rem; color: var(--ink-soft); }
+  footer a { color: var(--ink-soft); }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header class="masthead">
+    <p class="wordmark">triage&#8209;lab</p>
+    <span class="serial">FORM 001 · REV 2026-08</span>
+    <nav aria-label="Sections">
+      <a href="#result">Result</a>
+      <a href="#measured">Measurement</a>
+      <a href="#miss">The miss</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section id="result">
+    <h1>Most AI demos claim. This one publishes its scorecard, including what it gets wrong.</h1>
+    <p class="lede">
+      An incident triage assistant for enterprise IT support. Paste a ticket, get
+      a category, a priority with an SLA target, the similar incidents behind it,
+      and a drafted first reply. Below is a real recorded result. Not a mockup,
+      and not a live call: it costs nothing to look at.
+    </p>
+
+    <div class="tag">
+      <div class="stub">
+        <span class="label">Retained record</span>
+        <dl style="margin:0">
+          <div class="score">
+            <dt>Retrieval recall @3</dt>
+            <dd><span class="val">90%</span> <span class="base">vs 23% random</span></dd>
+            <div class="meter" role="img" aria-label="90 percent against a 23 percent random baseline">
+              <i style="width:23%" class="base-mark"></i><i style="width:67%"></i>
+            </div>
+          </div>
+          <div class="score">
+            <dt>Retrieval recall @1</dt>
+            <dd><span class="val">60%</span> <span class="base">vs 8% random</span></dd>
+            <div class="meter" role="img" aria-label="60 percent against an 8 percent random baseline">
+              <i style="width:8%" class="base-mark"></i><i style="width:52%"></i>
+            </div>
+          </div>
+          <div class="score">
+            <dt>Category accuracy</dt>
+            <dd><span class="val">60%</span> <span class="base">vs 20% majority</span></dd>
+            <div class="meter" role="img" aria-label="60 percent against a 20 percent majority-class baseline">
+              <i style="width:20%" class="base-mark"></i><i style="width:40%"></i>
+            </div>
+          </div>
+        </dl>
+        <p class="note" style="margin-top:1.2rem">
+          10 held-out cases. Baselines computed exactly, not sampled.
+          Reproduce with <code>python -m evals.run</code>.
+        </p>
+      </div>
+
+      <div class="tag-body">
+        <div class="tag-head">
+          <span class="no">CASE EVAL&#8209;03</span>
+          <span class="stamp">Synthetic data · no real client</span>
+          <span class="stamp" style="border-color:var(--ink);color:var(--ink);transform:rotate(1deg)">Recorded · Haiku 4.5</span>
+        </div>
+
+        <span class="label">Ticket as submitted</span>
+        <blockquote class="ticket">
+          <p>The supplier payment file has not reached the bank. It should have gone
+          across at 20:00 and the bank confirm nothing has landed. Payment run has to
+          be acknowledged by 07:00 or the whole run slips a day and we breach terms
+          with about 200 suppliers. The file is in the outbound folder, timestamped
+          20:00, so it generated fine.</p>
+        </blockquote>
+
+        <span class="label">Priority assigned · lower priorities torn off</span>
+        <div class="strip">
+          <div class="kept"><b>P1</b> 4h · immediate</div>
+          <div class="torn"><b>P2</b> 8h</div>
+          <div class="torn"><b>P3</b> 24h</div>
+          <div class="torn"><b>P4</b> 72h</div>
+        </div>
+
+        <div class="fields">
+          <div>
+            <span class="label">Category</span>
+            <p><strong>integration</strong></p>
+          </div>
+          <div>
+            <span class="label">Why this priority</span>
+            <p>Dated deadline at 07:00 with 200 suppliers at risk of term breach;
+            file generated but not delivered is a transfer failure blocking a
+            critical business process.</p>
+          </div>
+          <div>
+            <span class="label">Similar incidents retrieved</span>
+            <ul class="hits">
+              <li><span class="id">INC-1003</span> <span>Payroll file did not transfer overnight</span> <span class="sc">19.44</span></li>
+              <li><span class="id">INC-1007</span> <span>Duplicate supplier records after import</span> <span class="sc">14.10</span></li>
+              <li><span class="id">KB-210</span> <span>Supplier record deduplication</span> <span class="sc">13.06</span></li>
+            </ul>
+            <p class="note" style="margin-top:.5rem">
+              <span class="used">Rank 1 is the correct match</span>, and the drafted
+              reply below cites it by number, so retrieval demonstrably fed the answer.
+            </p>
+          </div>
+          <div>
+            <span class="label">Root cause direction</span>
+            <p>Check the outbound integration job logs and API/SFTP credentials to
+            the bank; verify whether the transfer attempt failed, and whether
+            authentication or connectivity is the blocker.</p>
+          </div>
+        </div>
+
+        <div class="reply">
+          <span class="label">Drafted first response</span>
+          <p>We see the file generated at 20:00 but did not reach the bank. We need
+          to check the transfer job logs immediately to see whether the send attempt
+          failed and why. Can you provide: (1) the exact filename and size of the file
+          in the outbound folder, (2) whether your bank credential or API key for this
+          payment file transfer has been rotated or renewed recently, and (3) access to
+          the integration job logs covering 20:00–21:30 last night. If the transfer
+          failed due to credential expiry or rotation (similar to INC-1003), we may need
+          to refresh those with the bank and retry.</p>
+          <p class="note">
+            1,254 input + 263 output tokens · <strong>$0.0026 per ticket</strong> ·
+            about 1,900 tickets per $5 of credit.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="measured">
+    <h2>How it was measured</h2>
+    <p>
+      Ten held-out tickets the system has never seen, written so they share no
+      phrasing with the corpus they are scored against. Every number on this page
+      comes out of one command, and the same command runs in CI on every pull
+      request — including pull requests from forks, because nothing in the
+      evaluation path needs a secret or a network.
+    </p>
+
+    <div class="wrap">
+      <table>
+        <caption>Held-out evaluation · 10 cases · 25-document corpus</caption>
+        <thead>
+          <tr><th scope="col">Metric</th><th scope="col">Score</th><th scope="col">Baseline</th><th scope="col">Baseline is</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Retrieval recall @1</td><td class="n">60%</td><td>8%</td><td>drawing 1 document at random</td></tr>
+          <tr><td>Retrieval recall @3</td><td class="n">90%</td><td>23%</td><td>drawing 3 documents at random</td></tr>
+          <tr><td>Category accuracy</td><td class="n">60%</td><td>20%</td><td>always guessing the most common category</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="note" style="margin-top:1.2rem">
+      Regression floors sit about ten points below measured performance, so
+      ordinary variation does not break the build but a real drop does. An earlier
+      floor was set at 70% before anything had been measured, above what the
+      system had ever achieved, which would have left the build permanently red.
+      A floor above demonstrated performance is an aspiration, and aspirations
+      belong in a decision record, not in an assertion.
+    </p>
+  </section>
+
+  <section id="miss">
+    <h2>The case it gets wrong</h2>
+    <p>
+      Recall@3 of 90% flatters the retriever. The honest reading is in the failure,
+      so here it is.
+    </p>
+
+    <div class="miss">
+      <div class="tag-head" style="border-color:var(--immediate)">
+        <span class="no">CASE EVAL&#8209;02</span>
+        <span class="stamp warn">Retrieval failed · correction filed</span>
+      </div>
+
+      <h3>A contractor cannot open the finance application</h3>
+      <p>
+        The audit starts at 9am tomorrow and he has three days on site. The right
+        documents are about <strong>security group membership</strong>. The retriever
+        returned branch-office network slowness, an unrelated login loop, and the
+        change freeze calendar.
+      </p>
+
+      <div class="vs">
+        <div>
+          <span class="label">What the reporter wrote</span>
+          <code>“cannot open the finance application”</code>
+        </div>
+        <div>
+          <span class="label">What the answer says</span>
+          <code>“the logon script maps only the drives the account already has rights to”</code>
+        </div>
+      </div>
+
+      <p>
+        Same problem, two vocabularies, almost no shared words. A lexical matcher
+        cannot cross that gap by construction; no amount of tuning fixes it. This
+        single case is the clearest argument for adding embeddings, and it is why
+        the next phase measures them rather than assuming them.
+      </p>
+      <p class="note">
+        Worth noting what happened anyway: handed three irrelevant documents, the
+        model still returned the correct category and priority, and pointed at group
+        membership, the content of the article it was never shown. The system
+        degraded gracefully. It also means recall@3 overstates how much retrieval is
+        currently contributing.
+      </p>
+    </div>
+  </section>
+
+  <section id="decision">
+    <h2>Why there is no vector database</h2>
+    <p>
+      Twenty-five documents. BM25 in about 150 lines of standard-library Python
+      beats random retrieval four-fold, needs no second vendor, no second API key,
+      no index to keep warm, and no monthly bill. The retrieval path is readable in
+      one sitting and testable with no network at all.
+    </p>
+    <p>
+      That is a decision with a stated expiry: it reverses if the corpus passes
+      roughly 5,000 documents, if recall@1 starts mattering more than recall@3, or
+      if an embedding adapter beats these numbers by enough to justify the cost.
+      All of it is written down: the evidence, the case against, and the
+      conditions that would change it.
+    </p>
+    <p>
+      <a href="https://github.com/dzuritaa/triage-lab-showcase/blob/main/docs/adr/001-bm25-over-embeddings.md">Read the full decision record →</a>
+    </p>
+  </section>
+
+  <section id="contact">
+    <h2>David Zurita</h2>
+    <p class="lede">
+      Twelve years of enterprise incident management, ITSM and internal tooling:
+      production support for banking clients, a university service desk running
+      around 200 incidents a month, internal tools in C#, Python and Docker. Nearly
+      all of it behind corporate walls. This is that experience rebuilt where it can
+      be read.
+    </p>
+    <p>
+      Available for US-hours remote work, and for building this kind of measured AI
+      tooling into an existing support or operations function.
+    </p>
+    <ul class="contact">
+      <li><a class="btn primary" href="mailto:dzuritaa@gmail.com">Email me</a></li>
+      <li><a class="btn" href="https://linkedin.com/in/davidzuritaa">LinkedIn</a></li>
+      <li><a class="btn" href="https://github.com/dzuritaa">GitHub</a></li>
+      <li><a class="btn" href="https://github.com/dzuritaa/triage-lab-showcase">Read the source</a></li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>
+      Every ticket, incident and knowledge base article in this project is
+      synthetic, written for it. No employer, client or university data is used
+      anywhere. The recorded result above came from one real model call; the page
+      makes none.
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>

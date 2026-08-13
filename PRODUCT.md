@@ -58,8 +58,8 @@ service desk at ~200 incidents a month, not a generic chatbot demo.
 - One static HTML file. **No build step, no framework, no bundler.** Deployed on
   a free tier.
 - Retrieval is BM25 over 25 documents, standard-library Python, no vector store.
-- The recorded result comes from one real Claude Haiku 4.5 call: 1,254 input /
-  263 output tokens, $0.0026 at list pricing.
+- The recorded result comes from one real Claude Haiku 4.5 call: 1,728 input /
+  285 output tokens, $0.0032 at list pricing.
 - Measured evaluation on 10 held-out cases: retrieval recall@3 90% (random
   23%), recall@1 60% (random 8%), category accuracy 60% via nearest-neighbour
   (majority-class 20%), priority accuracy 70% (majority-class 40%).

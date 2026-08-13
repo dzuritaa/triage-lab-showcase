@@ -52,10 +52,14 @@ document" is not earning its cost or its latency.
 
 ### Cost
 
-One recorded live call on Claude Haiku 4.5 (`fixtures/example.json`): 1,254
-input and 263 output tokens, **$0.0026 per ticket** at list pricing, or roughly
-1,900 tickets per $5 of credit. Retrieval itself costs nothing and adds no
+One recorded live call on Claude Haiku 4.5 (`fixtures/example.json`): 1,728
+input and 285 output tokens, **$0.0032 per ticket** at list pricing, or roughly
+1,600 tickets per $5 of credit. Retrieval itself costs nothing and adds no
 network latency, because it runs locally.
+
+Input grew from 1,254 tokens when the abstention rules were added to the system
+prompt — the cost of teaching the tool to decline is about half a tenth of a
+cent per ticket, paid on every ticket whether it abstains or not.
 
 ## The case against this decision
 

@@ -4,9 +4,10 @@
   "result": {
     "category": "integration",
     "priority": "P1",
-    "reasoning": "Payroll-equivalent dated deadline (07:00 cutoff) with 200 suppliers at risk of term breach; file generated but not delivered is a transfer failure blocking a critical business process.",
-    "root_cause_direction": "Check the outbound integration job logs and API/SFTP credentials to the bank; verify the transfer attempt succeeded or failed, and whether authentication or connectivity is the blocker.",
-    "draft_reply": "We see the file generated at 20:00 but did not reach the bank. We need to check the transfer job logs immediately to see whether the send attempt failed and why. Can you provide: (1) the exact filename and size of the file in the outbound folder, (2) whether your bank credential or API key for this payment file transfer has been rotated or renewed recently, and (3) access to the integration job logs covering 20:00–21:30 last night. If the transfer failed due to credential expiry or rotation (similar to INC-1003), we may need to refresh those with the bank and retry. We're treating this as blocking and will prioritize the log review now.",
+    "clarifying_questions": [],
+    "reasoning": "File generated successfully but not delivered to bank on a payment cutoff with 200 suppliers at risk and a hard 07:00 deadline—business-stopping deadline pressure on a live transfer failure.",
+    "root_cause_direction": "Check the outbound transfer job logs for the 20:00 run: authentication failures (expired credentials, IP blocklist), network/connectivity errors, or job abort conditions. Verify the SFTP or API credentials with the bank are current and the receiving endpoint is accepting connections. Check if the file format or size changed recently.",
+    "draft_reply": "We have a payment run at risk with a 07:00 cutoff. The file generated at 20:00 but the bank has not received it. Pull the logs from the outbound transfer job immediately—look for authentication errors, connection failures, or job abort messages. While you do that, confirm with the bank's operations team that their receiving endpoint is live and check if they have seen any recent IP blocklist changes or credential rotation on their end. If logs show an auth failure, we may need to rotate credentials like we did in INC-1003. Reply with the transfer job logs and the bank's status so we can act on the next step.",
     "sla_hours": 4,
     "similar": [
       {
@@ -30,8 +31,8 @@
     ],
     "_meta": {
       "model": "claude-haiku-4-5-20251001",
-      "input_tokens": 1254,
-      "output_tokens": 263
+      "input_tokens": 1728,
+      "output_tokens": 285
     }
   }
 }

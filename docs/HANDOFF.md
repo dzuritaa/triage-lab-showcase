@@ -65,8 +65,8 @@ retrieval recall over a case with no right answer is not a number.
 **No model score exists for abstention yet.** The capability is built and the
 eval is waiting for it; see the open items.
 
-One recorded live call, Claude Haiku 4.5: 1,254 in / 263 out, **$0.0026**, about
-1,900 tickets per $5. Reproduce the scores with `python -m evals.run`.
+One recorded live call, Claude Haiku 4.5: 1,728 in / 285 out, **$0.0032**, about
+1,600 tickets per $5. Reproduce the scores with `python -m evals.run`.
 
 ---
 
@@ -320,14 +320,14 @@ plus `checkout -- .` discards work in progress.
 
 ## 6. Open items
 
-- [ ] **The recorded fixture predates the abstention schema and no longer
-      validates** — it has no `clarifying_questions`, which is now required.
-      Nothing was done about this on purpose. Adding the field by hand would be
-      editing a recorded artifact under a "Recorded" stamp, which is already a
-      finding in §5, and asserting the fixture against the schema in CI would
-      leave the build red until someone with a key re-records it. Both are worse
-      than an honest note. Fix with `python -m core.triage --record EVAL-03`,
-      which needs David's key.
+- [x] ~~The recorded fixture predates the abstention schema and no longer
+      validates.~~ **Re-recorded 2026-08-13** against the current schema. It was
+      deliberately left broken rather than hand-edited — patching a recorded
+      artifact under a "Recorded" stamp is already a finding in §5, and a CI
+      assertion would have left the build red until someone with a key could fix
+      it. The page, ADR-001, `PRODUCT.md` and the metrics above were reconciled
+      to the new call in the same commit; `scripts/check_page.py` caught the
+      drift, which is the first time that guard has earned its place.
 - [ ] **Record what the model actually does on the five ambiguous cases.** The
       capability and the eval exist; the score does not. Until then the landing
       page publishes the baseline only, and says so.

@@ -1,0 +1,92 @@
+[
+  {
+    "id": "KB-201",
+    "title": "Redirect loop after password change (SSO)",
+    "category": "access-identity",
+    "body": "A user who has just changed their password may be bounced back to the login page repeatedly while other applications continue to work. This happens when a refresh token issued before the change is still cached and replayed on each attempt. Resolve it by revoking the user's active sessions in the identity provider and signing them out of all devices, then have them log in again. Clearing browser cookies alone does not help, because the token is held server side."
+  },
+  {
+    "id": "KB-202",
+    "title": "Shared drive not mapping for a new account",
+    "category": "access-identity",
+    "body": "The logon script maps only the drives the account already has rights to and skips the rest without raising an error. If a new starter is missing a departmental drive, check security group membership first rather than the script. Add the account to the relevant group, force a group policy update, and have the user sign out and back in. Onboarding requests that name only a department frequently omit the drive group."
+  },
+  {
+    "id": "KB-203",
+    "title": "Account lockout thresholds and password policy",
+    "category": "access-identity",
+    "body": "Accounts lock after five failed attempts within fifteen minutes and unlock automatically after thirty minutes. Passwords expire every ninety days and cannot repeat any of the last ten. Service accounts are exempt from expiry but must be reviewed annually. A user reporting a lockout shortly after a password change is usually a cached credential on a second device, most often a phone with the old mail password."
+  },
+  {
+    "id": "KB-204",
+    "title": "SFTP key rotation for external file transfers",
+    "category": "integration",
+    "body": "Authentication keys for outbound SFTP transfers are issued with a two year expiry. Rotation requires generating a new key pair, sending the public key to the partner, and confirming they have installed it before the old key expires. Transfers fail with an authentication error the moment a key expires. Every scheduled transfer must have alerting attached to the job's exit status; a file left sitting in the output folder is the usual first symptom noticed by the business."
+  },
+  {
+    "id": "KB-205",
+    "title": "Duplicate records from inbound webhooks",
+    "category": "integration",
+    "body": "Most webhook providers retry when a response is slow, and several retry aggressively at five seconds. Without an idempotency key the receiving endpoint treats every retry as a fresh event and creates another record, so a single submission can produce two or three copies within a minute. Enable idempotency key handling on the endpoint so repeated deliveries of the same event are recognised, and return a response quickly even when downstream processing continues asynchronously."
+  },
+  {
+    "id": "KB-206",
+    "title": "Certificate and key expiry monitoring",
+    "category": "integration",
+    "body": "Certificates and authentication keys used by integrations are tracked in the expiry register and should raise a warning ticket sixty days ahead. Items absent from the register are the usual cause of surprise outages, since nothing fails until the moment of expiry and the failure often appears as a generic authentication error. Review the register quarterly and after any new integration goes live."
+  },
+  {
+    "id": "KB-207",
+    "title": "Report gateway timeouts on large queries",
+    "category": "performance",
+    "body": "The reporting gateway cancels any request exceeding five minutes and returns a generic failure banner rather than a timeout message. Reports covering all cost centres or a full year are the most likely to cross the threshold while narrower reports on the same data continue to succeed. Check index health on the underlying transaction tables before raising the timeout; fragmentation is the more common cause and raising the limit only hides it."
+  },
+  {
+    "id": "KB-208",
+    "title": "Database index maintenance window",
+    "category": "performance",
+    "body": "Index rebuilds run monthly during the Sunday maintenance window. Skipped windows allow fragmentation to accumulate on high-write tables, and query times degrade gradually rather than suddenly, which makes the problem easy to miss until a report crosses a timeout. Confirm the last successful maintenance run when investigating queries that have slowly become slower over weeks."
+  },
+  {
+    "id": "KB-209",
+    "title": "Branch office slowness and WAN saturation",
+    "category": "performance",
+    "body": "When slowness is reported by everyone at one site while other sites are unaffected, suspect the site's WAN link before the application. Backup and replication jobs moved into business hours are a frequent cause and typically worsen through the afternoon as the backlog grows. Check the link utilisation graph for the affected site and confirm no bulk transfer has been rescheduled recently."
+  },
+  {
+    "id": "KB-210",
+    "title": "Supplier and customer record deduplication",
+    "category": "data-quality",
+    "body": "Import routines match existing records on exact string unless normalisation is enabled. With it disabled, differences in case, punctuation and legal suffix such as LTD, Ltd. and LIMITED each create a separate record. Enable normalisation on the import profile, then run the dedupe routine and have a data steward approve merges before they are applied. Duplicate suppliers cause invoices to match against the wrong record during payment runs."
+  },
+  {
+    "id": "KB-211",
+    "title": "Rounding differences between screen and exported documents",
+    "category": "data-quality",
+    "body": "The application rounds once at the document total, while export templates may round each line before summing. On single line documents the two agree; on multi-line documents, particularly with percentage discounts, the results can differ by one or two minor units. Correct the export template to round only at the total. Reissue any documents already sent to a customer, since the discrepancy is visible to them."
+  },
+  {
+    "id": "KB-212",
+    "title": "Overnight batch chain failure runbook",
+    "category": "batch-reporting",
+    "body": "If the chain halts, identify the failing step and its exit code in the job monitor before restarting anything. Check free space on the staging volume first: a full volume causes a write failure that frequently exits non-zero with no descriptive log entry. Temporary extract files from manual re-runs are not purged automatically and are the usual cause. Once space is cleared the chain can be restarted from the failed step rather than the beginning."
+  },
+  {
+    "id": "KB-213",
+    "title": "Scheduled report emails not delivered",
+    "category": "batch-reporting",
+    "body": "The mail relay maintains an automatic suppression list. Any hard bounce, including a temporary mailbox-full condition, adds the address and nothing removes it automatically once the underlying problem is fixed. A single recipient missing a report that colleagues still receive is the characteristic symptom. Check the suppression list before investigating the report schedule itself, and remove the entry to restore delivery on the next run."
+  },
+  {
+    "id": "KB-214",
+    "title": "Change freeze calendar",
+    "category": "process",
+    "body": "Standard changes are frozen during month end close, the final week of the financial year, and any declared major incident. Emergency changes remain available through the on-call change approver at any time. Check the freeze calendar before scheduling maintenance that touches finance systems, as month end close is the period when reporting load is heaviest."
+  },
+  {
+    "id": "KB-215",
+    "title": "Priority definitions and escalation matrix",
+    "category": "process",
+    "body": "P1 covers a business-stopping failure or one affecting an entire site or department, with a four hour resolution target. P2 covers significant impairment with a workaround or a deadline at risk, at eight hours. P3 covers a single user or a non-urgent fault at twenty four hours, and P4 covers requests and cosmetic issues at seventy two hours. Deadline pressure raises priority: an issue that would otherwise be P3 becomes P2 when it blocks a dated business commitment such as payroll cutoff or month end close."
+  }
+]

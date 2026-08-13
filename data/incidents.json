@@ -1,0 +1,112 @@
+[
+  {
+    "id": "INC-1001",
+    "channel": "portal",
+    "reporter_role": "Finance analyst",
+    "raw": "I changed my password this morning like it asked me to and now I cant get into anything. The portal just keeps sending me back to the login page over and over. I put the password in, it loads for a second, then im back at login. Tried Chrome and Edge, same thing. I can still get into Outlook fine so I know the password is right. I have a close meeting at 11 and I need the reporting portal before then.",
+    "category": "access-identity",
+    "priority": "P2",
+    "sla_hours": 8,
+    "resolution": "Cleared the user's stale SSO session from the identity provider and had them sign out of all devices. Access restored on next login.",
+    "root_cause": "Password change did not invalidate the existing refresh token. The stale token was replayed on each login attempt and rejected by the portal, producing a redirect loop."
+  },
+  {
+    "id": "INC-1002",
+    "channel": "email",
+    "reporter_role": "Team lead, Operations",
+    "raw": "Hi, new starter began Monday - Sara in ops. She has her laptop and email working but she cant see the Operations shared drive that the rest of the team uses. She can see the general company one. I raised this Monday informally with someone on the floor but nothing yet and shes basically unable to do half her job. Can someone sort it please.",
+    "category": "access-identity",
+    "priority": "P3",
+    "sla_hours": 24,
+    "resolution": "Added the account to the OPS-Shared-RW security group and forced a group policy update. Drive mapped after re-login.",
+    "root_cause": "The onboarding request specified the department but not the drive security group, so the account was created without it. The mapping script silently skips drives the user has no rights to."
+  },
+  {
+    "id": "INC-1003",
+    "channel": "phone",
+    "reporter_role": "Payroll manager",
+    "raw": "URGENT - the payroll file did not go over to the provider last night. We send it every night at 11pm and it has to be with them by 6am on cutoff days. Today is a cutoff day. I checked the output folder and the file is sitting there generated at 23:04 but it has not moved. Nobody has touched anything our end as far as I know. If this does not go today people do not get paid on Friday.",
+    "category": "integration",
+    "priority": "P1",
+    "sla_hours": 4,
+    "resolution": "Rotated the expired SFTP key pair with the provider and re-ran the transfer manually. File acknowledged at 09:40, inside the cutoff.",
+    "root_cause": "The SFTP authentication key reached its two-year expiry. The transfer job logged the auth failure but had no alerting attached, so the failure was invisible until the business noticed."
+  },
+  {
+    "id": "INC-1004",
+    "channel": "portal",
+    "reporter_role": "Sales operations",
+    "raw": "We are getting duplicates in the CRM again. When a lead comes in from the website form it sometimes creates two records, sometimes three. Started maybe last week? Not every lead, seems random. Sales are complaining because two people call the same person. I have attached a screenshot of one that has 3 copies, all created within about a minute of each other.",
+    "category": "integration",
+    "priority": "P2",
+    "sla_hours": 8,
+    "resolution": "Enabled idempotency key handling on the inbound webhook endpoint and merged the affected duplicate records.",
+    "root_cause": "The web form vendor retries on any response slower than 5 seconds. The CRM endpoint had no idempotency key, so each retry created a new record rather than recognising the original."
+  },
+  {
+    "id": "INC-1005",
+    "channel": "portal",
+    "reporter_role": "Management accountant",
+    "raw": "The month end reports in the ERP are timing out. I run the consolidated P&L for all cost centres and after about 3 or 4 minutes I get a red bar saying the request could not be completed. It worked fine last month. Smaller reports for a single cost centre come back OK. This is the third day I have tried and month end close is Friday.",
+    "category": "performance",
+    "priority": "P2",
+    "sla_hours": 8,
+    "resolution": "Rebuilt fragmented indexes on the transaction tables and raised the report gateway timeout to 10 minutes. Full consolidated report now returns in about 90 seconds.",
+    "root_cause": "Index fragmentation on the main transaction table had grown steadily since the last maintenance window, pushing the query past the gateway's 5 minute timeout. Single cost centre reports stayed under it."
+  },
+  {
+    "id": "INC-1006",
+    "channel": "phone",
+    "reporter_role": "Branch administrator",
+    "raw": "Everyone in the Riverside office is saying the virtual desktops are crawling since about Tuesday. Typing lags behind, sometimes a few seconds. Head office people say theirs is fine. About 12 of us here. It is worse in the afternoon. We can work but it is painful and people are getting frustrated.",
+    "category": "performance",
+    "priority": "P3",
+    "sla_hours": 24,
+    "resolution": "Traced the saturation to an unscheduled backup replication job running over the branch WAN link during business hours. Rescheduled it to the overnight window.",
+    "root_cause": "A backup replication job was moved to a daytime schedule during an unrelated change and saturated the branch's WAN link. Latency rose in the afternoon as the backlog grew."
+  },
+  {
+    "id": "INC-1007",
+    "channel": "portal",
+    "reporter_role": "Customer data steward",
+    "raw": "After the supplier list import on the 3rd we now have a lot of near duplicate supplier records. Things like ACME LTD and Acme Ltd. and ACME LIMITED all as separate suppliers. I count at least 40. This is going to cause problems with payment runs because invoices are being matched to the wrong one. I did the import myself using the standard template so I do not think I did anything different to usual.",
+    "category": "data-quality",
+    "priority": "P2",
+    "sla_hours": 8,
+    "resolution": "Ran the supplier dedupe routine with normalisation enabled and merged the 40 affected records after data steward review.",
+    "root_cause": "The import routine matches on exact string. Normalisation of case, punctuation and legal suffixes is a configuration flag that was never enabled, so casing variants in the source file created new records."
+  },
+  {
+    "id": "INC-1008",
+    "channel": "email",
+    "reporter_role": "Accounts receivable clerk",
+    "raw": "Some of our exported invoices are a penny or two out compared to what the system shows on screen. Not all of them. It seems to be the ones with several lines and a discount. Customer has queried two of them this week which is embarrassing. On screen it says 1,204.56 and the PDF we send says 1,204.55.",
+    "category": "data-quality",
+    "priority": "P3",
+    "sla_hours": 24,
+    "resolution": "Corrected the export template to round once at the invoice total rather than per line, matching the on-screen calculation. Reissued the affected invoices.",
+    "root_cause": "The export template rounded each line to two decimals before summing, while the application rounds only the final total. Multi-line invoices with a percentage discount accumulated the difference."
+  },
+  {
+    "id": "INC-1009",
+    "channel": "portal",
+    "reporter_role": "Service desk (raised on behalf of business)",
+    "raw": "Overnight batch has not completed. No morning reports available to any of the business units, several calls already this morning from different departments asking where their dashboards are. Job monitor shows the chain stopped at step 4 of 11 at 02:17 with a non zero exit. Nothing obvious in the log I can see, it just stops. Escalating as this affects everyone.",
+    "category": "batch-reporting",
+    "priority": "P1",
+    "sla_hours": 4,
+    "resolution": "Cleared the full staging volume, restarted the chain from step 4 and confirmed downstream reports regenerated by 08:20.",
+    "root_cause": "The staging volume filled because the previous run's temporary extract files were not purged after a manual re-run two days earlier. Step 4 could not write and exited non-zero without a descriptive message."
+  },
+  {
+    "id": "INC-1010",
+    "channel": "email",
+    "reporter_role": "Regional manager",
+    "raw": "I am not receiving my weekly sales summary any more. It used to arrive Monday morning without fail. I have not had it for the last two Mondays. I checked junk. A colleague in the same region says she still gets hers. I did change my email display name recently if that matters.",
+    "category": "batch-reporting",
+    "priority": "P3",
+    "sla_hours": 24,
+    "resolution": "Removed the address from the mail relay suppression list and confirmed delivery of the next scheduled run.",
+    "root_cause": "A temporary mailbox-full bounce during a period of inbox overuse added the address to the relay's automatic suppression list. Suppression persisted after the mailbox was cleared because nothing removes entries automatically."
+  }
+]

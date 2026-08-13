@@ -68,10 +68,14 @@ service desk at ~200 incidents a month, not a generic chatbot demo.
   one is not a hard target, and 70% is a bar to clear rather than a result.
 - The tool can decline to classify. Five further held-out cases are ambiguous by
   design and their correct output is `insufficient-information` with questions
-  back to the reporter. Measured 2026-08-13: the model abstains on **5 of 5**
-  without refusing any of the 10 answerable tickets. The baseline it beat:
-  retrieval abstains on 0 of 5, and the best any score threshold could achieve
-  is 3 of 5 even chosen with the answers in hand.
+  back to the reporter. Measured 2026-08-13: the model abstains on **5 of 5**.
+  The baseline it beat: retrieval abstains on 0 of 5, and the best any score
+  threshold could achieve is 3 of 5 even chosen with the answers in hand.
+- **Never quote "held firm 10 of 10" on its own.** It is measured on tickets
+  whose subjects the knowledge base already covers. On tickets about systems it
+  does not cover the figure is 4 of 9 — the tool refuses ordinary work when
+  retrieval finds nothing related. Any claim about abstention must carry that
+  condition until it is fixed.
 - **Priority is the weak spot and must be stated as one.** The model scores 6 of
   10 against a 7 of 10 keyword baseline, and every miss is an escalation by one
   level. Do not quote the category and abstention wins without it.

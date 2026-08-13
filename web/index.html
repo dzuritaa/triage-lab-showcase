@@ -599,17 +599,61 @@
       <div class="boxes"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
     </div>
     <div class="tally" role="img" aria-label="The model held firm on 10 of 10 answerable cases">
-      <div class="cap"><strong>Model, held firm when it should</strong> <span class="of">10 of 10 cases</span> <span class="vs">it does not abstain to be safe</span></div>
+      <div class="cap"><strong>Model, held firm when it should</strong> <span class="of">10 of 10 cases</span> <span class="vs">on tickets the knowledge base covers — see below</span></div>
       <div class="boxes"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
     </div>
 
     <p class="note" style="margin-top:1.6rem">
-      Five of five, without refusing a single ticket the desk could have acted
-      on — the failure mode that makes abstention worthless. Asked about
-      <q>cannot enter site</q>, it wanted to know which site: building, website,
-      or application. That is the ambiguity the case was written to test.
-      Measured with one command, <code>python -m evals.live</code>, at a cost of
-      $0.0424 for the full run.
+      Five of five, and on these ten answerable tickets it refused none of them.
+      Asked about <q>cannot enter site</q>, it wanted to know which site:
+      building, website, or application. That is the ambiguity the case was
+      written to test. Measured with one command,
+      <code>python -m evals.live</code>, at a cost of $0.0424 for the full run.
+    </p>
+
+    <h3 style="margin-top:2.2rem">The second half of that result did not survive a harder test</h3>
+    <p>
+      Ten of ten looked like proof the tool does not refuse work it could do. It
+      was not. Every answerable ticket in that set describes a system the
+      knowledge base already has an incident about, because the cases were
+      written from the same corpus they are scored against. So the test could
+      not tell apart a tool that reads tickets from one that recognises subjects
+      it has seen before.
+    </p>
+    <p>
+      A second set, written later for an unrelated purpose, happened to
+      break that overlap. On its nine answerable tickets — ordinary service-desk
+      material about a checkout, a VPN client, a purchase-order screen — the tool
+      refused <strong>five</strong>. Not because they were vague:
+    </p>
+
+    <div class="vs2">
+      <div>
+        <span class="label">The whole ticket</span>
+        <code>“Customers cannot pay. The checkout gets to the card step and then errors, every single time, for everyone. Nothing is going through at all. This is the whole online shop.”</code>
+      </div>
+      <div>
+        <span class="label">What the tool did with it</span>
+        <code>declined to triage, and asked which payment gateway the shop uses</code>
+      </div>
+    </div>
+
+    <p>
+      That is a diagnostic question, and this tool does not diagnose. Naming the
+      gateway changes nothing about the category, the priority or the reply.
+      The pattern across the nine is close to mechanical: where retrieval
+      returned something topically related, the ticket was triaged; where it
+      returned an unrelated document, the ticket was refused. The checkout
+      tickets pulled back an overnight batch failure and an account-lockout
+      article. The VPN ticket pulled back SFTP key rotation.
+    </p>
+    <p class="note">
+      Which makes the abstention behaviour a function of what the knowledge base
+      happens to cover, rather than of what the ticket says — backwards for a
+      service desk, where an unfamiliar system is exactly when a triager wants
+      help, and quietly worse every time the business adds one. The 5 of 5 above
+      stands. The 10 of 10 is now known to be measured on friendly ground, and
+      the harder number is 4 of 9.
     </p>
   </section>
 

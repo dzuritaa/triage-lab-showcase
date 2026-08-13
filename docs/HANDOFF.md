@@ -58,7 +58,12 @@ behaves like a two-way one. It is a bar for the model, not an achievement.
 | Category accuracy | **10 of 10** | 6 of 10 (nearest neighbour) |
 | Priority accuracy | **6 of 10** | 7 of 10 (nearest neighbour) |
 | Abstained when it should | **5 of 5** | 0 of 5 measured, 3 of 5 best possible |
-| Held firm when it should | **10 of 10** | 10 of 10 |
+| Held firm when it should | **10 of 10**, but see below | 10 of 10 |
+
+⚠️ **Held firm 10 of 10 is measured on friendly ground and must not be quoted
+alone.** On the development set, whose tickets are about systems the corpus does
+not cover, it is 4 of 9. See "Abstention is coupled to knowledge-base coverage"
+in §5 — that is the single most important open defect in the project.
 
 **Priority is the one metric where the model loses to a keyword search, and the
 shape of the loss matters more than the number.** All four misses are
@@ -246,6 +251,63 @@ identity. → History rewritten to a GitHub noreply address. The repository was
 deleted and recreated rather than force-pushed, because orphaned commits stay
 reachable by direct SHA after a rewrite. Recorded as a pre-push check in
 `docs/PLAN.md` §4, which also checks the *committer*, not just the author.
+
+### Abstention is coupled to knowledge-base coverage, and the golden set cannot see it
+
+The first `--dev` run was meant to establish a priority baseline. It found
+something worse. **The tool refused 5 of the 9 answerable development tickets**,
+against 0 of 10 on the golden set.
+
+The cause is not vagueness. It asked for the exact error message, the payment
+gateway vendor, the VPN client version — diagnostic detail. DEV-06 reads
+*"Customers cannot pay. The checkout gets to the card step and then errors,
+every single time, for everyone. Nothing is going through at all. This is the
+whole online shop."* — system and symptom both named, and refused. The
+abstention criterion has drifted from *can I triage this* to *can I diagnose
+this*, and the prompt's own definition is the narrower one: "you can tell what
+system is involved and what it is doing wrong."
+
+The pattern across the nine is close to mechanical, and it is not length or
+retrieval score — the two sets match almost exactly on both (45 vs 47 words,
+11.5 vs 12.3 median top score):
+
+| Retrieval returned | Cases | Outcome |
+|---|---|---|
+| Something topically related | DEV-01, 02, 04, 05 | all triaged |
+| Something unrelated | DEV-06, 07, 08, 09 | all refused |
+
+Checkout tickets pulled back an overnight batch failure and an account-lockout
+article; the VPN ticket pulled back SFTP key rotation. DEV-03 is the single
+exception — a related hit, refused anyway.
+
+**Abstention therefore tracks what the corpus happens to cover rather than what
+the ticket says.** For a service desk that is backwards: an unfamiliar system is
+exactly when a triager wants help, and the behaviour degrades silently every
+time the business adds one.
+
+**Why the golden set was blind to it.** Its answerable cases are paraphrases of
+corpus incidents — same subjects by construction, which is what makes them a
+fair retrieval test. That same property means every one of them lands on
+friendly ground for abstention, so "held firm 10 of 10" measured subject overlap
+as much as judgement. The dev set broke the overlap by accident, writing about
+checkout, VPN and purchase-order screens because those were convenient priority
+scenarios, not because anyone set out to test corpus coverage.
+
+The landing page has been corrected: 10 of 10 now carries the condition it was
+measured under, and 4 of 9 is published beside it. Baseline run kept as
+`evals/dev-results-baseline.json`.
+
+**Practical consequence: this blocks the priority work.** Five of nine dev cases
+never reach a priority, so the set cannot do the job it was written for until
+abstention is fixed. Fix that first, re-baseline, then tune priority.
+
+### The escalation bias reproduces on cases it was never tuned against
+
+Smaller, and good news for the diagnosis. Of the four dev tickets that were
+triaged, three have the wrong priority and **all three are escalations** —
+DEV-01 and DEV-02 P3→P2, DEV-05 P2→P1. Combined with the golden run's four of
+four, that is seven escalations and zero de-escalations across two independently
+written sets. The bias is real and not an artifact of the golden set.
 
 ### The obvious fix for the escalation bias, which made it worse
 
@@ -447,12 +509,27 @@ plus `checkout -- .` discards work in progress.
       run. Two rules learned the expensive way: change one thing per run, and
       treat a regression in a guard class you were not aiming at as a stop
       signal rather than a rounding error.
-- [ ] **The dev set has never been run against the live model.** It is verified
-      end to end with the API stubbed, so the plumbing and the per-guard
-      grouping work, but the ten cases have no recorded baseline. The first
-      `--dev` run (~$0.03) establishes where the current prompt actually stands
-      on them — do that before changing anything, or there is nothing to
-      compare against.
+- [x] ~~The dev set has never been run against the live model.~~ **Baselined
+      2026-08-13**, and it immediately found the abstention defect above rather
+      than the priority baseline it was written for.
+- [ ] **Fix the abstention bar. This is the top priority and it blocks the
+      priority work.** The criterion has drifted from *can I triage this* to
+      *can I diagnose this*, and it keys off whether retrieval found anything
+      related. Two candidate edits, to be tried **one at a time** against
+      `--dev`:
+      1. Tighten the bar to the decision being made: *"Triage needs only the
+         category, the priority and a sensible next step. Do not ask for detail
+         that would help diagnose the fault but would not change any of those
+         three — the error code, the vendor, the version. If you can name the
+         system and what it is doing wrong, triage it."*
+      2. Cut the coupling to retrieval: the line *"a confident-looking match is
+         not evidence the ticket is triageable"* appears to have generalised
+         into its converse. Consider stating the converse explicitly —
+         *"and an unrelated match is not evidence that it is untriageable; a
+         ticket about a system the knowledge base has never seen is still
+         triageable on its own text."*
+      Re-baseline after each, and watch all three guard classes, not just the
+      one being aimed at.
 - [ ] **Consider whether over-escalation deserves its own metric.** Averaged
       into a single accuracy figure the bias is invisible — six of ten reads as
       noise until you look at which way each miss went. A signed mean error, or

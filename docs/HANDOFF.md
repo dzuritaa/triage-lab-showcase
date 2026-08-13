@@ -301,6 +301,37 @@ measured under, and 4 of 9 is published beside it. Baseline run kept as
 never reach a priority, so the set cannot do the job it was written for until
 abstention is fixed. Fix that first, re-baseline, then tune priority.
 
+### Candidate 1: narrowing the abstention bar, which helped and did not finish
+
+The first fix attempt that survived contact. The prompt already said "ask only
+for what actually blocks the decision", which was too abstract to bite. The edit
+names the decision — a category, a priority, a first step — lists the detail
+that does *not* change any of the three, and gives the model somewhere else to
+put it: **"When you want that detail, ask for it in draft_reply and triage the
+ticket anyway."** That last clause is the substance. The model wanted to ask
+those questions and the schema left it only two options: abstain, or drop them.
+
+| | Baseline | After |
+|---|---|---|
+| Held firm when it should | 4 of 9 | **6 of 9** |
+| Category accuracy | 4 of 9 | **6 of 9** |
+| Priority accuracy | 1 of 9 | **2 of 9** |
+| Abstained when it should | 1 of 1 | 1 of 1 |
+
+DEV-03 and DEV-07 recovered. Nothing regressed, so the change was kept.
+
+**It did not finish, and the way it failed is informative.** DEV-06, 08 and 09
+still refuse, and what they ask for is precisely the four things the new text
+names as non-blocking: the exact error message, the vendor, the version, the
+time it started. The instruction is being read and overridden on the hardest
+cases, which suggests something other than ignorance of the rule is driving the
+refusal on those three — retrieval coupling remains the live hypothesis for
+DEV-06 and DEV-09, both of which still pull back unrelated documents.
+
+DEV-08 turned out to be a bad case rather than a bad result; see the taxonomy
+item in the open list. One mild cost: DEV-03 recovered from abstaining into P4
+where P3 was wanted, the first de-escalation seen from any prompt version.
+
 ### The escalation bias reproduces on cases it was never tuned against
 
 Smaller, and good news for the diagnosis. Of the four dev tickets that were
@@ -512,24 +543,29 @@ plus `checkout -- .` discards work in progress.
 - [x] ~~The dev set has never been run against the live model.~~ **Baselined
       2026-08-13**, and it immediately found the abstention defect above rather
       than the priority baseline it was written for.
-- [ ] **Fix the abstention bar. This is the top priority and it blocks the
-      priority work.** The criterion has drifted from *can I triage this* to
-      *can I diagnose this*, and it keys off whether retrieval found anything
-      related. Two candidate edits, to be tried **one at a time** against
-      `--dev`:
-      1. Tighten the bar to the decision being made: *"Triage needs only the
-         category, the priority and a sensible next step. Do not ask for detail
-         that would help diagnose the fault but would not change any of those
-         three — the error code, the vendor, the version. If you can name the
-         system and what it is doing wrong, triage it."*
-      2. Cut the coupling to retrieval: the line *"a confident-looking match is
-         not evidence the ticket is triageable"* appears to have generalised
-         into its converse. Consider stating the converse explicitly —
-         *"and an unrelated match is not evidence that it is untriageable; a
-         ticket about a system the knowledge base has never seen is still
-         triageable on its own text."*
-      Re-baseline after each, and watch all three guard classes, not just the
-      one being aimed at.
+- [x] ~~Candidate 1: tighten the abstention bar to the triage decision.~~
+      **Applied and kept 2026-08-13.** Held firm went 4/9 → 6/9, category
+      4/9 → 6/9, priority 1/9 → 2/9, abstention on the ambiguous case unchanged
+      at 1/1. Nothing regressed, so it stays — but it is an improvement, not a
+      fix. See §5.
+- [ ] **Three cases still refuse. Candidate 2 is the next thing to try:** cut
+      the coupling to retrieval. The line *"a confident-looking match is not
+      evidence the ticket is triageable"* appears to have generalised into its
+      converse. State the converse explicitly — *"and an unrelated match is not
+      evidence that it is untriageable; a ticket about a system the knowledge
+      base has never seen is still triageable on its own text."* One change,
+      re-run `--dev`, watch all three guard classes.
+- [ ] **The category taxonomy has no slot for network connectivity, and
+      abstention is absorbing the gap.** Found by DEV-08, which asked the tool
+      to categorise a VPN connection failure: access-identity is authentication,
+      integration is systems talking to each other, performance is slowness.
+      None of them fit, and `insufficient-information` is the only other value
+      the enum offers — so the schema conflates *this ticket is unclear* with
+      *this taxonomy has no slot for it*, and a reader of the output cannot tell
+      which happened. Two decisions, both for David: whether the corpus needs a
+      sixth category, and whether "no category fits" deserves its own value
+      rather than borrowing abstention's. The dev case was rewritten to stay
+      inside the taxonomy, because a case with no correct answer tests nothing.
 - [ ] **Consider whether over-escalation deserves its own metric.** Averaged
       into a single accuracy figure the bias is invisible — six of ten reads as
       noise until you look at which way each miss went. A signed mean error, or

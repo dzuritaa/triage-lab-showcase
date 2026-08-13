@@ -57,11 +57,12 @@
   },
   {
     "id": "DEV-08",
-    "raw": "VPN client throws error 809 on the new laptops. Old ones connect fine.",
+    "raw": "SSO sign-in loops back to the login page on the new laptops. The old ones sign in fine.",
     "expected_category": "access-identity",
     "expected_priority": "P3",
-    "tests": "Two sentences, no context, no deadline, and completely triageable: it names the system, the error and the discriminator. Must not be abstained on. Guards the regression where a priority edit leaked into abstention behaviour.",
-    "guards": "abstention-leak"
+    "tests": "Two sentences, no context, no deadline, and completely triageable: it names the system, the symptom and the discriminator. Must not be abstained on. Guards the regression where a priority edit leaked into abstention behaviour.",
+    "guards": "abstention-leak",
+    "note": "Rewritten 2026-08-13. The original was a VPN error 809, which no category covers - access-identity is authentication, not network connectivity. The case therefore had no correct answer and its failure said nothing about the model. The taxonomy gap it exposed is a real open item; this case is not the place to test it."
   },
   {
     "id": "DEV-09",

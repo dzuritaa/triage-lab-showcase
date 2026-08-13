@@ -26,14 +26,18 @@ Strategy: **full palette**, four named roles carried from the artifact.
 | `--card` | `#F2F0EB` | Card stock. The ground. Warm-grey pulp, not cream — it must read as stock, never as paper-for-mood. |
 | `--ink` | `#141414` | Rule work, body text, printed labels. |
 | `--immediate` | `#C8102E` | Signal red. P1 and errors only. Never decorative. |
-| `--urgent` | `#E8A33D` | Hazard amber. P2. |
+| `--urgent` | `#E8A33D` | Hazard amber. P2. Always carries **ink** text, never white: hazard marking is black on amber, and white on amber fails the contrast floor at 3.79:1. |
 | `--delayed` | `#2E7D4F` | Triage green. P3/P4 and passing states. |
 | `--stamp` | `#2B4C7E` | Stamp-pad blue. Overprints, corrections, annotations. |
+| `--ink-soft` | `#4A4741` | Secondary text and field labels. Tinted from the ink, never a neutral grey. |
 
 Severity **must never be carried by colour alone.** Position on the strip and the
 printed label both encode it, so the page reads correctly in greyscale and to a
 colour-blind reader. This is the artifact's own logic, not an accessibility
-retrofit — real tags are used in bad light by people under stress.
+retrofit: real tags are used in bad light by people under stress.
+
+Torn strip cells are deliberately desaturated to `--ink-soft`, because a torn-off
+strip has left the tag. Only the retained priority carries its colour.
 
 ## Type
 
@@ -59,10 +63,20 @@ The two faces carry the page's central distinction: **what was printed** versus
 - **Perforation** (dotted rules) separates a detachable region from its parent —
   used only where something is genuinely separable in meaning, such as the
   scorecard stub from the tag body.
-- **Serial numbers** are real identifiers (`INC-1001`, `EVAL-02`), never
-  decorative section numbering.
-- **Stamps** mark status: applied at a slight rotation, in `--stamp` or
-  `--immediate`, overprinting the content beneath rather than sitting beside it.
+- **Serial numbers** are real identifiers (`INC-1003`, `EVAL-02`), never
+  decorative section numbering. A form number invented to look official is
+  exactly the failure this rule exists to prevent.
+- **Stamps** come in two forms and the distinction is load-bearing.
+  A **chip** carries inline metadata inside a form header (`Synthetic data`,
+  `Recorded`), rotated a degree or two, sitting in the flow.
+  An **overprint** marks status: absolutely positioned at 5–7°, straddling the
+  block's border rule, semi-opaque so the content beneath stays legible. Status
+  overprints, metadata does not.
+- **Tally boxes** score a result the way a paper form does: ten ruled squares,
+  filled with a drawn check, so "nine out of ten" is readable without parsing a
+  percentage.
+- **A punched hole and tie** at the tag head. What makes a triage tag a tag
+  rather than a card is that it attaches to something.
 
 ## Motion
 

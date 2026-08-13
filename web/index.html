@@ -16,9 +16,10 @@
   measured against published baselines, sees the case it gets wrong, and knows
   how to make contact.
 
-  FIRST VIEWPORT: The tag at full width. Detachable stub on the left carries the
-  scorecard; body carries ticket in, triage out. Severity strip tears to P1.
-  Contact reachable from the masthead.
+  FIRST VIEWPORT: The tag at full width, punched and tied like the object it is.
+  Detachable stub on the left carries the scorecard; body carries ticket in,
+  triage out. Severity strip tears to P1. Author named and contact reachable in
+  the masthead.
 
   FORM: Paper triage tag — candidate 5 of 7 by resonance, assigned by
   concept-seed (key edc67d86, scope direction, mode persuade).
@@ -36,7 +37,7 @@
     --ink:        #141414;
     --ink-soft:   #4A4741;
     --immediate:  #C8102E;
-    --urgent:     #B4761A;
+    --urgent:     #E8A33D;
     --delayed:    #2E7D4F;
     --stamp:      #2B4C7E;
 
@@ -48,7 +49,6 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; }
-
   html { -webkit-text-size-adjust: 100%; }
 
   body {
@@ -68,10 +68,9 @@
     border-right: 1px solid var(--stock-edge);
   }
 
-  /* Printed form matter: labels, headings, tag furniture. Uppercase with wide
-     tracking is this world's register for field labels, not a decorative
-     eyebrow — every instance below labels an actual field. */
-  .label, h1, h2, h3, .strip b, .stamp, .masthead nav a, .btn {
+  /* Printed form matter. Uppercase with wide tracking is this world's register
+     for field labels — every instance below labels an actual field. */
+  .label, h1, h2, h3, .strip b, .stamp, .masthead nav a, .btn, .overprint {
     font-family: var(--form);
     font-stretch: 75%;
     text-transform: uppercase;
@@ -93,85 +92,73 @@
     outline-offset: 2px;
   }
 
-  /* ---------- masthead ---------- */
+  /* ---------- masthead: the form header it claims to be ---------- */
 
   .masthead {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.75rem 1.5rem;
+    display: flex; flex-wrap: wrap; align-items: baseline;
+    gap: 0.75rem 1.75rem;
     padding: 1.1rem clamp(1rem, 4vw, 2.5rem);
     border-bottom: 3px solid var(--ink);
   }
   .wordmark {
-    font-family: var(--form);
-    font-stretch: 75%;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    font-size: 1.05rem;
-    margin: 0;
+    font-family: var(--form); font-stretch: 75%; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.2em;
+    font-size: 1.05rem; margin: 0;
   }
-  .masthead .serial {
-    font-size: 0.75rem;
-    color: var(--ink-soft);
-    letter-spacing: 0.05em;
+  .prepared { font-size: 0.78rem; }
+  .prepared span {
+    font-family: var(--form); font-stretch: 75%; text-transform: uppercase;
+    letter-spacing: 0.16em; font-size: 0.66rem; color: var(--ink-soft);
+    display: block;
   }
-  .masthead nav {
-    margin-left: auto;
-    display: flex;
-    gap: 1.25rem;
-    flex-wrap: wrap;
-  }
+  .masthead nav { margin-left: auto; display: flex; gap: 1.25rem; flex-wrap: wrap; }
   .masthead nav a { font-size: 0.72rem; text-decoration: none; border-bottom: 1px solid currentColor; }
   .masthead nav a:hover { color: var(--immediate); }
+  .masthead nav a.act { color: var(--immediate); border-bottom-width: 2px; }
 
-  /* ---------- shared blocks ---------- */
+  /* ---------- shared ---------- */
 
   section { padding: var(--gap) clamp(1rem, 4vw, 2.5rem); border-bottom: var(--rule); }
 
   h1 {
-    font-size: clamp(1.9rem, 5.2vw, 3.4rem);
-    line-height: 1.02;
-    letter-spacing: 0.01em;
-    margin: 0 0 1rem;
-    max-width: 22ch;
-    text-wrap: balance;
+    font-size: clamp(1.85rem, 4.8vw, 3.2rem);
+    line-height: 1.04; letter-spacing: 0.01em;
+    margin: 0 0 1rem; max-width: 24ch; text-wrap: balance;
   }
-  h2 {
-    font-size: clamp(1.3rem, 3vw, 1.9rem);
-    line-height: 1.1;
-    margin: 0 0 1.4rem;
-    letter-spacing: 0.06em;
-  }
+  h2 { font-size: clamp(1.3rem, 3vw, 1.9rem); line-height: 1.1; margin: 0 0 1.4rem; letter-spacing: 0.06em; }
   h3 { font-size: 0.85rem; margin: 0 0 0.6rem; letter-spacing: 0.14em; }
 
   p { max-width: 68ch; margin: 0 0 1rem; }
   .lede { font-size: 1.02rem; }
   .note { font-size: 0.85rem; color: var(--ink-soft); max-width: 62ch; }
+  .src { font-size: 0.78rem; color: var(--ink-soft); }
 
   /* ---------- the tag ---------- */
 
   .tag {
-    border: 3px solid var(--ink);
-    background: var(--card);
-    display: grid;
-    grid-template-columns: 15rem 1fr;
+    border: 3px solid var(--ink); background: var(--card);
+    display: grid; grid-template-columns: 15rem 1fr;
+    position: relative;
   }
   @media (max-width: 62rem) { .tag { grid-template-columns: 1fr; } }
 
-  /* Detachable stub: perforation is used only where something is genuinely
-     separable in meaning. The scorecard is the part you keep. */
+  /* Punched hole and tie: what makes a tag a tag is that it attaches. */
+  .punch {
+    position: absolute; top: -13px; left: clamp(1rem, 3vw, 2rem);
+    width: 22px; height: 22px; border: 3px solid var(--ink);
+    border-radius: 50%; background: var(--stock-edge); z-index: 2;
+  }
+  .punch::after {
+    content: ""; position: absolute; left: 50%; bottom: 100%;
+    width: 2px; height: 18px; background: var(--ink);
+  }
+
   .stub {
     padding: 1.4rem 1.2rem;
     border-right: 2px dashed var(--ink);
-    background:
-      repeating-linear-gradient(
-        to bottom, transparent 0 6px, rgba(20,20,20,.05) 6px 7px);
+    background: repeating-linear-gradient(to bottom, transparent 0 6px, rgba(20,20,20,.05) 6px 7px);
   }
-  @media (max-width: 62rem) {
-    .stub { border-right: 0; border-bottom: 2px dashed var(--ink); }
-  }
+  @media (max-width: 62rem) { .stub { border-right: 0; border-bottom: 2px dashed var(--ink); } }
 
   .score { margin: 0 0 1.15rem; }
   .score:last-of-type { margin-bottom: 0; }
@@ -182,20 +169,14 @@
   .score dd { margin: 0.1rem 0 0; display: flex; align-items: baseline; gap: 0.5rem; }
   .score .val { font-size: 1.75rem; font-weight: 700; line-height: 1; }
   .score .base { font-size: 0.78rem; color: var(--ink-soft); }
-
-  .meter {
-    margin-top: 0.45rem; height: 9px; border: 1px solid var(--ink);
-    display: flex; background: transparent;
-  }
+  .meter { margin-top: 0.45rem; height: 9px; border: 1px solid var(--ink); display: flex; }
   .meter i { display: block; background: var(--ink); }
   .meter i.base-mark { background: repeating-linear-gradient(45deg, var(--ink) 0 2px, transparent 2px 4px); }
 
   .tag-body { padding: 1.5rem clamp(1rem, 3vw, 2rem); }
-
   .tag-head {
-    display: flex; flex-wrap: wrap; gap: 0.6rem 1.4rem;
-    align-items: baseline; border-bottom: var(--rule);
-    padding-bottom: 0.9rem; margin-bottom: 1.2rem;
+    display: flex; flex-wrap: wrap; gap: 0.6rem 1.4rem; align-items: baseline;
+    border-bottom: var(--rule); padding-bottom: 0.9rem; margin-bottom: 1.2rem;
   }
   .tag-head .no { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.06em; }
 
@@ -205,17 +186,15 @@
     padding: 0.22rem 0.5rem; transform: rotate(-2.5deg);
     display: inline-block; white-space: nowrap;
   }
-  .stamp.warn { border-color: var(--immediate); color: var(--immediate); transform: rotate(1.5deg); }
 
   blockquote.ticket {
     margin: 0 0 1.5rem; padding: 0.9rem 1.1rem;
-    border: 1px solid var(--ink); background: rgba(20,20,20,.035);
-    font-size: 0.95rem;
+    border: 1px solid var(--ink); background: rgba(20,20,20,.035); font-size: 0.95rem;
   }
   blockquote.ticket p:last-child { margin-bottom: 0; }
 
-  /* severity strip: priority is carried by position AND printed label, never by
-     colour alone — the tag must read correctly in greyscale. */
+  /* Severity by position and printed label, never colour alone: the tag must
+     read correctly in greyscale and under stress. */
   .strip { display: grid; grid-template-columns: repeat(4, 1fr); border: 2px solid var(--ink); margin-bottom: 1.4rem; }
   .strip div {
     padding: 0.55rem 0.5rem; text-align: center; border-right: 2px dashed var(--ink);
@@ -224,7 +203,11 @@
   }
   .strip div:last-child { border-right: 0; }
   .strip div.torn { opacity: 0.28; text-decoration: line-through; }
-  .strip div.kept { background: var(--immediate); color: #fff; opacity: 1; text-decoration: none; }
+  .strip div.kept { opacity: 1; text-decoration: none; }
+  .strip div.kept.p1 { background: var(--immediate); color: #fff; }
+  /* Hazard marking is black on amber, which is both the authentic rendering
+     and the only one that clears the contrast floor. */
+  .strip div.kept.p2 { background: var(--urgent); color: var(--ink); }
   .strip b { display: block; font-size: 1.05rem; letter-spacing: 0.08em; }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -233,7 +216,7 @@
     .strip div.torn:nth-child(3) { animation-delay: 340ms; }
     .strip div.torn:nth-child(4) { animation-delay: 420ms; }
     @keyframes tear {
-      from { opacity: 1; transform: none; text-decoration-color: transparent; }
+      from { opacity: 1; transform: none; }
       to   { opacity: .28; transform: translateY(3px); }
     }
   }
@@ -243,41 +226,68 @@
   .fields p { margin: 0; font-size: 0.93rem; }
 
   .hits { list-style: none; margin: 0; padding: 0; }
-  .hits li { display: flex; gap: 0.7rem; align-items: baseline; padding: 0.3rem 0; border-bottom: 1px dotted var(--ink); font-size: 0.9rem; }
+  .hits li { padding: 0.4rem 0; border-bottom: 1px dotted var(--ink); font-size: 0.86rem; }
   .hits li:last-child { border-bottom: 0; }
-  .hits .id { font-weight: 700; min-width: 5.5rem; }
-  .hits .sc { margin-left: auto; color: var(--ink-soft); font-size: 0.82rem; }
-  .hits .used { color: var(--delayed); font-weight: 700; }
+  .hits .row { display: flex; gap: 0.7rem; align-items: baseline; }
+  .hits .id { font-weight: 700; }
+  .hits .sc { margin-left: auto; color: var(--ink-soft); font-size: 0.8rem; }
+  .hits .t { display: block; color: var(--ink-soft); margin-top: 0.15rem; }
+  .hits .ok { color: var(--delayed); font-weight: 700; }
 
   .reply { border-top: var(--rule); margin-top: 1.4rem; padding-top: 1.2rem; }
   .reply p { font-size: 0.93rem; }
 
-  /* ---------- measurement table ---------- */
+  /* ---------- tallies: a tag scores by ticking boxes ---------- */
+
+  .tally { margin: 0 0 1.6rem; }
+  .tally:last-of-type { margin-bottom: 0; }
+  .tally .cap { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 0.9rem; margin-bottom: 0.45rem; }
+  .tally .cap strong {
+    font-family: var(--form); font-stretch: 75%; text-transform: uppercase;
+    letter-spacing: 0.13em; font-size: 0.74rem;
+  }
+  .tally .cap .of { font-size: 0.82rem; }
+  .tally .cap .vs { font-size: 0.78rem; color: var(--ink-soft); margin-left: auto; }
+  .boxes { display: flex; gap: 5px; flex-wrap: wrap; }
+  .boxes i {
+    width: 21px; height: 21px; border: 2px solid var(--ink); display: block; position: relative;
+  }
+  .boxes i.on { background: var(--delayed); }
+  .boxes i.on::after {
+    content: ""; position: absolute; inset: 3px 4px 5px 4px;
+    border-left: 2px solid #fff; border-bottom: 2px solid #fff;
+    transform: rotate(-45deg);
+  }
+
+  /* ---------- the miss ---------- */
+
+  .miss { border: 3px solid var(--immediate); padding: 1.5rem clamp(1rem, 3vw, 1.8rem); background: rgba(200,16,46,.04); position: relative; }
+  .miss h3 { color: var(--immediate); }
+  /* Overprint: the stamp lands across the rule and the text beneath stays legible. */
+  .overprint {
+    position: absolute; top: -0.85rem; right: clamp(0.75rem, 4vw, 3rem);
+    font-size: clamp(0.66rem, 1.6vw, 0.78rem); letter-spacing: 0.18em;
+    color: var(--immediate); border: 3px solid var(--immediate);
+    padding: 0.3rem 0.7rem; transform: rotate(-7deg);
+    background: rgba(242,240,235,.72); white-space: nowrap;
+  }
+  .vs2 { display: grid; gap: 1rem 2rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); margin: 1.1rem 0; }
+  .vs2 code { font-size: 0.86rem; display: block; padding: 0.5rem 0.65rem; border: 1px solid var(--ink); background: var(--card); }
+
+  /* ---------- file copy ---------- */
+
+  .filecopy { border: 2px solid var(--stamp); border-top-width: 3px; padding: 1.4rem clamp(1rem, 3vw, 1.8rem); background: rgba(43,76,126,.035); position: relative; }
+  .filecopy .overprint { color: var(--stamp); border-color: var(--stamp); transform: rotate(5deg); top: -0.8rem; right: auto; left: clamp(0.75rem, 4vw, 2.5rem); }
 
   table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
   caption { text-align: left; font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 0.7rem; }
   th, td { text-align: left; padding: 0.6rem 0.8rem 0.6rem 0; border-bottom: 1px solid var(--ink); }
-  thead th {
-    font-family: var(--form); font-stretch: 75%; text-transform: uppercase;
-    letter-spacing: 0.13em; font-size: 0.7rem; border-bottom: var(--rule);
-  }
+  thead th { font-family: var(--form); font-stretch: 75%; text-transform: uppercase; letter-spacing: 0.13em; font-size: 0.7rem; border-bottom: var(--rule); }
   td.n { font-weight: 700; }
   .wrap { overflow-x: auto; }
 
-  /* ---------- the miss ---------- */
-
-  .miss { border: 3px solid var(--immediate); padding: 1.4rem clamp(1rem, 3vw, 1.8rem); background: rgba(200,16,46,.04); }
-  .miss h3 { color: var(--immediate); }
-  .vs { display: grid; gap: 1rem 2rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); margin: 1.1rem 0; }
-  .vs code { font-size: 0.86rem; display: block; padding: 0.5rem 0.65rem; border: 1px solid var(--ink); background: var(--card); }
-
-  /* ---------- contact ---------- */
-
   .contact { display: flex; flex-wrap: wrap; gap: 0.9rem; margin: 1.4rem 0 0; padding: 0; list-style: none; }
-  .btn {
-    display: inline-block; text-decoration: none; font-size: 0.78rem;
-    border: 2px solid var(--ink); color: var(--ink); padding: 0.7rem 1.1rem; background: transparent;
-  }
+  .btn { display: inline-block; text-decoration: none; font-size: 0.78rem; border: 2px solid var(--ink); color: var(--ink); padding: 0.7rem 1.1rem; }
   .btn:hover { background: var(--ink); color: var(--card); }
   .btn.primary { background: var(--immediate); border-color: var(--immediate); color: #fff; }
   .btn.primary:hover { background: var(--ink); border-color: var(--ink); }
@@ -291,25 +301,27 @@
 
   <header class="masthead">
     <p class="wordmark">triage&#8209;lab</p>
-    <span class="serial">FORM 001 · REV 2026-08</span>
+    <p class="prepared" style="margin:0"><span>Prepared by</span>David Zurita</p>
     <nav aria-label="Sections">
       <a href="#result">Result</a>
       <a href="#measured">Measurement</a>
       <a href="#miss">The miss</a>
-      <a href="#contact">Contact</a>
+      <a class="act" href="#contact">Contact</a>
     </nav>
   </header>
 
   <section id="result">
-    <h1>Most AI demos claim. This one publishes its scorecard, including what it gets wrong.</h1>
+    <h1>Nine of ten tickets retrieve the right past incident. The tenth is on this page too.</h1>
     <p class="lede">
-      An incident triage assistant for enterprise IT support. Paste a ticket, get
-      a category, a priority with an SLA target, the similar incidents behind it,
-      and a drafted first reply. Below is a real recorded result. Not a mockup,
-      and not a live call: it costs nothing to look at.
+      An incident triage assistant for enterprise IT support. Give it a ticket and
+      it returns a category, a priority against an SLA, the past incidents it
+      matched, and a first reply for the engineer to send. Below is one result
+      exactly as it was recorded.
     </p>
 
     <div class="tag">
+      <div class="punch" aria-hidden="true"></div>
+
       <div class="stub">
         <span class="label">Retained record</span>
         <dl style="margin:0">
@@ -336,8 +348,8 @@
           </div>
         </dl>
         <p class="note" style="margin-top:1.2rem">
-          10 held-out cases. Baselines computed exactly, not sampled.
-          Reproduce with <code>python -m evals.run</code>.
+          Held-out cases the system has never seen. Baselines computed exactly
+          rather than sampled. Reproduce with <code>python -m evals.run</code>.
         </p>
       </div>
 
@@ -359,7 +371,7 @@
 
         <span class="label">Priority assigned · lower priorities torn off</span>
         <div class="strip">
-          <div class="kept"><b>P1</b> 4h · immediate</div>
+          <div class="kept p1"><b>P1</b> 4h · immediate</div>
           <div class="torn"><b>P2</b> 8h</div>
           <div class="torn"><b>P3</b> 24h</div>
           <div class="torn"><b>P4</b> 72h</div>
@@ -372,43 +384,55 @@
           </div>
           <div>
             <span class="label">Why this priority</span>
-            <p>Dated deadline at 07:00 with 200 suppliers at risk of term breach;
-            file generated but not delivered is a transfer failure blocking a
-            critical business process.</p>
+            <p>Payroll-equivalent dated deadline (07:00 cutoff) with 200 suppliers at
+            risk of term breach; file generated but not delivered is a transfer
+            failure blocking a critical business process.</p>
           </div>
           <div>
             <span class="label">Similar incidents retrieved</span>
             <ul class="hits">
-              <li><span class="id">INC-1003</span> <span>Payroll file did not transfer overnight</span> <span class="sc">19.44</span></li>
-              <li><span class="id">INC-1007</span> <span>Duplicate supplier records after import</span> <span class="sc">14.10</span></li>
-              <li><span class="id">KB-210</span> <span>Supplier record deduplication</span> <span class="sc">13.06</span></li>
+              <li>
+                <span class="row"><span class="id ok">INC-1003</span> <span class="ok">correct match</span> <span class="sc">19.44</span></span>
+                <span class="t">“URGENT - the payroll file did not go over to the provider last night. We send it…”</span>
+              </li>
+              <li>
+                <span class="row"><span class="id">INC-1007</span> <span class="sc">14.10</span></span>
+                <span class="t">“After the supplier list import on the 3rd we now have a lot of near duplicate su…”</span>
+              </li>
+              <li>
+                <span class="row"><span class="id">KB-210</span> <span class="sc">13.06</span></span>
+                <span class="t">“Supplier and customer record deduplication”</span>
+              </li>
             </ul>
-            <p class="note" style="margin-top:.5rem">
-              <span class="used">Rank 1 is the correct match</span>, and the drafted
-              reply below cites it by number, so retrieval demonstrably fed the answer.
+            <p class="src" style="margin-top:.5rem">
+              Titles as stored by the retriever, which keeps the first 80 characters
+              of an incident. The reply below cites INC-1003 by number, so retrieval
+              demonstrably fed the answer.
             </p>
           </div>
           <div>
             <span class="label">Root cause direction</span>
-            <p>Check the outbound integration job logs and API/SFTP credentials to
-            the bank; verify whether the transfer attempt failed, and whether
+            <p>Check the outbound integration job logs and API/SFTP credentials to the
+            bank; verify the transfer attempt succeeded or failed, and whether
             authentication or connectivity is the blocker.</p>
           </div>
         </div>
 
         <div class="reply">
           <span class="label">Drafted first response</span>
-          <p>We see the file generated at 20:00 but did not reach the bank. We need
-          to check the transfer job logs immediately to see whether the send attempt
+          <p>We see the file generated at 20:00 but did not reach the bank. We need to
+          check the transfer job logs immediately to see whether the send attempt
           failed and why. Can you provide: (1) the exact filename and size of the file
           in the outbound folder, (2) whether your bank credential or API key for this
           payment file transfer has been rotated or renewed recently, and (3) access to
           the integration job logs covering 20:00–21:30 last night. If the transfer
           failed due to credential expiry or rotation (similar to INC-1003), we may need
-          to refresh those with the bank and retry.</p>
-          <p class="note">
-            1,254 input + 263 output tokens · <strong>$0.0026 per ticket</strong> ·
-            about 1,900 tickets per $5 of credit.
+          to refresh those with the bank and retry. We're treating this as blocking and
+          will prioritize the log review now.</p>
+          <p class="src">
+            1,254 input and 263 output tokens, $0.0026 at Haiku 4.5 list pricing,
+            about 1,900 tickets per $5 of credit. Figures from
+            <code>fixtures/example.json</code>.
           </p>
         </div>
       </div>
@@ -418,59 +442,65 @@
   <section id="measured">
     <h2>How it was measured</h2>
     <p>
-      Ten held-out tickets the system has never seen, written so they share no
-      phrasing with the corpus they are scored against. Every number on this page
-      comes out of one command, and the same command runs in CI on every pull
-      request — including pull requests from forks, because nothing in the
-      evaluation path needs a secret or a network.
+      Ten held-out tickets written so they share no phrasing with the corpus they
+      are scored against. One command produces the table below, and that same
+      command runs on every pull request. It needs no key and no network, so a
+      pull request from a stranger's fork gets scored exactly like one of mine.
     </p>
 
-    <div class="wrap">
-      <table>
-        <caption>Held-out evaluation · 10 cases · 25-document corpus</caption>
-        <thead>
-          <tr><th scope="col">Metric</th><th scope="col">Score</th><th scope="col">Baseline</th><th scope="col">Baseline is</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Retrieval recall @1</td><td class="n">60%</td><td>8%</td><td>drawing 1 document at random</td></tr>
-          <tr><td>Retrieval recall @3</td><td class="n">90%</td><td>23%</td><td>drawing 3 documents at random</td></tr>
-          <tr><td>Category accuracy</td><td class="n">60%</td><td>20%</td><td>always guessing the most common category</td></tr>
-        </tbody>
-      </table>
+    <div class="tally" role="img" aria-label="Retrieval recall at 3: 9 of 10 cases, against a random baseline of 23 percent">
+      <div class="cap"><strong>Retrieval recall @3</strong> <span class="of">9 of 10 cases</span> <span class="vs">random baseline: 23%</span></div>
+      <div class="boxes"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+    </div>
+    <div class="tally" role="img" aria-label="Retrieval recall at 1: 6 of 10 cases, against a random baseline of 8 percent">
+      <div class="cap"><strong>Retrieval recall @1</strong> <span class="of">6 of 10 cases</span> <span class="vs">random baseline: 8%</span></div>
+      <div class="boxes"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="tally" role="img" aria-label="Category accuracy: 6 of 10 cases, against a majority-class baseline of 20 percent">
+      <div class="cap"><strong>Category accuracy</strong> <span class="of">6 of 10 cases</span> <span class="vs">majority-class baseline: 20%</span></div>
+      <div class="boxes"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
     </div>
 
-    <p class="note" style="margin-top:1.2rem">
+    <p class="note" style="margin-top:1.6rem">
+      Every number in this section comes out of <code>python -m evals.run</code>.
       Regression floors sit about ten points below measured performance, so
-      ordinary variation does not break the build but a real drop does. An earlier
-      floor was set at 70% before anything had been measured, above what the
+      ordinary variation will not break the build but a real drop will. An earlier
+      floor was set at 70% before anything had been measured, above anything the
       system had ever achieved, which would have left the build permanently red.
-      A floor above demonstrated performance is an aspiration, and aspirations
-      belong in a decision record, not in an assertion.
     </p>
   </section>
 
   <section id="miss">
     <h2>The case it gets wrong</h2>
     <p>
-      Recall@3 of 90% flatters the retriever. The honest reading is in the failure,
-      so here it is.
+      Recall@3 of 90% flatters the retriever. The honest reading is in the tenth
+      case, so here it is.
     </p>
 
     <div class="miss">
+      <span class="overprint">Retrieval failed</span>
+
       <div class="tag-head" style="border-color:var(--immediate)">
         <span class="no">CASE EVAL&#8209;02</span>
-        <span class="stamp warn">Retrieval failed · correction filed</span>
       </div>
 
       <h3>A contractor cannot open the finance application</h3>
+
+      <div class="strip" style="max-width:34rem">
+        <div class="torn"><b>P1</b> 4h</div>
+        <div class="kept p2"><b>P2</b> 8h · urgent</div>
+        <div class="torn"><b>P3</b> 24h</div>
+        <div class="torn"><b>P4</b> 72h</div>
+      </div>
+
       <p>
         The audit starts at 9am tomorrow and he has three days on site. The right
         documents are about <strong>security group membership</strong>. The retriever
-        returned branch-office network slowness, an unrelated login loop, and the
-        change freeze calendar.
+        returned branch-office network slowness, then an unrelated login loop, then
+        the change freeze calendar.
       </p>
 
-      <div class="vs">
+      <div class="vs2">
         <div>
           <span class="label">What the reporter wrote</span>
           <code>“cannot open the finance application”</code>
@@ -485,50 +515,52 @@
         Same problem, two vocabularies, almost no shared words. A lexical matcher
         cannot cross that gap by construction; no amount of tuning fixes it. This
         single case is the clearest argument for adding embeddings, and it is why
-        the next phase measures them rather than assuming them.
+        the next phase measures them before adopting them.
       </p>
       <p class="note">
-        Worth noting what happened anyway: handed three irrelevant documents, the
-        model still returned the correct category and priority, and pointed at group
-        membership, the content of the article it was never shown. The system
-        degraded gracefully. It also means recall@3 overstates how much retrieval is
-        currently contributing.
+        Handed three irrelevant documents, the model still returned the correct
+        category and priority and pointed at group membership, which is the content
+        of the article it was never shown. The system degrades gracefully. It also
+        means recall@3 overstates how much retrieval currently contributes.
       </p>
     </div>
   </section>
 
   <section id="decision">
     <h2>Why there is no vector database</h2>
-    <p>
-      Twenty-five documents. BM25 in about 150 lines of standard-library Python
-      beats random retrieval four-fold, needs no second vendor, no second API key,
-      no index to keep warm, and no monthly bill. The retrieval path is readable in
-      one sitting and testable with no network at all.
-    </p>
-    <p>
-      That is a decision with a stated expiry: it reverses if the corpus passes
-      roughly 5,000 documents, if recall@1 starts mattering more than recall@3, or
-      if an embedding adapter beats these numbers by enough to justify the cost.
-      All of it is written down: the evidence, the case against, and the
-      conditions that would change it.
-    </p>
-    <p>
-      <a href="https://github.com/dzuritaa/triage-lab-showcase/blob/main/docs/adr/001-bm25-over-embeddings.md">Read the full decision record →</a>
-    </p>
+
+    <div class="filecopy">
+      <span class="overprint">File copy</span>
+      <p style="margin-top:0.5rem">
+        Twenty-five documents. BM25 in about 150 lines of standard-library Python
+        finds the right incident in nine cases out of ten, where drawing three
+        documents at random would find it in two. No second vendor. No key to leak,
+        no index to keep warm, no monthly bill.
+      </p>
+      <p>
+        That decision carries a stated expiry. It reverses if the corpus passes
+        roughly 5,000 documents, if recall@1 starts mattering more than recall@3,
+        or if an embedding adapter beats these numbers by enough to justify the
+        cost. The evidence is written down alongside the case against it.
+      </p>
+      <p style="margin-bottom:0">
+        <a href="https://github.com/dzuritaa/triage-lab-showcase/blob/main/docs/adr/001-bm25-over-embeddings.md">Read the full decision record →</a>
+      </p>
+    </div>
   </section>
 
   <section id="contact">
     <h2>David Zurita</h2>
     <p class="lede">
-      Twelve years of enterprise incident management, ITSM and internal tooling:
-      production support for banking clients, a university service desk running
-      around 200 incidents a month, internal tools in C#, Python and Docker. Nearly
-      all of it behind corporate walls. This is that experience rebuilt where it can
-      be read.
+      Twelve years of enterprise incident management and internal tooling. I ran a
+      university service desk at roughly 200 incidents a month, and I now handle
+      production support for banking clients while building the automation that
+      speeds it up. Nearly all of that work sits behind corporate walls. This is
+      the part I can show you.
     </p>
     <p>
-      Available for US-hours remote work, and for building this kind of measured AI
-      tooling into an existing support or operations function.
+      Available for US-hours remote work, and for building measured AI tooling into
+      a support or operations function that already exists.
     </p>
     <ul class="contact">
       <li><a class="btn primary" href="mailto:dzuritaa@gmail.com">Email me</a></li>
@@ -540,10 +572,9 @@
 
   <footer>
     <p>
-      Every ticket, incident and knowledge base article in this project is
-      synthetic, written for it. No employer, client or university data is used
-      anywhere. The recorded result above came from one real model call; the page
-      makes none.
+      Every ticket, incident and knowledge base article here is synthetic, written
+      for this project. No employer, client or university data appears anywhere.
+      The result above came from one real model call; this page makes none.
     </p>
   </footer>
 

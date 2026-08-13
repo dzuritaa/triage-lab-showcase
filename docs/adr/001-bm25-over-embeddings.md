@@ -52,10 +52,10 @@ document" is not earning its cost or its latency.
 
 ### Cost
 
-One recorded live call on Claude Haiku 4.5 (`fixtures/example.json`): 1,126
-input and 243 output tokens, **$0.0023 per ticket**, or roughly 2,135 tickets
-per $5 of credit. Retrieval itself costs nothing and adds no network latency,
-because it runs locally.
+One recorded live call on Claude Haiku 4.5 (`fixtures/example.json`): 1,254
+input and 263 output tokens, **$0.0026 per ticket** at list pricing, or roughly
+1,900 tickets per $5 of credit. Retrieval itself costs nothing and adds no
+network latency, because it runs locally.
 
 ## The case against this decision
 

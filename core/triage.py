@@ -153,6 +153,19 @@ def triage(ticket: str, index: Bm25 | None = None) -> dict:
 
     import anthropic  # imported here so stdlib-only callers never need it
 
+    # The SDK's own failure for a missing key is a TypeError raised deep in its
+    # header builder, which reads like a bug in this code. Fail earlier, with
+    # the actual fix. Never echo the value.
+    key = os.environ.get("ANTHROPIC_API_KEY", "")
+    if not key or key.startswith("<"):
+        raise SystemExit(
+            "ANTHROPIC_API_KEY is not set.\n\n"
+            "  1. Copy-Item .env.example .env     (bash: cp .env.example .env)\n"
+            "  2. Edit .env and replace <your-key-here> with your real key,\n"
+            "     angle brackets included.\n\n"
+            ".env is gitignored and the pre-commit hook blocks it if staged."
+        )
+
     index = index or Bm25(load_corpus())
     hits = index.search(ticket, k=3)
 

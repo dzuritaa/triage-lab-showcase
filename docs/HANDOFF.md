@@ -28,7 +28,7 @@ corporate walls where no employer can read a line of it.
 |---|---|
 | 0 — Skeleton and guardrails | ✅ closed |
 | 1 — Public vertical slice | ✅ closed (7/7 steps) |
-| 2 — Dataset, core and eval expansion | started: priority scored, abstention built and baselined, page guarded |
+| 2 — Dataset, core and eval expansion | in progress — see below |
 | 3 — Worker API | not started |
 | 4 — Web (Astro) | not started |
 | 5 — Docs (remaining ADRs, C4) | 1 of ~6 ADRs written |
@@ -37,6 +37,20 @@ corporate walls where no employer can read a line of it.
 Phase 1's bar was: *a cold visitor can see one complete result, inspect the code
 and evaluation, understand one design decision and contact David, with zero API
 calls.* All four are met.
+
+**Phase 2, as of 2026-08-13.** Done: priority scored against a baseline;
+abstention built, baselined and published; a live eval that scores the model
+rather than the retriever; a development set separate from the held-out one; and
+`scripts/check_page.py`, which has caught page drift on every occasion it could
+have happened. Not done: the dataset expansion the phase is nominally about, the
+trusted workflow that would let live evals run in CI, and the two open defects
+below. The dataset is still 10 incidents and 15 KB articles, and expanding it is
+now the *least* interesting thing left in the phase — the small corpus has
+produced more findings than a large one would have.
+
+Two defects are open and both are worth reading before touching anything:
+**abstention refuses ordinary tickets when retrieval finds nothing related**
+(§5), and **priority over-escalates**, confirmed across two independent sets.
 
 ### Measured, as of this handoff
 
@@ -104,7 +118,14 @@ triage-lab/
   data/            synthetic corpus + data dictionary (README.md is worth reading)
   core/retrieve.py BM25, standard library only, self-checking
   core/triage.py   the one module that calls the model (needs `anthropic`)
-  evals/           golden.json (10 answerable + 5 ambiguous) + run.py (scorecard, CI gate)
+  evals/
+    golden.json         10 answerable + 5 ambiguous. HELD OUT — never tune against it
+    run.py              offline scorecard, stdlib only, the CI gate
+    live.py             the only thing that scores the MODEL. Needs a key, costs money
+    dev-priority.json   10 development cases. Tune against these instead
+    live-results.json   the measurement the landing page cites
+    *-baseline.json,    recorded evidence for published claims; see docs/MAINTENANCE.md
+      *-failed-*.json
   fixtures/        one recorded real result; the page renders this
   web/index.html   the landing page, single file, no build step
   docs/            PLAN.md (plan + threat model + audit log), adr/, MAINTENANCE.md
@@ -184,7 +205,7 @@ more than the choice.
 | **Model is Haiku 4.5, `TRIAGE_MODEL` overrides** | The operator's explicit call, not a cost downgrade chosen for them. $1/$5 per MTok vs Opus 5's $5/$25. | Evals show the cheap tier failing on cases that matter. |
 | **Official `anthropic` SDK, not hand-rolled HTTP** | Anthropic's guidance is the SDK where one exists. Only `core/triage.py` takes the dependency. | Never — but keep `retrieve.py` and `evals/` standard-library so CI installs nothing and fork PRs need no secret. |
 | **`thinking` deliberately unset** | Newer models think adaptively by default, older ones do not think unless asked. Both correct here. Explicitly disabling it on newer models can leak internal tags into visible output. | — |
-| **The tool may decline to classify** | A ticket that names no system and no symptom has no category, and guessing one is worse than asking. `insufficient-information` is a triage outcome, which is how ServiceNow and Jira SM already model it, so it extends the category enum rather than adding a parallel flag. Extending an enum also cannot break structured output, and this repository cannot test a request shape without spending a key on it. | Evals show it abstaining on tickets the desk could have acted on. That is the costlier error and it is scored separately. |
+| **The tool may decline to classify** | A ticket that names no system and no symptom has no category, and guessing one is worse than asking. `insufficient-information` is a triage outcome, which is how ServiceNow and Jira SM already model it, so it extends the category enum rather than adding a parallel flag. Extending an enum also cannot break structured output, and this repository cannot test a request shape without spending a key on it. | ⚠️ **This condition has already triggered.** The reversal test was "evals show it abstaining on tickets the desk could have acted on", and they do: 3 of 9 on the development set, down from 5 of 9 but not fixed. The decision stands because abstention on genuinely ambiguous tickets works (5 of 5) and the failure is in the bar, not the concept — but it is on notice, and if the bar cannot be fixed the honest move is to drop the feature rather than publish it. |
 | **Fixtures by default, live mode opt-in** | A recruiter opening the page must cost nothing and never see a broken demo. | — |
 | **Synthetic data only, labelled where shown** | No employer, client or university data, ever. Stated publicly as judgement, not limitation. | Never. |
 | **Auto-reload OFF on the API account** | The load-bearing cost control. A $5 balance is a hard stop that cannot bill the card without a human action; no application-level limiter can promise that. | Never turn it on. |
@@ -609,7 +630,27 @@ closed; the rest map to later phases:
 
 ## 8. If you change one thing, know this
 
-Every number on the landing page is reproducible from the repository with one
-command, and that property is the whole argument. Adding a claim the code cannot
-produce does more damage than shipping nothing, because the repository is public
-and a reader can check.
+**Every number on the landing page has a named source, and something checks it.**
+That property is the whole argument, and it is worth stating precisely because
+the loose version — "every number comes out of one command" — stopped being true
+and had to be corrected on the page once already.
+
+| Numbers | Source | Reproduced by |
+|---|---|---|
+| Retrieval, category and priority baselines | the corpus and the golden set | `python -m evals.run` — no key, no network, runs in CI |
+| Abstention baseline and its oracle ceiling | same | same |
+| Everything the model scored | `evals/live-results.json` | `python -m evals.live` — needs a key and about $0.05 |
+| The recorded result and its token counts | `fixtures/example.json` | `python -m core.triage --record EVAL-03` |
+| Any figure in dollars | the two above **plus published list pricing**, which is not in this repository | see `docs/MAINTENANCE.md` |
+
+`python -m scripts.check_page` ties the page to the first four and fails if any
+of them drifts. It cannot check the fifth, which is why the page names the
+outside dependency in the sentence next to the figure rather than implying the
+repository proves it.
+
+Adding a claim nothing can produce does more damage than shipping nothing,
+because the repository is public and a reader can check. The corollary earned
+the hard way today: **when a measurement turns out to have been made on
+favourable ground, correcting the claim is not optional.** "Held firm 10 of 10"
+was true and misleading at the same time, and it was only caught because a
+second set of cases happened to break the assumption underneath it.

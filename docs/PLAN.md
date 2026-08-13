@@ -243,16 +243,22 @@ that have none — so `core/triage.py` takes the dependency. `core/retrieve.py`
 and `evals/run.py` remain standard-library only, which is where it actually
 mattered: **CI installs nothing, and fork pull requests need no secret.**
 
-**The default model is `claude-opus-5`, overridable by `TRIAGE_MODEL`.** The
-earlier draft said "cheapest model that passes evals" and would have defaulted
-to Haiku. Choosing a cheaper tier is a decision to make with eval numbers in
-hand, not a default buried in code; the environment variable exists so the eval
-can sweep tiers and the trade-off is recorded rather than assumed.
+**The model is `claude-haiku-4-5`, by explicit decision, overridable by
+`TRIAGE_MODEL`.** An earlier draft said "cheapest model that passes evals",
+which would have had the assistant quietly pick the cheap tier; that call
+belongs to whoever pays the bill and was made deliberately. Haiku 4.5 is
+$1/$5 per MTok against Opus 5's $5/$25. The environment variable exists so the
+eval can sweep tiers and the trade-off is measured rather than assumed.
 
-**Thinking stays on, at `low` effort.** Disabling thinking on this model can
-leak internal tags into the visible response; lower effort is the cheaper lever
-for a task this small. Sampling parameters are rejected on the model, so there
-are none to tune.
+⚠️ **`effort` is rejected by Haiku 4.5 and Sonnet 4.5** — the request returns
+400 rather than ignoring the field, so the parameter is set only on tiers that
+accept it. This was caught before the first live call, not after. Structured
+outputs work on both tiers, so nothing else in the request varies by model.
+
+**`thinking` is deliberately not set.** Newer models think adaptively by
+default and older ones do not think unless asked; both are correct for a task
+this size. Explicitly disabling it on newer models can leak internal tags into
+the visible response, so the default is left alone.
 
 **One hand-written `web/index.html`, not Astro.** Astro arrives in phase 4 with
 Starlight and the docs build. A toolchain for a single page would be three phases
@@ -359,8 +365,12 @@ fixture instead of erroring.
 - [ ] Recreate the GitHub repository and push the clean history
 - [ ] Confirm the name `triage-lab`
 - [ ] Domain, or start on the Cloudflare Pages subdomain
-- [ ] Anthropic API key with its **own spend cap** set in the console — a
-      belt-and-braces limit independent of the Durable Object budget counter
+- [x] Anthropic API key with its **own spend cap** set in the console — a
+      belt-and-braces limit independent of the Durable Object budget counter.
+      Done 2026-08-12: **auto-reload off** with a $5 credit balance, plus a $10
+      monthly spend limit. Auto-reload off is the load-bearing setting — the
+      balance is a hard stop that cannot bill the card without a human action,
+      which no amount of application-level limiting can guarantee.
 
 ## 8. Audit findings and fixes — 2026-08-12
 

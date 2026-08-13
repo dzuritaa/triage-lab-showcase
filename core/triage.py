@@ -45,11 +45,16 @@ def _load_env() -> None:
 
 _load_env()
 
-# Defaults to the current flagship. Never silently downgraded to a cheaper tier
-# to save money — that is the operator's call, made with eval numbers in hand,
-# not a default buried in code. Override to sweep tiers:
-#   TRIAGE_MODEL=claude-haiku-4-5 python -m evals.run
-MODEL = os.environ.get("TRIAGE_MODEL", "claude-opus-5")
+# Haiku 4.5 by the operator's explicit decision ($1/$5 per MTok). The default is
+# never quietly downgraded to save money — that call belongs to whoever pays the
+# bill, and it was made deliberately here. Override to sweep tiers:
+#   TRIAGE_MODEL=claude-opus-5 python -m core.triage "..."
+MODEL = os.environ.get("TRIAGE_MODEL", "claude-haiku-4-5")
+
+# `effort` is rejected outright by Haiku 4.5 and Sonnet 4.5 — the request 400s
+# rather than ignoring the field. Structured outputs work on both tiers, so the
+# effort knob is the only part of the request that varies by model.
+NO_EFFORT_MODELS = ("claude-haiku-4-5", "claude-sonnet-4-5", "claude-haiku-3")
 
 # Per the threat model: the input cap is enforced here, server-side of the
 # eventual Worker, not only in a form field.
@@ -151,15 +156,22 @@ def triage(ticket: str, index: Bm25 | None = None) -> dict:
     index = index or Bm25(load_corpus())
     hits = index.search(ticket, k=3)
 
+    output_config: dict = {"format": {"type": "json_schema", "schema": SCHEMA}}
+    if not MODEL.startswith(NO_EFFORT_MODELS):
+        # Where effort exists, low is the right setting for a task this small.
+        output_config["effort"] = "low"
+
     client = anthropic.Anthropic()
     response = client.messages.create(
         model=MODEL,
-        max_tokens=4000,  # caps thinking + response together
+        # Caps thinking plus response together where thinking runs at all.
+        # `thinking` is deliberately not set: newer models think adaptively by
+        # default, older ones do not think unless asked, and both are fine here.
+        # Explicitly disabling it on newer models can leak internal tags into
+        # the visible response, so the default is left alone.
+        max_tokens=4000,
         system=SYSTEM,
-        # Thinking stays on. Disabling it can leak <thinking> tags into the
-        # visible response; low effort is the cheaper lever for a task this
-        # small. Sampling parameters are rejected on this model — there are none.
-        output_config={"effort": "low", "format": {"type": "json_schema", "schema": SCHEMA}},
+        output_config=output_config,
         messages=[{"role": "user", "content": build_prompt(ticket, hits)}],
     )
 

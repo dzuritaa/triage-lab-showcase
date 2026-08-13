@@ -82,6 +82,13 @@ chain, in the order it must be repaired:
    old prompt. Re-run `python -m evals.live` (~$0.05) and reconcile the page,
    `docs/adr/001`, `PRODUCT.md` and `docs/HANDOFF.md` to it.
 
+   This step is now enforced rather than remembered. Every run records the
+   prompt and schema it ran against, and `check_page` fails if either has moved
+   since — naming which one and what to re-run. It was added after the page
+   spent three commits citing numbers from a prompt that had been replaced,
+   which nothing detected because recording provenance and checking it are two
+   different jobs and only the first had been done.
+
 A prompt change is therefore about $0.05 and four files, not one line. That cost
 is the reason for the discipline in the next section rather than an argument
 against changing the prompt.

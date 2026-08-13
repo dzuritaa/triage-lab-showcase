@@ -28,6 +28,7 @@ category of the closest document" is not earning its cost or its latency.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 from collections import Counter
@@ -70,6 +71,21 @@ THRESHOLDS = {
     # threshold set above anything the system has ever achieved.
     "no_abstention_on_answerable": 0.90,
 }
+
+
+def text_hash(value: str) -> str:
+    """Hash a prompt or a serialized schema.
+
+    Lives in this module because both the recorder and the page checker need it
+    and must agree byte for byte, while only the recorder may import
+    `anthropic`. This file is standard library only, which is what lets CI
+    verify provenance with nothing installed.
+
+    Note for whoever merges the structured-triage branch: that branch puts the
+    same function in `evals/validate_data.py`, which does not exist here. Keep
+    one of them, not both.
+    """
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
 def expected_random_recall(n_docs: int, n_relevant: int, k: int) -> float:

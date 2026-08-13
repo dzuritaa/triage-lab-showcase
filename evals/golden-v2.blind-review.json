@@ -1,0 +1,212 @@
+[
+  {
+    "id": "G2-001",
+    "raw": "Every member of the claims department is locked out of the claims workspace after this morning's identity-policy update. No claims can be opened or processed and the whole department has stopped.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-002",
+    "raw": "The finance controller cannot open the statutory filing drive from her new laptop. Other applications work, but she is the sole approver and the filing must be submitted by 11:00 tomorrow.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-003",
+    "raw": "My account asks me to unlock it again every few hours. I can unlock it myself and continue working; this is only happening to me and no deadline is affected.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-004",
+    "raw": "Please grant me read-only access to the historical contracts area for a role I take over next month. I do not need it for current work and nothing is failing.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-005",
+    "raw": "No customer can complete checkout because the connection to the payment provider fails at authorisation. The failure affects every store and there is no manual payment route.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-006",
+    "raw": "Today's dispatch file is sitting in the outbound folder and has not reached the courier. Orders can be entered manually, but the courier cutoff is 17:00 today and hundreds are waiting.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-007",
+    "raw": "A few survey submissions create two activities in CRM. Five records are affected, the duplicate can be deleted, and there is no time-sensitive work attached.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-008",
+    "raw": "Could you add a callback address for the training environment before next month's integration workshop? Production callbacks are working and no current process depends on this.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-009",
+    "raw": "All terminals used by the reservations team now freeze for minutes between clicks. The entire team is unable to serve callers, while departments at other sites are unaffected.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-010",
+    "raw": "The full quarterly risk report times out, although individual sections run. The committee needs the consolidated report by 09:00 tomorrow, so analysts are assembling a manual version meanwhile.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-011",
+    "raw": "Opening archived cases takes about forty seconds for one analyst. Pages eventually load, everyone else is working normally, and there is no deadline.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-012",
+    "raw": "The sales dashboard has started taking a minute to refresh instead of a few seconds. Two users are affected, the figures still appear, and no work or deadline is blocked.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-013",
+    "raw": "The vendor master contains duplicate accounts that make today's treasury file fail validation. Finance has a manual cleanup route, but approved payments must be released by 15:30 today.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-014",
+    "raw": "Confirmation PDFs show incorrect VAT totals for many customers. Orders still complete and corrected documents can be issued manually, but the customer-service queue is significantly impaired.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-015",
+    "raw": "One spreadsheet export lists the same contact twice. The application record is correct and I can remove the extra row before using it; nothing is due against it.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-016",
+    "raw": "Please make supplier suffixes display consistently as Limited rather than a mixture of Ltd and LTD. Matching and payment processing already work, so this is presentation only.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-017",
+    "raw": "The nightly warehouse chain stopped before producing picking lists for any distribution centre. No site can begin dispatch and all morning warehouse work is halted.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-018",
+    "raw": "The regulatory reconciliation did not run overnight. Staff can inspect transactions manually, but the signed output must reach compliance before 13:00 today.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-019",
+    "raw": "I alone have stopped receiving the scheduled Tuesday stock digest. Colleagues still receive it and I can view the same numbers in the portal.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-020",
+    "raw": "Please change my working monthly summary from Friday afternoon to Monday morning starting next quarter. The current delivery succeeds and this is a scheduling preference.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-021",
+    "raw": "The blue application is broken again. Please repair it before the directors notice.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-022",
+    "raw": "Can you repeat whatever fixed my issue in March? It looks exactly the same from here.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-023",
+    "raw": "Hello, apologies for the long message. We have been discussing this for days and everyone has an opinion. The usual thing is still not right, so could your team take a look when possible?",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-024",
+    "raw": "New joiner needs permissions urgently.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-025",
+    "raw": "The totals are wrong and the submission closes tonight. Please escalate immediately.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-026",
+    "raw": "Everything is unavailable for the whole company. This is a critical outage.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-027",
+    "raw": "I attached the error details to the other ticket. This one is just to make sure somebody sees it.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-028",
+    "raw": "The overnight problem is back, same partner and same symptoms as before.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-029",
+    "raw": "The site will not let me in and I have visitors arriving soon.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  },
+  {
+    "id": "G2-030",
+    "raw": "There are duplicate entries everywhere after yesterday's work. We need them removed before close of business.",
+    "review_category": "",
+    "review_priority": "",
+    "review_relevant_docs": []
+  }
+]

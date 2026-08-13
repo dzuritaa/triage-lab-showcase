@@ -34,8 +34,8 @@ from datetime import date
 from pathlib import Path
 
 from core.retrieve import Bm25, load_corpus
-from core.triage import ABSTAIN, MODEL, triage
-from evals.run import GOLDEN, evaluate
+from core.triage import ABSTAIN, MODEL, SCHEMA, SYSTEM, triage
+from evals.run import GOLDEN, evaluate, text_hash
 
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "evals" / "live-results.json"
@@ -188,6 +188,15 @@ def main(argv: list[str]) -> int:
             {
                 "model": MODEL,
                 "source": source.name,
+                # Provenance. A model score is only reproducible if the thing
+                # that produced it still exists, so the run records what it ran
+                # against and scripts/check_page.py refuses to publish numbers
+                # whose prompt or schema has since moved. Recording without
+                # checking is a receipt nobody reads; both halves are needed.
+                "prompt_sha256": text_hash(SYSTEM),
+                "schema_sha256": text_hash(
+                    json.dumps(SCHEMA, sort_keys=True, ensure_ascii=False)
+                ),
                 "date": date.today().isoformat(),
                 "n_cases": len(scored),
                 "input_tokens": tok_in,

@@ -76,9 +76,11 @@ service desk at ~200 incidents a month, not a generic chatbot demo.
   does not cover the figure is 4 of 9 — the tool refuses ordinary work when
   retrieval finds nothing related. Any claim about abstention must carry that
   condition until it is fixed.
-- **Priority is the weak spot and must be stated as one.** The model scores 6 of
-  10 against a 7 of 10 keyword baseline, and every miss is an escalation by one
-  level. Do not quote the category and abstention wins without it.
+- **Priority is the weak spot and must be stated as one.** The model scores 7 of
+  10 against a 7 of 10 keyword baseline — level, so the model call buys nothing
+  here — and every miss is an escalation by one level. Do not quote the category
+  and abstention wins without it, and do not describe a one-case movement
+  between single runs as an improvement.
 - Abstention is all or nothing wherever it is shown. A category of
   `insufficient-information` carries no priority and no SLA, because a clock
   cannot start on a ticket nobody can act on yet.

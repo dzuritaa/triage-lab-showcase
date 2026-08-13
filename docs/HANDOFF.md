@@ -65,12 +65,16 @@ Priority is the newest and the least impressive of these despite scoring
 highest: eight of the ten held-out cases are P2 or P3, so the four-way label
 behaves like a two-way one. It is a bar for the model, not an achievement.
 
-### The model, measured 2026-08-13 (`python -m evals.live`, $0.0424)
+### The model, re-measured 2026-08-13 (`python -m evals.live`, $0.0448)
+
+Recorded against prompt `2ce9fb6fc36c`, which is the current one on `main`.
+`scripts/check_page.py` refuses to let the page publish these numbers if that
+stops being true.
 
 | Metric | Model | Baseline |
 |---|---|---|
 | Category accuracy | **10 of 10** | 6 of 10 (nearest neighbour) |
-| Priority accuracy | **6 of 10** | 7 of 10 (nearest neighbour) |
+| Priority accuracy | **7 of 10** | 7 of 10 (nearest neighbour) — level |
 | Abstained when it should | **5 of 5** | 0 of 5 measured, 3 of 5 best possible |
 | Held firm when it should | **10 of 10**, but see below | 10 of 10 |
 
@@ -79,17 +83,26 @@ alone.** On the development set, whose tickets are about systems the corpus does
 not cover, it is 4 of 9. See "Abstention is coupled to knowledge-base coverage"
 in §5 — that is the single most important open defect in the project.
 
-**Priority is the one metric where the model loses to a keyword search, and the
-shape of the loss matters more than the number.** All four misses are
-escalations, each by exactly one level; nothing was ever rated too low. The
-likely cause is the system prompt's deadline rule, which only pushes upward: it
-says deadline pressure raises priority and never says when a deadline is slack,
-so EVAL-07's "mailing list is going out next month so we have time" was read as
-pressure. EVAL-06 states no deadline at all and was raised on user count — the
-exact thing the same sentence forbids.
+**Priority is the one metric the model cannot beat a keyword search at, and the
+shape of the misses matters more than the number.** All three are escalations,
+each by exactly one level; nothing was ever rated too low, and the same three
+tickets have escalated under every prompt tried. The likely cause is the system
+prompt's deadline rule, which only pushes upward: it says deadline pressure
+raises priority and never says when a deadline is slack, so EVAL-07's "mailing
+list is going out next month so we have time" was read as pressure. EVAL-06
+states no deadline at all and was raised on user count — the exact thing the
+same sentence forbids.
 
-The fix is a prompt change and is deliberately **not applied**: editing the
-prompt invalidates the numbers above, so the order is publish, then change one
+⚠️ **Do not read the 6→7 move as progress.** An earlier prompt scored 6 of 10
+here; this one scores 7, and the change in between was to the abstention bar,
+not to priority. One case moved, these are single runs of a system that need
+not answer identically twice, and one ticket in ten is inside the range where
+nothing needs to have caused it. The three persistent escalations are the
+signal. The structured-triage branch introduces a three-pass gate precisely
+because a single run cannot settle a one-case difference.
+
+An earlier note here said the fix was "deliberately not applied". It was later
+applied, measured, and reverted — see §5. The order remains: publish, change one
 thing, then pay for another run. See the open items.
 
 Abstention is scored on a separate set of **5 ambiguous cases** whose correct

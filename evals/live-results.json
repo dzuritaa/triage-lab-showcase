@@ -1,10 +1,13 @@
 {
   "model": "claude-haiku-4-5",
+  "source": "golden.json",
+  "prompt_sha256": "2ce9fb6fc36c0f33ec3082cc9f0881a3b7035dffcfbe7beee03cc42620b7176f",
+  "schema_sha256": "b4cce95c729ca68c47e78e33c8539013150ff5e0612794eb22574aa46bcc1550",
   "date": "2026-08-13",
   "n_cases": 15,
-  "input_tokens": 25211,
-  "output_tokens": 3442,
-  "cost_usd": 0.042421,
+  "input_tokens": 26741,
+  "output_tokens": 3602,
+  "cost_usd": 0.044751,
   "cases": [
     {
       "id": "EVAL-01",
@@ -17,8 +20,8 @@
       "questions": [],
       "tokens": {
         "model": "claude-haiku-4-5-20251001",
-        "input_tokens": 1636,
-        "output_tokens": 199
+        "input_tokens": 1738,
+        "output_tokens": 216
       }
     },
     {
@@ -32,8 +35,8 @@
       "questions": [],
       "tokens": {
         "model": "claude-haiku-4-5-20251001",
-        "input_tokens": 1600,
-        "output_tokens": 235
+        "input_tokens": 1702,
+        "output_tokens": 233
       }
     },
     {
@@ -47,8 +50,8 @@
       "questions": [],
       "tokens": {
         "model": "claude-haiku-4-5-20251001",
-        "input_tokens": 1728,
-        "output_tokens": 251
+        "input_tokens": 1830,
+        "output_tokens": 292
       }
     },
     {
@@ -56,14 +59,14 @@
       "expected_category": "integration",
       "got_category": "integration",
       "expected_priority": "P2",
-      "got_priority": "P1",
+      "got_priority": "P2",
       "abstained": false,
       "should_abstain": false,
       "questions": [],
       "tokens": {
         "model": "claude-haiku-4-5-20251001",
-        "input_tokens": 1680,
-        "output_tokens": 239
+        "input_tokens": 1782,
+        "output_tokens": 280
       }
     },
     {
@@ -77,8 +80,8 @@
       "questions": [],
       "tokens": {
         "model": "claude-haiku-4-5-20251001",
-        "input_tokens": 1647,
-        "output_tokens": 240
+        "input_tokens": 1749,
+        "output_tokens": 272
       }
     },
     {
@@ -92,8 +95,8 @@
       "questions": [],
       "tokens": {
         "model": "claude-haiku-4-5-20251001",
-        "input_tokens": 1731,
-        "output_tokens": 264
+        "input_tokens": 1833,
+        "output_tokens": 333
       }
     },
     {
@@ -107,8 +110,8 @@
       "questions": [],
       "tokens": {
         "model": "claude-haiku-4-5-20251001",
-        "input_tokens": 1735,
-        "output_tokens": 231
+        "input_tokens": 1837,
+        "output_tokens": 246
       }
     },
     {
@@ -122,8 +125,8 @@
       "questions": [],
       "tokens": {
         "model": "claude-haiku-4-5-20251001",
-        "input_tokens": 1698,
-        "output_tokens": 279
+        "input_tokens": 1800,
+        "output_tokens": 236
       }
     },
     {
@@ -137,8 +140,8 @@
       "questions": [],
       "tokens": {
         "model": "claude-haiku-4-5-20251001",
-        "input_tokens": 1647,
-        "output_tokens": 272
+        "input_tokens": 1749,
+        "output_tokens": 207
       }
     },
     {
@@ -152,8 +155,8 @@
       "questions": [],
       "tokens": {
         "model": "claude-haiku-4-5-20251001",
-        "input_tokens": 1720,
-        "output_tokens": 275
+        "input_tokens": 1822,
+        "output_tokens": 242
       }
     },
     {
@@ -165,14 +168,15 @@
       "abstained": true,
       "should_abstain": true,
       "questions": [
-        "Which site — building location, website domain, or application name?",
-        "What error or symptom do you see when you try to enter — login failure, page not loading, access denied, or something else?",
-        "Are others at your location affected, or just you?"
+        "Are you unable to physically access a building, or cannot log in to a website or application?",
+        "If it is a website or application, which one?",
+        "If it is a building, which site?",
+        "When did this start?"
       ],
       "tokens": {
         "model": "claude-haiku-4-5-20251001",
-        "input_tokens": 1538,
-        "output_tokens": 266
+        "input_tokens": 1640,
+        "output_tokens": 195
       }
     },
     {
@@ -184,14 +188,14 @@
       "abstained": true,
       "should_abstain": true,
       "questions": [
-        "What system are you unable to access?",
-        "What exactly is happening when you try to use it (error messages, behavior)?",
+        "What system or application are you unable to access?",
+        "What is the symptom you are seeing - for example, an error message, a redirect loop, a timeout, or something else?",
         "When did this start?"
       ],
       "tokens": {
         "model": "claude-haiku-4-5-20251001",
-        "input_tokens": 1663,
-        "output_tokens": 161
+        "input_tokens": 1765,
+        "output_tokens": 205
       }
     },
     {
@@ -204,13 +208,13 @@
       "should_abstain": true,
       "questions": [
         "Which system is down?",
-        "What are users unable to do — what specific application, service, or function is unavailable?",
-        "How many users are affected?"
+        "What exactly is it not doing — is it unreachable, returning errors, locked, slow, or something else?",
+        "How many people are affected and what are they unable to do?"
       ],
       "tokens": {
         "model": "claude-haiku-4-5-20251001",
-        "input_tokens": 1709,
-        "output_tokens": 140
+        "input_tokens": 1811,
+        "output_tokens": 185
       }
     },
     {
@@ -222,15 +226,15 @@
       "abstained": true,
       "should_abstain": true,
       "questions": [
-        "What system or tool is affected?",
-        "What is the symptom — what are users observing or unable to do?",
-        "Which team or department is affected, and how many people?",
-        "Is there a deadline or business event this is blocking?"
+        "What system or application is affected?",
+        "What specifically is the system doing wrong, or what task are you unable to complete?",
+        "Which team are you in, and roughly how many people are affected?",
+        "Is there a deadline or business commitment at risk?"
       ],
       "tokens": {
         "model": "claude-haiku-4-5-20251001",
-        "input_tokens": 1848,
-        "output_tokens": 205
+        "input_tokens": 1950,
+        "output_tokens": 252
       }
     },
     {
@@ -242,14 +246,14 @@
       "abstained": true,
       "should_abstain": true,
       "questions": [
-        "What system or service do you need access to?",
+        "Access to which system or application?",
         "What is the new starter's role or department?",
-        "Do they have a laptop and email working, or is this a complete onboarding?"
+        "Do they have email and laptop access already, or is this a complete onboarding request?"
       ],
       "tokens": {
         "model": "claude-haiku-4-5-20251001",
-        "input_tokens": 1631,
-        "output_tokens": 185
+        "input_tokens": 1733,
+        "output_tokens": 208
       }
     }
   ]

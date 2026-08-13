@@ -27,3 +27,24 @@ jobs:
           docker run --rm -v "$PWD:/repo" \
             zricethezav/gitleaks@sha256:cdbb7c955abce02001a9f6c9f602fb195b7fadc1e812065883f695d1eeaba854 \
             detect --source=/repo --redact --verbose
+
+  evals:
+    name: Offline evals
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout # actions/checkout v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Python # actions/setup-python v7.0.0
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.11'
+
+      # No pip install step: core and evals are standard library only, so there
+      # is nothing to resolve, cache or trust. Runs on fork PRs because it needs
+      # no secret.
+      - name: Retrieval self-check
+        run: python -m core.retrieve
+
+      - name: Offline eval scorecard
+        run: python -m evals.run

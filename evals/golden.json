@@ -1,0 +1,112 @@
+[
+  {
+    "id": "EVAL-01",
+    "raw": "My account has locked itself twice today already. I unlock it, work for a bit, then it goes again. I only changed my password on Friday. Nothing else has changed that I can think of. It is annoying more than anything but I lose about ten minutes each time.",
+    "expected_category": "access-identity",
+    "expected_priority": "P3",
+    "relevant_docs": [
+      "KB-203"
+    ],
+    "tests": "Repeated lockout after password change. A stale credential on a second device; the corpus incident about redirect loops is a different fault with similar vocabulary."
+  },
+  {
+    "id": "EVAL-02",
+    "raw": "We have a contractor starting on the audit tomorrow morning and he cannot open the finance application. He can log into the network and email fine. The audit runs Tuesday to Thursday and he only has those three days on site, so if this is not sorted before 9am tomorrow we lose a day of billable audit time.",
+    "expected_category": "access-identity",
+    "expected_priority": "P2",
+    "relevant_docs": [
+      "KB-202",
+      "INC-1002"
+    ],
+    "tests": "Single user, which reads as P3, but a dated commitment is at risk so the priority rule raises it to P2. This is the judgement call the tool is most likely to get wrong."
+  },
+  {
+    "id": "EVAL-03",
+    "raw": "The supplier payment file has not reached the bank. It should have gone across at 20:00 and the bank confirm nothing has landed. Payment run has to be acknowledged by 07:00 or the whole run slips a day and we breach terms with about 200 suppliers. The file is in the outbound folder, timestamped 20:00, so it generated fine.",
+    "expected_category": "integration",
+    "expected_priority": "P1",
+    "relevant_docs": [
+      "KB-204",
+      "INC-1003"
+    ],
+    "tests": "File generated but not transferred, with a hard cutoff. Same fault class as INC-1003, different business process and wording."
+  },
+  {
+    "id": "EVAL-04",
+    "raw": "Orders coming in from the marketplace channel are appearing twice in the order system. Warehouse have already picked two of them twice and shipped a duplicate to a customer. It is not every order, maybe one in twenty. Started after the weekend I think.",
+    "expected_category": "integration",
+    "expected_priority": "P2",
+    "relevant_docs": [
+      "KB-205",
+      "INC-1004"
+    ],
+    "tests": "Duplicate creation from retried inbound events, framed as orders rather than CRM leads."
+  },
+  {
+    "id": "EVAL-05",
+    "raw": "Trying to run the full year comparison report and it just spins and then gives me an error bar with no detail. Quarterly ones are fine. I need this for the board pack which goes out Thursday.",
+    "expected_category": "performance",
+    "expected_priority": "P2",
+    "relevant_docs": [
+      "KB-207",
+      "KB-208",
+      "INC-1005"
+    ],
+    "tests": "Large query crossing a gateway timeout while narrower ones succeed, with a deadline raising priority."
+  },
+  {
+    "id": "EVAL-06",
+    "raw": "Since we moved to the second floor everything is slower. Opening files, the intranet, all of it. About 20 of us up here. The people still on the first floor say it is normal for them. It was fine in the old area last week.",
+    "expected_category": "performance",
+    "expected_priority": "P3",
+    "relevant_docs": [
+      "KB-209",
+      "INC-1006"
+    ],
+    "tests": "Localised slowness affecting one location while others are unaffected. No stated deadline, so it stays P3 despite the user count."
+  },
+  {
+    "id": "EVAL-07",
+    "raw": "The customer list has gone messy after the marketing upload. I can see the same person in there three or four times with slightly different spellings, some with a middle initial and some without. Mailing list is going out next month so we have time, but it needs cleaning before then.",
+    "expected_category": "data-quality",
+    "expected_priority": "P3",
+    "relevant_docs": [
+      "KB-210",
+      "INC-1007"
+    ],
+    "tests": "Near-duplicate records from an import matching on exact string, framed as customers rather than suppliers."
+  },
+  {
+    "id": "EVAL-08",
+    "raw": "Two customers have now emailed about the tax amount on their order confirmation not adding up. It is only a couple of cents but they have noticed and it looks sloppy. Seems to be orders with a lot of items. The total in the admin screen is right, it is the confirmation document that is wrong.",
+    "expected_category": "data-quality",
+    "expected_priority": "P2",
+    "relevant_docs": [
+      "KB-211",
+      "INC-1008"
+    ],
+    "tests": "Rounding applied per line in a document template rather than at the total. Customer-visible, which lifts it above a cosmetic single-user issue."
+  },
+  {
+    "id": "EVAL-09",
+    "raw": "Nightly data load has not finished. Every dashboard across the business is showing yesterday's numbers and the exec team have a meeting at 10. Monitor shows it stopped part way through with an error, I cannot tell much more than that from the screen.",
+    "expected_category": "batch-reporting",
+    "expected_priority": "P1",
+    "relevant_docs": [
+      "KB-212",
+      "INC-1009"
+    ],
+    "tests": "Batch chain halted mid-run with business-wide impact. Same class as INC-1009, described as a data load rather than a batch chain."
+  },
+  {
+    "id": "EVAL-10",
+    "raw": "I should get an automatic export of the stock figures every morning at 6 and I have not had one since about the middle of last month. Warehouse manager gets his fine and we are on the same distribution. I have looked in spam, nothing there.",
+    "expected_category": "batch-reporting",
+    "expected_priority": "P3",
+    "relevant_docs": [
+      "KB-213",
+      "INC-1010"
+    ],
+    "tests": "Single recipient missing a scheduled delivery that colleagues still receive, which points at mail suppression rather than the schedule."
+  }
+]

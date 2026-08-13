@@ -32,3 +32,4 @@ Thumbs.db
 # measurement and IS committed.
 evals/dev-results.json
 evals/sealed-results.failed.json
+evals/golden-v2.blind-review.json

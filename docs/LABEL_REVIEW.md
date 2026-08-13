@@ -1,7 +1,14 @@
 # Blind label review rubric
 
 The reviewer must be a support-domain practitioner and must not see model output,
-retrieval results, prompt text, or expected labels before reviewing each ticket.
+retrieval results, prompt text, or expected labels. Export the blind form first:
+
+```bash
+python -m evals.review export
+```
+
+Give the reviewer only `evals/golden-v2.blind-review.json`. They complete its
+three `review_*` fields for every ticket.
 
 For every case, record independently:
 
@@ -19,7 +26,12 @@ Priority mapping:
 - P4: a working-behavior change or presentation request; no malfunction.
 - unknown: the ticket cannot be triaged from its own text.
 
-Resolve disagreements with the project author before any model call. Once all
-30 labels are agreed, compute `python -m evals.validate_data`, copy the full
-SHA-256 into `golden-v2.review.json`, set status to `approved`, and record only
-the reviewer role and date—never a name or employer.
+Resolve disagreements with the project author before any model call and update
+the sealed labels or agreed review form to match the resolution. Then run:
+
+```bash
+python -m evals.review approve --reviewer-role "support practitioner"
+```
+
+The command validates every label and writes the matching dataset SHA-256 into
+the approval receipt. Record only a general role—never a name or employer.

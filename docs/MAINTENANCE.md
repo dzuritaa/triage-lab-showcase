@@ -17,8 +17,8 @@ Re-record only after development gates pass. A sealed run may replace
 1. Validate data with `python -m evals.validate_data`.
 2. Iterate only with `python -m evals.live --dev`.
 3. Freeze the prompt and confirm it with `python -m evals.live --dev --runs 3`.
-4. Have a support-domain reviewer approve `golden-v2.json` using
-   `docs/LABEL_REVIEW.md`; record the matching SHA-256 in the review receipt.
+4. Export and approve a blind support-domain review using
+   `docs/LABEL_REVIEW.md`; the utility records the matching SHA-256.
 5. Run `python -m evals.live --sealed`. It always performs three passes and
    refuses unreviewed data. A failure is written to an ignored file and cannot
    overwrite published evidence.

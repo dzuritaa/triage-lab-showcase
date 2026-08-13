@@ -66,6 +66,15 @@ service desk at ~200 incidents a month, not a generic chatbot demo.
 - Priority's baseline is high because eight of the ten cases are P2 or P3. Say
   so wherever the number appears; a four-way label that behaves like a two-way
   one is not a hard target, and 70% is a bar to clear rather than a result.
+- The tool can decline to classify. Five further held-out cases are ambiguous by
+  design and their correct output is `insufficient-information` with questions
+  back to the reporter. **The model's abstention rate is not measured yet** and
+  must not be implied anywhere. What is measured is the baseline: retrieval
+  abstains on 0 of 5, and the best any score threshold could achieve is 3 of 5
+  even when chosen with the answers in hand.
+- Abstention is all or nothing wherever it is shown. A category of
+  `insufficient-information` carries no priority and no SLA, because a clock
+  cannot start on a ticket nobody can act on yet.
 - **All data is synthetic** and must be labelled as such wherever a visitor
   could mistake it for real. No employer, client or university data, ever.
 - Live mode, the Cloudflare Worker, rate limiting and the budget cap are phase 3

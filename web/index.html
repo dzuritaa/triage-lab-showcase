@@ -306,6 +306,7 @@
       <a href="#result">Result</a>
       <a href="#measured">Measurement</a>
       <a href="#miss">The miss</a>
+      <a href="#abstain">Abstention</a>
       <a class="act" href="#contact">Contact</a>
     </nav>
   </header>
@@ -543,6 +544,52 @@
         means recall@3 overstates how much retrieval currently contributes.
       </p>
     </div>
+
+  </section>
+
+  <section id="abstain">
+    <h2>The ticket that says nothing</h2>
+    <p>
+      Every score above is measured on tickets that have a right answer. Real
+      queues are not like that. <q>cannot enter site</q> names no system and no
+      symptom, and <q>site</q> could be a website or a building. The useful
+      answer is a question back, not a category.
+    </p>
+    <p>
+      Until now the tool could not give that answer. The response schema listed
+      five categories and required one of them, so an empty ticket came back
+      confidently classified — the failure was structural, not a matter of
+      prompting. There are now five held-out cases whose correct output is
+      <strong>insufficient-information</strong>, and the schema can say it.
+    </p>
+    <p>
+      The measured part is the baseline, and it is a clean negative result.
+      Retrieval scores rise with the number of words in a ticket, so they cannot
+      express doubt. <strong>AMB-04</strong> is four sentences of pleasantries
+      that never name a system; it scores <strong>28.42</strong>, higher than
+      every answerable case on the page, the best of which reaches
+      <strong>19.44</strong>. The keyword matcher is most confident about the
+      emptiest ticket in the set.
+    </p>
+
+    <div class="tally" role="img" aria-label="Abstention: the retrieval baseline abstained on 0 of 5 ambiguous cases">
+      <div class="cap"><strong>Abstained when it should</strong> <span class="of">0 of 5 cases</span> <span class="vs">best possible threshold: 3 of 5</span></div>
+      <div class="boxes"><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="tally" role="img" aria-label="Held firm when it should: 10 of 10 answerable cases">
+      <div class="cap"><strong>Held firm when it should</strong> <span class="of">10 of 10 cases</span> <span class="vs">refusing a triageable ticket is the costlier error</span></div>
+      <div class="boxes"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+    </div>
+
+    <p class="note" style="margin-top:1.6rem">
+      Three of five is what the <em>best possible</em> cut-off achieves, chosen
+      with the answers in hand — an upper bound the tool does not get, computed
+      to make the cheap approach as strong as it can be before anything claims to
+      beat it. No threshold does better, because the emptiest ticket outscores
+      the clearest one. The model's own abstention score is not on this page
+      because it has not been recorded yet, and an unmeasured number is the one
+      thing this page will not print.
+    </p>
   </section>
 
   <section id="decision">

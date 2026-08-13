@@ -28,7 +28,7 @@ corporate walls where no employer can read a line of it.
 |---|---|
 | 0 — Skeleton and guardrails | ✅ closed |
 | 1 — Public vertical slice | ✅ closed (7/7 steps) |
-| 2 — Dataset, core and eval expansion | started: priority scored, page guarded |
+| 2 — Dataset, core and eval expansion | started: priority scored, abstention built and baselined, page guarded |
 | 3 — Worker API | not started |
 | 4 — Web (Astro) | not started |
 | 5 — Docs (remaining ADRs, C4) | 1 of ~6 ADRs written |
@@ -51,6 +51,20 @@ Priority is the newest and the least impressive of these despite scoring
 highest: eight of the ten held-out cases are P2 or P3, so the four-way label
 behaves like a two-way one. It is a bar for the model, not an achievement.
 
+Abstention is scored on a separate set of **5 ambiguous cases** whose correct
+answer is "ask the reporter". Every metric above is measured on the 10
+answerable cases only; merging the sets would change what recall@3 means, since
+retrieval recall over a case with no right answer is not a number.
+
+| Metric | Baseline | Note |
+|---|---|---|
+| Abstained when it should | 0 of 5 | retrieval, at the pre-existing 3.0 low-score threshold |
+| Best any threshold could do | 3 of 5 | oracle, chosen with sight of the answers |
+| Held firm when it should | 10 of 10 | over-abstention is the costlier error |
+
+**No model score exists for abstention yet.** The capability is built and the
+eval is waiting for it; see the open items.
+
 One recorded live call, Claude Haiku 4.5: 1,254 in / 263 out, **$0.0026**, about
 1,900 tickets per $5. Reproduce the scores with `python -m evals.run`.
 
@@ -63,7 +77,7 @@ triage-lab/
   data/            synthetic corpus + data dictionary (README.md is worth reading)
   core/retrieve.py BM25, standard library only, self-checking
   core/triage.py   the one module that calls the model (needs `anthropic`)
-  evals/           golden.json (10 held-out cases) + run.py (scorecard, CI gate)
+  evals/           golden.json (10 answerable + 5 ambiguous) + run.py (scorecard, CI gate)
   fixtures/        one recorded real result; the page renders this
   web/index.html   the landing page, single file, no build step
   docs/            PLAN.md (plan + threat model + audit log), adr/, MAINTENANCE.md
@@ -77,6 +91,7 @@ triage-lab/
 
 ```bash
 python -m core.retrieve            # retrieval self-check, no dependencies
+python -m core.triage --check      # response validation rules, no key needed
 python -m evals.run                # scorecard, no dependencies, no network
 python -m scripts.check_page       # page matches the fixture and the scorecard
 python -m core.triage --fixture    # replay the recorded result, no API call
@@ -108,6 +123,7 @@ more than the choice.
 | **Model is Haiku 4.5, `TRIAGE_MODEL` overrides** | The operator's explicit call, not a cost downgrade chosen for them. $1/$5 per MTok vs Opus 5's $5/$25. | Evals show the cheap tier failing on cases that matter. |
 | **Official `anthropic` SDK, not hand-rolled HTTP** | Anthropic's guidance is the SDK where one exists. Only `core/triage.py` takes the dependency. | Never — but keep `retrieve.py` and `evals/` standard-library so CI installs nothing and fork PRs need no secret. |
 | **`thinking` deliberately unset** | Newer models think adaptively by default, older ones do not think unless asked. Both correct here. Explicitly disabling it on newer models can leak internal tags into visible output. | — |
+| **The tool may decline to classify** | A ticket that names no system and no symptom has no category, and guessing one is worse than asking. `insufficient-information` is a triage outcome, which is how ServiceNow and Jira SM already model it, so it extends the category enum rather than adding a parallel flag. Extending an enum also cannot break structured output, and this repository cannot test a request shape without spending a key on it. | Evals show it abstaining on tickets the desk could have acted on. That is the costlier error and it is scored separately. |
 | **Fixtures by default, live mode opt-in** | A recruiter opening the page must cost nothing and never see a broken demo. | — |
 | **Synthetic data only, labelled where shown** | No employer, client or university data, ever. Stated publicly as judgement, not limitation. | Never. |
 | **Auto-reload OFF on the API account** | The load-bearing cost control. A $5 balance is a hard stop that cannot bill the card without a human action; no application-level limiter can promise that. | Never turn it on. |
@@ -304,6 +320,20 @@ plus `checkout -- .` discards work in progress.
 
 ## 6. Open items
 
+- [ ] **The recorded fixture predates the abstention schema and no longer
+      validates** — it has no `clarifying_questions`, which is now required.
+      Nothing was done about this on purpose. Adding the field by hand would be
+      editing a recorded artifact under a "Recorded" stamp, which is already a
+      finding in §5, and asserting the fixture against the schema in CI would
+      leave the build red until someone with a key re-records it. Both are worse
+      than an honest note. Fix with `python -m core.triage --record EVAL-03`,
+      which needs David's key.
+- [ ] **Record what the model actually does on the five ambiguous cases.** The
+      capability and the eval exist; the score does not. Until then the landing
+      page publishes the baseline only, and says so.
+- [ ] Abstention has no regression floor, deliberately — the measured baseline
+      is 0% and a floor of zero asserts nothing. Add one once there is a model
+      score to protect.
 - [ ] Confirm the project name. The repository is `triage-lab-showcase`; the
       docs say `triage-lab`. Cosmetic, cheapest to settle before anything links
       to it.

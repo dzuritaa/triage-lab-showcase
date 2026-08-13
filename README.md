@@ -4,9 +4,10 @@ An incident triage assistant for enterprise support teams — with public
 architecture decision records explaining every choice, and a CI eval suite
 proving the prompts don't regress.
 
-**Status:** phase 0 of 6. Skeleton and guardrails. Nothing to run yet.
+**Status:** phase 2 of 6. The vertical slice runs; the dataset and the live API
+are still small and unbuilt respectively.
 
-## What it will do
+## What it does
 
 Paste a raw support ticket, get back:
 
@@ -14,6 +15,20 @@ Paste a raw support ticket, get back:
 2. Similar past incidents, retrieved from a knowledge base
 3. A drafted first response
 4. A suggested root-cause direction
+
+Or, when the ticket does not say enough to act on, the questions that would
+make it triageable — and no category, priority or SLA. A ticket reading
+`cannot enter site` names no system and no symptom, and a tool that answers it
+with a confident category and a 24-hour clock has invented both.
+
+Everything except the model call is deterministic and runs with no API key:
+
+```bash
+python -m core.retrieve            # BM25 retrieval self-check
+python -m core.triage --check      # response validation rules
+python -m evals.run                # the scorecard, with baselines
+python -m core.triage --fixture    # replay one real recorded result
+```
 
 ## Why it exists
 

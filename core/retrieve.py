@@ -29,6 +29,14 @@ DATA = Path(__file__).resolve().parent.parent / "data"
 K1 = 1.5
 B = 0.75
 
+# The score below which a top hit is treated as "nothing here really matches".
+# This value is not new and was not chosen for the abstention eval that now
+# consumes it: it was written for the self-check's off-topic assertion, where a
+# question about annual leave had to not return a confident match. Reusing a
+# threshold that predates the measurement keeps it from being quietly tuned
+# until the numbers look good. See evals/run.py for what it scores.
+LOW_SCORE = 3.0
+
 # Deliberately short. An aggressive stopword list removes words that carry real
 # signal in support text ("cannot", "not", "after", "before").
 STOPWORDS = frozenset("""
@@ -182,7 +190,7 @@ def _self_check() -> None:
     # A query about something the corpus does not cover should not confidently
     # return a top hit with a high score.
     off_topic = bm25.search("how do I book annual leave", k=1)
-    assert not off_topic or off_topic[0]["score"] < 3.0, (
+    assert not off_topic or off_topic[0]["score"] < LOW_SCORE, (
         f"off-topic query scored too high: {off_topic}"
     )
 

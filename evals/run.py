@@ -33,10 +33,17 @@ import math
 from collections import Counter
 from pathlib import Path
 
-from core.retrieve import Bm25, load_corpus
+from core.retrieve import LOW_SCORE, Bm25, load_corpus
 
 ROOT = Path(__file__).resolve().parent.parent
 GOLDEN = ROOT / "evals" / "golden.json"
+
+# Cases whose correct answer is "I cannot tell from this, ask the reporter".
+# They are scored apart from the answerable ten, and every metric here states
+# which of the two sets it ran on. Merging them would have quietly changed the
+# meaning of recall@3 - retrieval recall over a case with no right answer is not
+# a number - and silently moved every figure already published.
+ABSTAIN = "insufficient-information"
 
 # Regression floors: roughly ten points below measured performance, so ordinary
 # variation does not break CI but a real drop does.
@@ -53,6 +60,15 @@ THRESHOLDS = {
     "retrieval_recall_at_1": 0.50,
     "category_accuracy_1nn": 0.50,
     "priority_accuracy_1nn": 0.60,
+    # Refusing a ticket the tool can actually triage is the more expensive
+    # mistake, so the guard is on over-abstention, which measures 100%.
+    #
+    # There is deliberately no floor on abstention itself. It measures 0%, and a
+    # floor of zero asserts nothing. The number is here to be beaten by the
+    # model, and the floor goes in when there is a model score to protect -
+    # writing one now would repeat the mistake this file already records, of a
+    # threshold set above anything the system has ever achieved.
+    "no_abstention_on_answerable": 0.90,
 }
 
 
@@ -77,7 +93,9 @@ def majority_label(values: list[str]) -> str:
 def evaluate() -> dict:
     corpus = load_corpus()
     index = Bm25(corpus)
-    cases = json.loads(GOLDEN.read_text(encoding="utf-8"))
+    all_cases = json.loads(GOLDEN.read_text(encoding="utf-8"))
+    cases = [c for c in all_cases if c["expected_category"] != ABSTAIN]
+    ambiguous = [c for c in all_cases if c["expected_category"] == ABSTAIN]
     by_id = {d["id"]: d for d in corpus}
 
     # Baseline labels come from the corpus, never from the held-out set.
@@ -136,7 +154,50 @@ def evaluate() -> dict:
             )
         prio_major += majority_prio == case["expected_priority"]
 
+    # Abstention. The deterministic system has exactly one signal for "nothing
+    # here really matches": the top retrieval score. Whether that signal is
+    # measuring what it appears to measure is the point of AMB-04.
+    def top_score(raw: str) -> float:
+        hit = index.search(raw, k=1)
+        return hit[0]["score"] if hit else 0.0
+
+    caught = 0
+    for case in ambiguous:
+        score = top_score(case["raw"])
+        if score < LOW_SCORE:
+            caught += 1
+        else:
+            failures.append(
+                f"  {case['id']} abstention: did not abstain, top hit scored "
+                f"{score:.2f} against a {LOW_SCORE:.1f} floor"
+            )
+
+    held = 0
+    answerable_scores = []
+    for case in cases:
+        score = top_score(case["raw"])
+        answerable_scores.append(score)
+        if score >= LOW_SCORE:
+            held += 1
+        else:
+            failures.append(
+                f"  {case['id']} abstention: abstained on an answerable case"
+            )
+
+    # The obvious objection to a 0% result is that 3.0 is simply the wrong
+    # threshold. So: the best score any threshold could possibly achieve on
+    # these exact cases, chosen with full sight of the answers. It is an oracle,
+    # not a score - the model gets no such advantage - and it exists to make the
+    # baseline as strong as it can be before anything claims to beat it.
+    #
+    # The highest threshold that still keeps every answerable case is the lowest
+    # score any of them achieved. Anything above that starts refusing tickets
+    # the tool can actually triage, which is the more expensive failure.
+    oracle_cut = min(answerable_scores) if answerable_scores else 0.0
+    oracle_caught = sum(1 for c in ambiguous if top_score(c["raw"]) < oracle_cut)
+
     n = len(cases)
+    n_amb = len(ambiguous)
     return {
         "n_cases": n,
         "n_docs": len(corpus),
@@ -148,6 +209,18 @@ def evaluate() -> dict:
         "category_accuracy_majority": cat_major / n,
         "priority_accuracy_1nn": prio_1nn / n,
         "priority_accuracy_majority": prio_major / n,
+        "n_ambiguous": n_amb,
+        "abstention_on_ambiguous": caught / n_amb if n_amb else 0.0,
+        "no_abstention_on_answerable": held / n,
+        "abstention_oracle": oracle_caught / n_amb if n_amb else 0.0,
+        "abstention_oracle_caught": oracle_caught,
+        "abstention_oracle_cut": oracle_cut,
+        # Published on the landing page, so computed here rather than read off a
+        # console once and typed into HTML.
+        "answerable_score_max": max(answerable_scores) if answerable_scores else 0.0,
+        "ambiguous_score_max": max((top_score(c["raw"]) for c in ambiguous), default=0.0),
+        "ambiguous_worst": max(ambiguous, key=lambda c: top_score(c["raw"]))["id"]
+        if ambiguous else "",
         "majority_category": majority_cat,
         "majority_priority": majority_prio,
         "failures": failures,
@@ -173,6 +246,21 @@ def main() -> int:
     print(f"  {'-' * 22}{'-' * 8}{'-' * 11}   {'-' * 22}")
     for name, score, base, label in rows:
         print(f"  {name:<22}{score:>7.0%}{base:>11.0%}   {label}")
+
+    print(f"\n  abstention - {r['n_ambiguous']} ambiguous cases, "
+          f"correct answer is 'ask the reporter'\n")
+    print(f"  {'metric':<22}{'score':>8}{'baseline':>11}   {'baseline is':<22}")
+    print(f"  {'-' * 22}{'-' * 8}{'-' * 11}   {'-' * 22}")
+    print(f"  {'abstained when it should':<22}{r['abstention_on_ambiguous']:>7.0%}"
+          f"{r['abstention_oracle']:>11.0%}   best possible threshold")
+    print(f"  {'held firm when it should':<22}{r['no_abstention_on_answerable']:>7.0%}"
+          f"{'-':>11}   {'':<22}")
+    print(f"\n  Retrieval score cannot express doubt. It rises with the number of")
+    print(f"  words in a ticket, so the emptiest case in the set (AMB-04, padding")
+    print(f"  and no content) scores higher than every answerable case. No cut-off")
+    print(f"  separates them: the best any threshold could do is "
+          f"{r['abstention_oracle']:.0%}, and that is")
+    print(f"  measured with sight of the answers. Abstention needs the model.")
 
     if r["failures"]:
         print("\n  cases below expectation:")

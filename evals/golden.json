@@ -108,5 +108,45 @@
       "INC-1010"
     ],
     "tests": "Single recipient missing a scheduled delivery that colleagues still receive, which points at mail suppression rather than the schedule."
+  },
+  {
+    "id": "AMB-01",
+    "raw": "cannot enter site",
+    "expected_category": "insufficient-information",
+    "expected_priority": "unknown",
+    "relevant_docs": [],
+    "tests": "The canonical under-specified ticket. No system, no user, no symptom beyond the word 'cannot'. 'Site' is ambiguous between a website and a physical office, which changes the category. Tempts access-identity."
+  },
+  {
+    "id": "AMB-02",
+    "raw": "Hi, it is happening again. Same as the last one you fixed for me. Can you just do the same thing? Thanks.",
+    "expected_category": "insufficient-information",
+    "expected_priority": "unknown",
+    "relevant_docs": [],
+    "tests": "All the context is in a conversation the triager cannot see. Nothing in the text identifies a system or a symptom. Retrieval will still return its three closest documents, which is the trap."
+  },
+  {
+    "id": "AMB-03",
+    "raw": "The system is down. Nobody can work. Please treat as urgent.",
+    "expected_category": "insufficient-information",
+    "expected_priority": "unknown",
+    "relevant_docs": [],
+    "tests": "Urgency words with no system named. Tempts a confident P1: 'nobody can work' reads business-stopping, but a priority assigned without knowing which system is a guess wearing a number."
+  },
+  {
+    "id": "AMB-04",
+    "raw": "Morning. I hope you had a good weekend. I wanted to flag something that has been bothering a few of us in the team for a little while now, probably since the start of the month or maybe a bit before that, it is hard to say exactly. It is not a disaster by any means and we have been working around it, but it is the sort of thing that adds up over a week and people have started mentioning it in our stand-up. I did ask Jenny whether she had raised it already and she thought somebody might have done, but I could not find a ticket so I thought I would put one in to be safe. It has definitely got a bit worse since we came back from the bank holiday. Let me know if you need anything else from me and I am happy to jump on a call.",
+    "expected_category": "insufficient-information",
+    "expected_priority": "unknown",
+    "relevant_docs": [],
+    "tests": "Long and completely uninformative. This case exists to attack the retrieval baseline's mechanism rather than its accuracy: BM25 accumulates score across query terms, so a verbose ticket scores high whether or not it says anything. A tool that abstains because a ticket is short has learnt length, not specificity."
+  },
+  {
+    "id": "AMB-05",
+    "raw": "Need access please. New starter.",
+    "expected_category": "insufficient-information",
+    "expected_priority": "unknown",
+    "relevant_docs": [],
+    "tests": "Request-shaped and genuinely routine, which is what makes it tempting: access-identity, P4, done. But access to what, and in which role, is the entire content of the request. Abstaining here costs one question; guessing costs a wrong grant."
   }
 ]

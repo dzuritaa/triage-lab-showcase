@@ -46,6 +46,11 @@ jobs:
       - name: Retrieval self-check
         run: python -m core.retrieve
 
+      # Needs no key: it exercises the response rules against handmade dicts,
+      # which is the only way to watch a guard fail without spending money.
+      - name: Response validation self-check
+        run: python -m core.triage --check
+
       - name: Offline eval scorecard
         run: python -m evals.run
 

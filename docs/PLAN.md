@@ -294,10 +294,30 @@ visitor meets an empty skeleton and no mid-phase mistake is public.
 - Expand the generator toward ~300 enterprise IT support incidents and ~200 KB articles
 - Label category, priority, resolution and root cause; publish a data dictionary
 - David reviews the dataset for realism and removes generator-shaped filler
-- Add genuinely ambiguous tickets ("cannot enter site" — no system, no user, no
+- ✅ Add genuinely ambiguous tickets ("cannot enter site" — no system, no user, no
   context). The expected output for these is "insufficient information, ask the
   reporter", not a confident category. A tool that guesses on them is worse than
   one that abstains, and the eval must reward abstention.
+
+  *Done 2026-08-13, ahead of the dataset expansion, because it was the item in
+  this phase that changed the product rather than its size.* Five ambiguous
+  held-out cases; `insufficient-information` and `unknown` extend the category
+  and priority enums; abstention is enforced as all-or-nothing in `validate()`,
+  so a ticket cannot come back unclassified and carrying an SLA.
+
+  The eval rewards abstention on both sides — abstaining when it should, and
+  holding firm when it should — because a tool that abstains on everything
+  scores perfectly on the first alone.
+
+  **The baseline is a clean negative result and worth an ADR.** BM25 score rises
+  with ticket length, so it cannot express doubt: AMB-04, four sentences of
+  pleasantries naming no system, scores 28.42 against a best answerable case of
+  19.44. Retrieval abstains on 0 of 5, and no threshold does better than 3 of 5
+  even chosen with sight of the answers. The deterministic system cannot do this
+  at all, which is the clearest cost justification for the model call anywhere
+  in the project.
+
+  Still open: the model's own abstention score, which needs one recorded run.
 - Both retrieval adapters behind one interface
 - Document the embedding provider/model/version, normalization, deterministic
   rebuild command and retrieval baseline

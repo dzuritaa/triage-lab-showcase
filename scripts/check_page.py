@@ -93,6 +93,20 @@ def check() -> list[str]:
         want(f"{label} {score:.0%} vs {base:.0%} {kind}", f"{label} summary")
         want(f"{label} {round(score * n)} of {n} cases", f"{label} tally")
 
+    # 3. Abstention. The page's most checkable claim is that the emptiest ticket
+    # outscores the clearest one, so the two scores behind it are asserted to
+    # two decimals rather than described.
+    amb = r["n_ambiguous"]
+    want(f"Abstained when it should {round(r['abstention_on_ambiguous'] * amb)} of {amb} cases",
+         "abstention tally")
+    want(f"best possible threshold: {r['abstention_oracle_caught']} of {amb}",
+         "abstention oracle")
+    want(f"Held firm when it should {round(r['no_abstention_on_answerable'] * n)} of {n} cases",
+         "over-abstention tally")
+    want(r["ambiguous_worst"], "worst ambiguous case id")
+    want(f"{r['ambiguous_score_max']:.2f}", "worst ambiguous case score")
+    want(f"{r['answerable_score_max']:.2f}", "best answerable case score")
+
     return problems
 
 

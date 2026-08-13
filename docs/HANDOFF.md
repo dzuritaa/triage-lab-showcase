@@ -222,6 +222,54 @@ deleted and recreated rather than force-pushed, because orphaned commits stay
 reachable by direct SHA after a rewrite. Recorded as a pre-push check in
 `docs/PLAN.md` §4, which also checks the *committer*, not just the author.
 
+### The obvious fix for the escalation bias, which made it worse
+
+The first live run showed priority at 6/10 with all four misses escalating by
+exactly one level. The diagnosis looked solid: the system prompt's deadline rule
+only pushes upward, so any stated date reads as pressure. The fix was to add the
+missing downward half — a comfortable deadline is not pressure, an absent
+deadline means judging on impact alone, user count alone does not raise
+priority, and P1 is for work that has stopped rather than work that is degraded.
+
+**It took priority from 6/10 to 4/10.** Nothing else was touched; the golden set
+was not edited, so the delta is attributable to the prompt.
+
+| Case | Expected | Before | After | |
+|---|---|---|---|---|
+| EVAL-04 | P2 | P1 | **P2** | fixed |
+| EVAL-05 | P2 | P2 | **abstained** | broke — stopped triaging an answerable ticket |
+| EVAL-06 | P3 | P2 | P2 | unchanged — a target of the fix |
+| EVAL-07 | P3 | P2 | P2 | unchanged — a target of the fix |
+| EVAL-08 | P2 | P2 | **P3** | broke |
+| EVAL-09 | P1 | P1 | **P2** | broke |
+| EVAL-10 | P3 | P2 | P2 | unchanged — a target of the fix |
+
+Category also fell 10/10 → 9/10 and held-firm 10/10 → 9/10. Abstention held at
+5/5. The failed run is kept as `evals/live-results-failed-deadline-fix.json`.
+
+Three things this actually teaches, none of them the thing being tested:
+
+**The clause that did the damage was the confident one.** "Reserve P1 for work
+that has stopped, not work that is slow, degraded, or failing part of the time"
+reads as an obvious clarification of a vague definition. It demoted EVAL-09 — a
+nightly load that had halted with every dashboard in the business stale, which
+is the most clear-cut P1 in the set. The model matched "degraded" and stopped
+reading.
+
+**The counterweight did nothing to its targets.** EVAL-06, 07 and 10 escalated
+identically before and after. The part of the edit aimed at the measured bias
+had no measurable effect; the part added for tidiness caused all the harm.
+
+**Two changes were bundled into one "single" edit**, against the discipline
+written into this document a few hours earlier. The damage is still mostly
+attributable because the failures cluster on the P1/P2 boundary, but that is
+luck. Had they been spread, the run would have cost $0.04 and settled nothing.
+
+A fourth observation with no explanation: EVAL-05 began abstaining on a ticket
+it had previously triaged correctly, though nothing in the edit concerned
+abstention. Prompt edits are not local, and a metric that only watches the thing
+being changed will not notice.
+
 ### Correctness
 
 **Ground truth was under-labelled.** Seven of ten eval cases listed only the KB
@@ -363,14 +411,17 @@ plus `checkout -- .` discards work in progress.
       2026-08-13.** Abstention landed at 5 of 5 with no false abstentions;
       category at 10 of 10; priority at 6 of 10, below the baseline. All of it
       is on the landing page, including the loss.
-- [ ] **Fix the one-directional deadline rule in `core/triage.py`'s system
-      prompt, then re-run `evals.live` (~$0.05).** The rule says deadline
-      pressure raises priority and never says when a deadline is slack. A
-      candidate wording: *"A deadline that the reporter says is comfortable is
-      not pressure. Absent a stated deadline, judge by impact alone — user count
-      by itself does not raise priority."* Change one thing, re-measure, and
-      publish the delta; do not change the prompt and the golden set together,
-      or nothing is attributable.
+- [x] ~~Fix the one-directional deadline rule.~~ **Tried 2026-08-13 and it made
+      things worse — reverted.** See §5, "The obvious fix for the escalation
+      bias". Priority went 6/10 → 4/10. Do not retry this wording.
+- [ ] **Priority over-escalation is still unfixed, and the next attempt needs a
+      dev set.** Three cases (EVAL-06, 07, 10) escalate under both prompts
+      tried so far. The blocker is methodological rather than a missing idea:
+      the golden set is ten cases, and a prompt tuned until they pass is fitted
+      to them. Write a handful of *development* priority cases — deliberately
+      separate from `golden.json`, in the spirit of the phase-2 leakage rule —
+      iterate against those, and use the golden set once, at the end, as the
+      held-out measurement it is supposed to be.
 - [ ] **Consider whether over-escalation deserves its own metric.** Averaged
       into a single accuracy figure the bias is invisible — six of ten reads as
       noise until you look at which way each miss went. A signed mean error, or

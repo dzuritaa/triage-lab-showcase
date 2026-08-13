@@ -1,0 +1,260 @@
+{
+  "model": "claude-haiku-4-5",
+  "date": "2026-08-13",
+  "n_cases": 15,
+  "input_tokens": 26516,
+  "output_tokens": 3481,
+  "cost_usd": 0.043921,
+  "cases": [
+    {
+      "id": "EVAL-01",
+      "expected_category": "access-identity",
+      "got_category": "access-identity",
+      "expected_priority": "P3",
+      "got_priority": "P3",
+      "abstained": false,
+      "should_abstain": false,
+      "questions": [],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1723,
+        "output_tokens": 219
+      }
+    },
+    {
+      "id": "EVAL-02",
+      "expected_category": "access-identity",
+      "got_category": "access-identity",
+      "expected_priority": "P2",
+      "got_priority": "P2",
+      "abstained": false,
+      "should_abstain": false,
+      "questions": [],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1687,
+        "output_tokens": 204
+      }
+    },
+    {
+      "id": "EVAL-03",
+      "expected_category": "integration",
+      "got_category": "integration",
+      "expected_priority": "P1",
+      "got_priority": "P1",
+      "abstained": false,
+      "should_abstain": false,
+      "questions": [],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1815,
+        "output_tokens": 287
+      }
+    },
+    {
+      "id": "EVAL-04",
+      "expected_category": "integration",
+      "got_category": "integration",
+      "expected_priority": "P2",
+      "got_priority": "P2",
+      "abstained": false,
+      "should_abstain": false,
+      "questions": [],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1767,
+        "output_tokens": 253
+      }
+    },
+    {
+      "id": "EVAL-05",
+      "expected_category": "performance",
+      "got_category": "insufficient-information",
+      "expected_priority": "P2",
+      "got_priority": "unknown",
+      "abstained": true,
+      "should_abstain": false,
+      "questions": [
+        "Which reporting system is this — ERP, data warehouse, BI tool, or something else?",
+        "What is the exact error message shown in the error bar?",
+        "When did this start — has the full year report ever completed successfully, or is this the first time you have tried to run it?"
+      ],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1734,
+        "output_tokens": 247
+      }
+    },
+    {
+      "id": "EVAL-06",
+      "expected_category": "performance",
+      "got_category": "performance",
+      "expected_priority": "P3",
+      "got_priority": "P2",
+      "abstained": false,
+      "should_abstain": false,
+      "questions": [],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1818,
+        "output_tokens": 254
+      }
+    },
+    {
+      "id": "EVAL-07",
+      "expected_category": "data-quality",
+      "got_category": "data-quality",
+      "expected_priority": "P3",
+      "got_priority": "P2",
+      "abstained": false,
+      "should_abstain": false,
+      "questions": [],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1822,
+        "output_tokens": 233
+      }
+    },
+    {
+      "id": "EVAL-08",
+      "expected_category": "data-quality",
+      "got_category": "data-quality",
+      "expected_priority": "P2",
+      "got_priority": "P3",
+      "abstained": false,
+      "should_abstain": false,
+      "questions": [],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1785,
+        "output_tokens": 250
+      }
+    },
+    {
+      "id": "EVAL-09",
+      "expected_category": "batch-reporting",
+      "got_category": "batch-reporting",
+      "expected_priority": "P1",
+      "got_priority": "P2",
+      "abstained": false,
+      "should_abstain": false,
+      "questions": [],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1734,
+        "output_tokens": 266
+      }
+    },
+    {
+      "id": "EVAL-10",
+      "expected_category": "batch-reporting",
+      "got_category": "batch-reporting",
+      "expected_priority": "P3",
+      "got_priority": "P2",
+      "abstained": false,
+      "should_abstain": false,
+      "questions": [],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1807,
+        "output_tokens": 265
+      }
+    },
+    {
+      "id": "AMB-01",
+      "expected_category": "insufficient-information",
+      "got_category": "insufficient-information",
+      "expected_priority": "unknown",
+      "got_priority": "unknown",
+      "abstained": true,
+      "should_abstain": true,
+      "questions": [
+        "Which site or system are you unable to enter? (For example: a building, a website, an application, a network share, or something else)",
+        "What error message or behavior are you seeing when you try to enter?",
+        "When did this start, and how many people are affected?"
+      ],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1625,
+        "output_tokens": 212
+      }
+    },
+    {
+      "id": "AMB-02",
+      "expected_category": "insufficient-information",
+      "got_category": "insufficient-information",
+      "expected_priority": "unknown",
+      "got_priority": "unknown",
+      "abstained": true,
+      "should_abstain": true,
+      "questions": [
+        "What system are you unable to access?",
+        "What exactly is happening when you try to use it (error message, behavior, or symptoms)?",
+        "When did this start?"
+      ],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1750,
+        "output_tokens": 227
+      }
+    },
+    {
+      "id": "AMB-03",
+      "expected_category": "insufficient-information",
+      "got_category": "insufficient-information",
+      "expected_priority": "unknown",
+      "got_priority": "unknown",
+      "abstained": true,
+      "should_abstain": true,
+      "questions": [
+        "Which system is down?",
+        "What are users seeing when they try to access it - error messages, timeouts, blank screens?",
+        "How many users are affected and what are they unable to do?"
+      ],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1796,
+        "output_tokens": 160
+      }
+    },
+    {
+      "id": "AMB-04",
+      "expected_category": "insufficient-information",
+      "got_category": "insufficient-information",
+      "expected_priority": "unknown",
+      "got_priority": "unknown",
+      "abstained": true,
+      "should_abstain": true,
+      "questions": [
+        "What system or tool is affected?",
+        "What is it doing wrong — what is the symptom you are seeing?",
+        "How many people in your team are affected?",
+        "Do you have a concrete example of the workaround you are using?"
+      ],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1935,
+        "output_tokens": 222
+      }
+    },
+    {
+      "id": "AMB-05",
+      "expected_category": "insufficient-information",
+      "got_category": "insufficient-information",
+      "expected_priority": "unknown",
+      "got_priority": "unknown",
+      "abstained": true,
+      "should_abstain": true,
+      "questions": [
+        "What system or resource does the new starter need access to (e.g., shared drive, application, database, email distribution list)?",
+        "What is their name, department, and role?",
+        "When do they need this access by?"
+      ],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1718,
+        "output_tokens": 182
+      }
+    }
+  ]
+}

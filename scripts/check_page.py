@@ -138,7 +138,16 @@ def check() -> list[str]:
         # produces a miss in the other direction, the page must stop saying
         # every one is an escalation.
         order = {"P1": 1, "P2": 2, "P3": 3, "P4": 4}
-        misses = [c for c in ans if c["got_priority"] != c["expected_priority"]]
+        # An abstention on an answerable case carries priority "unknown", which
+        # is not a level and cannot be compared. It is already counted by the
+        # held-firm tally, so exclude it here rather than ranking it. An earlier
+        # version did not, and crashed with a KeyError the first time a run
+        # actually produced one.
+        misses = [
+            c for c in ans
+            if c["got_priority"] != c["expected_priority"]
+            and c["got_priority"] in order
+        ]
         if misses and all(
             order[c["got_priority"]] < order[c["expected_priority"]] for c in misses
         ):

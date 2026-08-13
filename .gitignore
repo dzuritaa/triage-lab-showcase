@@ -23,3 +23,6 @@ venv/
 Thumbs.db
 .idea/
 .vscode/
+
+# canary-check.sh scratch dir
+.canary-check-tmp/

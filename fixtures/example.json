@@ -1,0 +1,37 @@
+{
+  "source_case": "EVAL-02",
+  "ticket": "We have a contractor starting on the audit tomorrow morning and he cannot open the finance application. He can log into the network and email fine. The audit runs Tuesday to Thursday and he only has those three days on site, so if this is not sorted before 9am tomorrow we lose a day of billable audit time.",
+  "result": {
+    "category": "access-identity",
+    "priority": "P2",
+    "reasoning": "Single contractor account cannot access finance application before a dated, fixed deadline (audit start tomorrow at 9am); losing tomorrow costs one of three billable days—this is a business commitment at immediate risk despite affecting one user.",
+    "root_cause_direction": "Check whether the contractor's account exists in the finance application's directory or SSO, whether it has been provisioned to the finance app group, and whether any password synchronization or session cache is blocking their first login after account creation.",
+    "draft_reply": "We've identified this as an account provisioning issue for your contractor ahead of the audit tomorrow. Since network and email access work, the problem is likely that the finance application hasn't received the new contractor's user record yet or group membership isn't assigned. We're checking now whether the account was synced to the finance app's directory and adding the required group. Please confirm the contractor's username and email so we can verify provisioning status and clear any stale session cache. We'll prioritize this to unblock access before 9am tomorrow.",
+    "sla_hours": 8,
+    "similar": [
+      {
+        "id": "KB-209",
+        "type": "kb",
+        "title": "Branch office slowness and WAN saturation",
+        "score": 9.8654
+      },
+      {
+        "id": "INC-1001",
+        "type": "incident",
+        "title": "I changed my password this morning like it asked me to and now I cant get into a",
+        "score": 7.8417
+      },
+      {
+        "id": "KB-214",
+        "type": "kb",
+        "title": "Change freeze calendar",
+        "score": 7.4227
+      }
+    ],
+    "_meta": {
+      "model": "claude-haiku-4-5-20251001",
+      "input_tokens": 1126,
+      "output_tokens": 243
+    }
+  }
+}

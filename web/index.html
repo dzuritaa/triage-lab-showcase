@@ -307,6 +307,7 @@
       <a href="#measured">Measurement</a>
       <a href="#miss">The miss</a>
       <a href="#abstain">Abstention</a>
+      <a href="#escalation">The bias</a>
       <a class="act" href="#contact">Contact</a>
     </nav>
   </header>
@@ -590,9 +591,79 @@
       with the answers in hand — an upper bound the tool does not get, computed
       to make the cheap approach as strong as it can be before anything claims to
       beat it. No threshold does better, because the emptiest ticket outscores
-      the clearest one. The model's own abstention score is not on this page
-      because it has not been recorded yet, and an unmeasured number is the one
-      thing this page will not print.
+      the clearest one.
+    </p>
+
+    <div class="tally" role="img" aria-label="The model abstained on 5 of 5 ambiguous cases">
+      <div class="cap"><strong>Model, abstained when it should</strong> <span class="of">5 of 5 cases</span> <span class="vs">best possible threshold: 3 of 5</span></div>
+      <div class="boxes"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+    </div>
+    <div class="tally" role="img" aria-label="The model held firm on 10 of 10 answerable cases">
+      <div class="cap"><strong>Model, held firm when it should</strong> <span class="of">10 of 10 cases</span> <span class="vs">it does not abstain to be safe</span></div>
+      <div class="boxes"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+    </div>
+
+    <p class="note" style="margin-top:1.6rem">
+      Five of five, without refusing a single ticket the desk could have acted
+      on — the failure mode that makes abstention worthless. Asked about
+      <q>cannot enter site</q>, it wanted to know which site: building, website,
+      or application. That is the ambiguity the case was written to test.
+      Measured with one command, <code>python -m evals.live</code>, at a cost of
+      $0.0424 for the full run.
+    </p>
+  </section>
+
+  <section id="escalation">
+    <h2>The one thing it does worse than a keyword search</h2>
+    <p>
+      The same run scored category and priority against the baselines those
+      metrics exist to challenge. Category went from six of ten to
+      <strong>ten of ten</strong>. Priority went the other way: the model gets
+      <strong>six of ten</strong> where returning the priority of the nearest
+      document gets seven.
+    </p>
+
+    <div class="tally" role="img" aria-label="Model category accuracy: 10 of 10 cases, against a nearest-neighbour baseline of 6 of 10">
+      <div class="cap"><strong>Model, category accuracy</strong> <span class="of">10 of 10 cases</span> <span class="vs">nearest neighbour: 6 of 10</span></div>
+      <div class="boxes"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+    </div>
+    <div class="tally" role="img" aria-label="Model priority accuracy: 6 of 10 cases, below the nearest-neighbour baseline of 7 of 10">
+      <div class="cap"><strong>Model, priority accuracy</strong> <span class="of">6 of 10 cases</span> <span class="vs">nearest neighbour: 7 of 10 — the model loses</span></div>
+      <div class="boxes"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+    </div>
+
+    <p style="margin-top:1.6rem">
+      The four misses are not scattered. Every one is an <strong>escalation, by
+      exactly one level</strong>. Nothing was ever rated too low. A tool that
+      inflates one ticket in three floods the queue it was built to sort, and
+      averaged into a single accuracy figure that bias is invisible — six of ten
+      looks like noise until you read which way each miss went.
+    </p>
+
+    <div class="vs2">
+      <div>
+        <span class="label">What the reporter wrote</span>
+        <code>“Mailing list is going out next month so we have time”</code>
+      </div>
+      <div>
+        <span class="label">What the tool did</span>
+        <code>raised it to P2 — an 8-hour target on a ticket that says it can wait</code>
+      </div>
+    </div>
+
+    <p>
+      The cause looks like the instruction meant to prevent the opposite error.
+      The prompt tells the tool that deadline pressure raises priority and to
+      weigh the stated deadline rather than the user count. It never says when a
+      deadline is slack, so any stated date reads as pressure — and one case that
+      states no deadline at all was raised on user count, which is the exact
+      thing that sentence forbids.
+    </p>
+    <p class="note">
+      This is on the page because the run happened, not because it flattered the
+      design. The fix is a prompt change and it is not applied yet: editing the
+      prompt invalidates the numbers above, so the honest order is to publish the
+      measurement, then change one thing and pay for another run.
     </p>
   </section>
 

@@ -68,10 +68,13 @@ service desk at ~200 incidents a month, not a generic chatbot demo.
   one is not a hard target, and 70% is a bar to clear rather than a result.
 - The tool can decline to classify. Five further held-out cases are ambiguous by
   design and their correct output is `insufficient-information` with questions
-  back to the reporter. **The model's abstention rate is not measured yet** and
-  must not be implied anywhere. What is measured is the baseline: retrieval
-  abstains on 0 of 5, and the best any score threshold could achieve is 3 of 5
-  even when chosen with the answers in hand.
+  back to the reporter. Measured 2026-08-13: the model abstains on **5 of 5**
+  without refusing any of the 10 answerable tickets. The baseline it beat:
+  retrieval abstains on 0 of 5, and the best any score threshold could achieve
+  is 3 of 5 even chosen with the answers in hand.
+- **Priority is the weak spot and must be stated as one.** The model scores 6 of
+  10 against a 7 of 10 keyword baseline, and every miss is an escalation by one
+  level. Do not quote the category and abstention wins without it.
 - Abstention is all or nothing wherever it is shown. A category of
   `insufficient-information` carries no priority and no SLA, because a clock
   cannot start on a ticket nobody can act on yet.

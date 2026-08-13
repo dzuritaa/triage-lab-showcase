@@ -51,6 +51,28 @@ Priority is the newest and the least impressive of these despite scoring
 highest: eight of the ten held-out cases are P2 or P3, so the four-way label
 behaves like a two-way one. It is a bar for the model, not an achievement.
 
+### The model, measured 2026-08-13 (`python -m evals.live`, $0.0424)
+
+| Metric | Model | Baseline |
+|---|---|---|
+| Category accuracy | **10 of 10** | 6 of 10 (nearest neighbour) |
+| Priority accuracy | **6 of 10** | 7 of 10 (nearest neighbour) |
+| Abstained when it should | **5 of 5** | 0 of 5 measured, 3 of 5 best possible |
+| Held firm when it should | **10 of 10** | 10 of 10 |
+
+**Priority is the one metric where the model loses to a keyword search, and the
+shape of the loss matters more than the number.** All four misses are
+escalations, each by exactly one level; nothing was ever rated too low. The
+likely cause is the system prompt's deadline rule, which only pushes upward: it
+says deadline pressure raises priority and never says when a deadline is slack,
+so EVAL-07's "mailing list is going out next month so we have time" was read as
+pressure. EVAL-06 states no deadline at all and was raised on user count — the
+exact thing the same sentence forbids.
+
+The fix is a prompt change and is deliberately **not applied**: editing the
+prompt invalidates the numbers above, so the order is publish, then change one
+thing, then pay for another run. See the open items.
+
 Abstention is scored on a separate set of **5 ambiguous cases** whose correct
 answer is "ask the reporter". Every metric above is measured on the 10
 answerable cases only; merging the sets would change what recall@3 means, since
@@ -337,17 +359,24 @@ plus `checkout -- .` discards work in progress.
       it. The page, ADR-001, `PRODUCT.md` and the metrics above were reconciled
       to the new call in the same commit; `scripts/check_page.py` caught the
       drift, which is the first time that guard has earned its place.
-- [ ] **Run `python -m evals.live` and publish what it says.** The runner now
-      exists and is proven end to end against a stubbed model call; what is
-      missing is a real run, which needs David's key and costs about $0.05.
-      This is the first measurement of the model itself — category and priority
-      have only ever been scored for the *retriever*, and the baselines were
-      built to be beaten by something nobody has yet run. Until then the landing
-      page publishes baselines only, and says so.
-      **The result is worth publishing whichever way it goes.** A model that
-      fails to abstain, or that abstains on answerable tickets, is a finding
-      about a design this repository argues for in public — and the argument for
-      abstention is stronger with a number against it than with no number at all.
+- [x] ~~Run `python -m evals.live` and publish what it says.~~ **Done
+      2026-08-13.** Abstention landed at 5 of 5 with no false abstentions;
+      category at 10 of 10; priority at 6 of 10, below the baseline. All of it
+      is on the landing page, including the loss.
+- [ ] **Fix the one-directional deadline rule in `core/triage.py`'s system
+      prompt, then re-run `evals.live` (~$0.05).** The rule says deadline
+      pressure raises priority and never says when a deadline is slack. A
+      candidate wording: *"A deadline that the reporter says is comfortable is
+      not pressure. Absent a stated deadline, judge by impact alone — user count
+      by itself does not raise priority."* Change one thing, re-measure, and
+      publish the delta; do not change the prompt and the golden set together,
+      or nothing is attributable.
+- [ ] **Consider whether over-escalation deserves its own metric.** Averaged
+      into a single accuracy figure the bias is invisible — six of ten reads as
+      noise until you look at which way each miss went. A signed mean error, or
+      simply "escalated / de-escalated" counts, would make a regression visible
+      that accuracy alone would hide. `scripts/check_page.py` already asserts
+      the direction, so the data is there.
 - [ ] Abstention has no regression floor, deliberately — the measured baseline
       is 0% and a floor of zero asserts nothing. Add one once there is a model
       score to protect.

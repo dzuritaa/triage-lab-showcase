@@ -33,6 +33,9 @@ from evals.run import evaluate
 ROOT = Path(__file__).resolve().parent.parent
 PAGE = ROOT / "web" / "index.html"
 FIXTURE = ROOT / "fixtures" / "example.json"
+# Written by `python -m evals.live`. Optional: the offline checks must pass on a
+# clone that has never paid for a live run, so its absence is not a failure.
+LIVE = ROOT / "evals" / "live-results.json"
 
 _TAGS = re.compile(r"<(script|style)\b.*?</\1>|<[^>]+>", re.S | re.I)
 _SPACE = re.compile(r"\s+")
@@ -106,6 +109,46 @@ def check() -> list[str]:
     want(r["ambiguous_worst"], "worst ambiguous case id")
     want(f"{r['ambiguous_score_max']:.2f}", "worst ambiguous case score")
     want(f"{r['answerable_score_max']:.2f}", "best answerable case score")
+
+    # 4. The model's own scores, from the recorded live run. Checked the same
+    # way as everything else: against the file the run wrote, never against a
+    # number typed into the HTML. If the page is going to publish a result the
+    # model has to be paid to produce, the claim and the receipt stay married.
+    if LIVE.exists():
+        live = json.loads(LIVE.read_text(encoding="utf-8"))
+        scored = [c for c in live["cases"] if "rejected" not in c]
+        amb = [c for c in scored if c["should_abstain"]]
+        ans = [c for c in scored if not c["should_abstain"]]
+
+        checks = [
+            ("Model, abstained when it should", sum(c["abstained"] for c in amb), len(amb)),
+            ("Model, held firm when it should", sum(not c["abstained"] for c in ans), len(ans)),
+            ("Model, category accuracy",
+             sum(c["got_category"] == c["expected_category"] for c in ans), len(ans)),
+            ("Model, priority accuracy",
+             sum(c["got_priority"] == c["expected_priority"] for c in ans), len(ans)),
+        ]
+        for label, hits, total in checks:
+            want(f"{label} {hits} of {total} cases", f"{label} tally")
+
+        want(f"${live['cost_usd']:.4f}", "live run cost")
+
+        # The escalation claim is the page's strongest and most falsifiable
+        # statement, so it is asserted rather than trusted: if a future run
+        # produces a miss in the other direction, the page must stop saying
+        # every one is an escalation.
+        order = {"P1": 1, "P2": 2, "P3": 3, "P4": 4}
+        misses = [c for c in ans if c["got_priority"] != c["expected_priority"]]
+        if misses and all(
+            order[c["got_priority"]] < order[c["expected_priority"]] for c in misses
+        ):
+            want("escalation, by\n      exactly one level", "escalation claim")
+        elif misses:
+            problems.append(
+                "  escalation claim: the page says every priority miss is an "
+                "escalation, but the recorded run contains a miss in the other "
+                "direction - rewrite the section"
+            )
 
     return problems
 

@@ -6,9 +6,6 @@ counts while the ADR it links to as proof still carried EVAL-02's, because the
 fixture was re-recorded and the prose was not. The independent design review
 found it. Nothing would have.
 
-`docs/HANDOFF.md` recorded that a script now guards this. It did not exist.
-This is that script.
-
 It checks two things, both against sources rather than against a copy:
 
   1. Every result string the page renders appears verbatim in
@@ -28,7 +25,7 @@ import re
 import sys
 from pathlib import Path
 
-from evals.run import evaluate
+from evals.run import evaluate, summarize_live
 
 ROOT = Path(__file__).resolve().parent.parent
 PAGE = ROOT / "web" / "index.html"
@@ -116,20 +113,27 @@ def check() -> list[str]:
     # model has to be paid to produce, the claim and the receipt stay married.
     if LIVE.exists():
         live = json.loads(LIVE.read_text(encoding="utf-8"))
-        scored = [c for c in live["cases"] if "rejected" not in c]
-        amb = [c for c in scored if c["should_abstain"]]
-        ans = [c for c in scored if not c["should_abstain"]]
-
+        if live.get("schema_version") == 2:
+            rows = live["cases"]
+        else:
+            rows = [
+                {
+                    "id": c["id"],
+                    "expected_category": c["expected_category"],
+                    "expected_priority": c["expected_priority"],
+                    "attempts": [{**c, "run": 1}],
+                }
+                for c in live["cases"]
+            ]
+        live_summary = summarize_live(rows, r)["aggregate"]
         checks = [
-            ("Model, abstained when it should", sum(c["abstained"] for c in amb), len(amb)),
-            ("Model, held firm when it should", sum(not c["abstained"] for c in ans), len(ans)),
-            ("Model, category accuracy",
-             sum(c["got_category"] == c["expected_category"] for c in ans), len(ans)),
-            ("Model, priority accuracy",
-             sum(c["got_priority"] == c["expected_priority"] for c in ans), len(ans)),
+            ("Model, abstained when it should", live_summary["correct_abstention"]),
+            ("Model, held firm when it should", live_summary["actionable_retention"]),
+            ("Model, category accuracy", live_summary["category"]),
+            ("Model, priority accuracy", live_summary["priority"]),
         ]
-        for label, hits, total in checks:
-            want(f"{label} {hits} of {total} cases", f"{label} tally")
+        for label, metric in checks:
+            want(f"{label} {metric['hits']} of {metric['total']} cases", f"{label} tally")
 
         want(f"${live['cost_usd']:.4f}", "live run cost")
 
@@ -143,9 +147,12 @@ def check() -> list[str]:
         # held-firm tally, so exclude it here rather than ranking it. An earlier
         # version did not, and crashed with a KeyError the first time a run
         # actually produced one.
+        attempts = [a for row in rows for a in row["attempts"]]
         misses = [
-            c for c in ans
-            if c["got_priority"] != c["expected_priority"]
+            c for c in attempts
+            if "rejected" not in c
+            and not c["should_abstain"]
+            and c["got_priority"] != c["expected_priority"]
             and c["got_priority"] in order
         ]
         if misses and all(

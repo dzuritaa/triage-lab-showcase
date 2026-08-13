@@ -54,6 +54,9 @@ jobs:
       - name: Offline eval scorecard
         run: python -m evals.run
 
+      - name: Development and sealed dataset validation
+        run: python -m evals.validate_data
+
       # The page claims every number on it is reproducible. This is what makes
       # that true after an edit rather than only on the day it was written.
       - name: Landing page matches its sources

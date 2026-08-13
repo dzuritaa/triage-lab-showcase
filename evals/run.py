@@ -90,10 +90,10 @@ def majority_label(values: list[str]) -> str:
     return min(sorted(counts), key=lambda v: -counts[v])
 
 
-def evaluate() -> dict:
+def evaluate(source: Path = GOLDEN) -> dict:
     corpus = load_corpus()
     index = Bm25(corpus)
-    all_cases = json.loads(GOLDEN.read_text(encoding="utf-8"))
+    all_cases = json.loads(source.read_text(encoding="utf-8"))
     cases = [c for c in all_cases if c["expected_category"] != ABSTAIN]
     ambiguous = [c for c in all_cases if c["expected_category"] == ABSTAIN]
     by_id = {d["id"]: d for d in corpus}
@@ -224,6 +224,102 @@ def evaluate() -> dict:
         "majority_category": majority_cat,
         "majority_priority": majority_prio,
         "failures": failures,
+    }
+
+
+def summarize_live(case_rows: list[dict], baseline: dict) -> dict:
+    """One definition of live metrics for the runner and page checker."""
+
+    def summarize_attempts(attempts: list[dict]) -> dict:
+        accepted = [a for a in attempts if "rejected" not in a]
+        all_answerable = [a for a in attempts if not a["should_abstain"]]
+        all_ambiguous = [a for a in attempts if a["should_abstain"]]
+        answerable = [a for a in accepted if not a["should_abstain"]]
+        ambiguous = [a for a in accepted if a["should_abstain"]]
+        all_p1 = [a for a in all_answerable if a["expected_priority"] == "P1"]
+        p1 = [a for a in answerable if a["expected_priority"] == "P1"]
+
+        def metric(hits: int, total: int) -> dict:
+            return {"hits": hits, "total": total, "rate": hits / total if total else 0.0}
+
+        return {
+            "category": metric(
+                sum(a["got_category"] == a["expected_category"] for a in answerable),
+                len(all_answerable),
+            ),
+            "priority": metric(
+                sum(a["got_priority"] == a["expected_priority"] for a in answerable),
+                len(all_answerable),
+            ),
+            "actionable_retention": metric(
+                sum(not a["abstained"] for a in answerable), len(all_answerable)
+            ),
+            "correct_abstention": metric(
+                sum(a["abstained"] for a in ambiguous), len(all_ambiguous)
+            ),
+            "p1_recall": metric(
+                sum(a["got_priority"] == "P1" for a in p1), len(all_p1)
+            ),
+            "rejected": len(attempts) - len(accepted),
+        }
+
+    attempts = [
+        {**attempt, "id": row["id"]}
+        for row in case_rows
+        for attempt in row["attempts"]
+    ]
+    run_numbers = sorted({a["run"] for a in attempts})
+    per_run = {
+        str(run): summarize_attempts([a for a in attempts if a["run"] == run])
+        for run in run_numbers
+    }
+    aggregate = summarize_attempts(attempts)
+
+    for metrics in per_run.values():
+        metrics["passes_gate"] = (
+            metrics["category"]["rate"] >= 0.90
+            and metrics["priority"]["rate"] >= 0.80
+            and metrics["correct_abstention"]["rate"] >= 0.90
+            and metrics["actionable_retention"]["rate"] >= 0.95
+            and metrics["p1_recall"]["hits"] == metrics["p1_recall"]["total"]
+            and metrics["rejected"] == 0
+            and metrics["category"]["rate"] > baseline["category_accuracy_1nn"]
+            and metrics["priority"]["rate"] > baseline["priority_accuracy_1nn"]
+        )
+
+    unanimous = 0
+    for row in case_rows:
+        if all(
+            "rejected" not in a
+            and a["got_category"] == row["expected_category"]
+            and a["got_priority"] == row["expected_priority"]
+            for a in row["attempts"]
+        ):
+            unanimous += 1
+
+    return {
+        "baseline": {
+            "category_accuracy_1nn": baseline["category_accuracy_1nn"],
+            "priority_accuracy_1nn": baseline["priority_accuracy_1nn"],
+        },
+        "per_run": per_run,
+        "aggregate": aggregate,
+        "ranges": {
+            name: {
+                "min": min(metrics[name]["rate"] for metrics in per_run.values()),
+                "max": max(metrics[name]["rate"] for metrics in per_run.values()),
+            }
+            for name in (
+                "category",
+                "priority",
+                "correct_abstention",
+                "actionable_retention",
+                "p1_recall",
+            )
+        } if per_run else {},
+        "unanimously_correct_cases": unanimous,
+        "total_cases": len(case_rows),
+        "passes_gate": bool(per_run) and all(m["passes_gate"] for m in per_run.values()),
     }
 
 

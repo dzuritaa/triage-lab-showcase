@@ -1,4 +1,4 @@
-# Only core/triage.py needs this — it is the one module that calls the model.
+# core/triage.py calls the model; evals/live.py catches SDK transport failures.
 # core/retrieve.py and evals/run.py are standard library only, which is why CI
 # runs them with no install step and fork PRs need no secret.
 anthropic>=0.69.0

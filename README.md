@@ -4,8 +4,9 @@ An incident triage assistant for enterprise support teams — with public
 architecture decision records explaining every choice, and a CI eval suite
 proving the prompts don't regress.
 
-**Status:** phase 2 of 6. The vertical slice runs; the dataset and the live API
-are still small and unbuilt respectively.
+**Status:** the published vertical slice runs. A structured-priority candidate
+is implemented on its feature branch but failed its three-pass development gate,
+so the current page and evidence remain unchanged.
 
 ## What it does
 
@@ -27,6 +28,7 @@ Everything except the model call is deterministic and runs with no API key:
 python -m core.retrieve            # BM25 retrieval self-check
 python -m core.triage --check      # response validation rules
 python -m evals.run                # the scorecard, with baselines
+python -m evals.validate_data      # 30-case development/sealed-set invariants
 python -m core.triage --fixture    # replay one real recorded result
 ```
 
@@ -59,8 +61,7 @@ threat is cost exhaustion rather than data theft:
 - Past the cap the demo degrades back to fixtures instead of erroring
 - An independent spend cap is set on the API key itself
 
-Full threat model: [`docs/PLAN.md` §4](docs/PLAN.md#4-security). It graduates into a
-standalone ADR-006 in phase 5.
+Threat model: [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md).
 
 ## Development
 
@@ -85,8 +86,13 @@ Verify both gates still catch a real-shaped key:
 sh scripts/canary-check.sh
 ```
 
-Build plan and phases: [`docs/PLAN.md`](docs/PLAN.md) ·
-Supply-chain updates: [`docs/MAINTENANCE.md`](docs/MAINTENANCE.md)
+Evaluation case study: [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) ·
+Decision records: [`docs/adr/`](docs/adr/) ·
+Maintenance: [`docs/MAINTENANCE.md`](docs/MAINTENANCE.md)
+
+Near-term roadmap: stabilize structured priority on the development set, obtain
+blind human review for the sealed 30-case set, then run its three-pass gate. The
+landing page and accepted evidence change only after that gate passes.
 
 ## Licence
 

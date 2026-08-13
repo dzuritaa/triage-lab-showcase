@@ -11,7 +11,9 @@ because enterprise IT fails in a small number of recognisable ways.
 |---|---|---|
 | `incidents.json` | 10 | Resolved past incidents. Retrieval corpus + labelled examples. |
 | `kb.json` | 15 | Knowledge base articles. Retrieval corpus. |
-| `../evals/golden.json` | 10 | Held-out incoming tickets with expected labels. Never used as retrieval corpus. |
+| `../evals/golden.json` | 15 | Currently published set: 10 answerable and 5 ambiguous tickets. |
+| `../evals/dev.json` | 30 | Development set: safe to tune against. |
+| `../evals/golden-v2.json` | 30 | Sealed candidate. Never tune against it; human review required before use. |
 
 ## Categories
 

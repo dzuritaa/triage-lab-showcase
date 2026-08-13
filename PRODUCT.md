@@ -101,10 +101,12 @@ service desk at ~200 incidents a month, not a generic chatbot demo.
 
 - `fixtures/example.json` — a real recorded triage result for EVAL-03. Correct
   category and priority, and retrieval returned the right past incident at rank 1.
-- `evals/golden.json`, `evals/run.py` — 10 held-out cases and the scorecard.
+- `evals/golden.json`, `evals/run.py` — the currently published held-out cases
+  and scorecard. The replacement candidate stays separate until it passes.
 - `data/incidents.json`, `data/kb.json`, `data/README.md` — the synthetic
   corpus and its data dictionary, including its stated limitations.
-- `docs/PLAN.md` — build plan, threat model, and the recorded audit findings.
+- `docs/CASE_STUDY.md`, `docs/THREAT_MODEL.md` — measured experiments,
+  limitations, and the public-demo security requirements.
 - `.gitleaks.toml`, `scripts/canary-check.sh` — the secret-scanning gates and
   the test that proves they work.
 

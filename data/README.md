@@ -73,3 +73,12 @@ immediately, and a demo built on them proves nothing.
   duplicate tickets.
 - All text is British-English office register from a single author, so vocabulary
   variety is narrower than a real multi-site queue.
+- **Not ambiguous enough.** Every ticket here carries enough detail to work out
+  what it is about. A real queue contains tickets like "cannot enter site" with
+  no system, no user and no context, which a human triager can only resolve by
+  going back to the reporter. Reviewed by a support lead against this set, that
+  was the gap worth naming: these are under-specified, but real ones are worse.
+  Phase 2 adds genuinely ambiguous tickets, and the correct answer for some of
+  them is "insufficient information — ask the reporter" rather than a category.
+  A triage tool that confidently guesses on those is worse than one that admits
+  it cannot tell.

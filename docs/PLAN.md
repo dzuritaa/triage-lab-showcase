@@ -269,6 +269,10 @@ visitor meets an empty skeleton and no mid-phase mistake is public.
 - Expand the generator toward ~300 enterprise IT support incidents and ~200 KB articles
 - Label category, priority, resolution and root cause; publish a data dictionary
 - David reviews the dataset for realism and removes generator-shaped filler
+- Add genuinely ambiguous tickets ("cannot enter site" — no system, no user, no
+  context). The expected output for these is "insufficient information, ask the
+  reporter", not a confident category. A tool that guesses on them is worse than
+  one that abstains, and the eval must reward abstention.
 - Both retrieval adapters behind one interface
 - Document the embedding provider/model/version, normalization, deterministic
   rebuild command and retrieval baseline

@@ -9,7 +9,13 @@
 
 set -e
 
-if ! command -v docker >/dev/null 2>&1; then
+# Probe the daemon, not the binary. `command -v docker` was the original check
+# and it tests the wrong thing: with Docker Desktop installed but not running,
+# the CLI is on PATH, the check passes, and `docker run` then fails an opaque
+# npipe connection error that `set -e` turns into a blocked commit. The hook
+# documents itself as warning and deferring to CI when Docker is unavailable,
+# and it did the opposite. `docker info` covers both cases in one check.
+if ! docker info >/dev/null 2>&1; then
   echo "pre-commit: docker unavailable — secret scan SKIPPED (CI will still scan)" >&2
   exit 0
 fi

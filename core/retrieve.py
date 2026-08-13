@@ -67,6 +67,10 @@ def load_corpus() -> list[dict]:
             "type": "incident",
             "title": inc["raw"][:80].strip(),
             "category": inc["category"],
+            # Carried so the eval can score a nearest-neighbour priority baseline.
+            # KB articles have none: an article describes a fault class, not one
+            # incident's business impact, and impact is what sets priority.
+            "priority": inc["priority"],
             # Index symptom, fix and cause together: a new ticket describes the
             # symptom, but the value of a past incident is mostly in the other two.
             "text": " ".join((inc["raw"], inc["resolution"], inc["root_cause"])),
@@ -78,6 +82,7 @@ def load_corpus() -> list[dict]:
             "type": "kb",
             "title": art["title"],
             "category": art["category"],
+            "priority": None,
             "text": " ".join((art["title"], art["body"])),
         })
 

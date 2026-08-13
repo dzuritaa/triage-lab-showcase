@@ -9,7 +9,15 @@ What this measures today:
                drawing k documents at random.
   Category     BM25 nearest-neighbour, against always guessing the most common
                category in the corpus.
-  Priority     Same two.
+  Priority     Same two. This one was expected to be the weak baseline —
+               priority is business impact and the closest document matches on
+               symptom — and it is not: 1nn scores 70%, above category's 60%.
+               Two reasons, neither flattering to the metric. Four classes where
+               eight of ten held-out cases are P2 or P3 is a narrow target, and
+               a symptom that resembles a past incident often carries a similar
+               impact. So 70% is the bar the model must clear, and clearing it
+               is not the same as being good at priority. The case that
+               separates them is the deadline rule, which only three cases test.
 
 The nearest-neighbour scores matter more than they look: they are what the
 language model has to beat in step 4. A model that cannot outscore "return the
@@ -39,10 +47,12 @@ GOLDEN = ROOT / "evals" / "golden.json"
 # achieved is an aspiration, and aspirations belong in the ADR, not in an assert.
 #
 # Measured 2026-08-12: recall@1 60%, recall@3 90%, category 1nn 60%.
+# Measured 2026-08-13: priority 1nn 70%.
 THRESHOLDS = {
     "retrieval_recall_at_3": 0.80,
     "retrieval_recall_at_1": 0.50,
     "category_accuracy_1nn": 0.50,
+    "priority_accuracy_1nn": 0.60,
 }
 
 
@@ -74,7 +84,10 @@ def evaluate() -> dict:
     incident_cats = [d["category"] for d in corpus if d["type"] == "incident"]
     majority_cat = majority_label(incident_cats)
 
-    hits1 = hits3 = cat_1nn = cat_major = 0
+    incident_prios = [d["priority"] for d in corpus if d["type"] == "incident"]
+    majority_prio = majority_label(incident_prios)
+
+    hits1 = hits3 = cat_1nn = cat_major = prio_1nn = prio_major = 0
     random3 = random1 = 0.0
     failures: list[str] = []
 
@@ -107,6 +120,22 @@ def evaluate() -> dict:
             )
         cat_major += majority_cat == case["expected_category"]
 
+        # Nearest-neighbour priority, falling back to the majority when the top
+        # hit is a KB article. Not a fudge: a baseline that scored only the
+        # cases where retrieval happened to land on an incident would be scored
+        # on a different, easier set than every other metric here.
+        top_prio = by_id[top3[0]]["priority"] if top3 else None
+        predicted_prio = top_prio or majority_prio
+        if predicted_prio == case["expected_priority"]:
+            prio_1nn += 1
+        else:
+            failures.append(
+                f"  {case['id']} priority:  expected {case['expected_priority']}, "
+                f"1nn said {predicted_prio}"
+                f"{'' if top_prio else f' (majority; top hit {top3[0]} is a KB article)'}"
+            )
+        prio_major += majority_prio == case["expected_priority"]
+
     n = len(cases)
     return {
         "n_cases": n,
@@ -117,7 +146,10 @@ def evaluate() -> dict:
         "retrieval_random_at_3": random3 / n,
         "category_accuracy_1nn": cat_1nn / n,
         "category_accuracy_majority": cat_major / n,
+        "priority_accuracy_1nn": prio_1nn / n,
+        "priority_accuracy_majority": prio_major / n,
         "majority_category": majority_cat,
+        "majority_priority": majority_prio,
         "failures": failures,
     }
 
@@ -134,6 +166,8 @@ def main() -> int:
         ("retrieval recall@3", r["retrieval_recall_at_3"], r["retrieval_random_at_3"], "random"),
         ("category accuracy", r["category_accuracy_1nn"], r["category_accuracy_majority"],
          f"always '{r['majority_category']}'"),
+        ("priority accuracy", r["priority_accuracy_1nn"], r["priority_accuracy_majority"],
+         f"always '{r['majority_priority']}'"),
     ]
     print(f"  {'metric':<22}{'score':>8}{'baseline':>11}   {'baseline is':<22}")
     print(f"  {'-' * 22}{'-' * 8}{'-' * 11}   {'-' * 22}")

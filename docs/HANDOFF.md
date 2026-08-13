@@ -28,7 +28,7 @@ corporate walls where no employer can read a line of it.
 |---|---|
 | 0 — Skeleton and guardrails | ✅ closed |
 | 1 — Public vertical slice | ✅ closed (7/7 steps) |
-| 2 — Dataset, core and eval expansion | not started |
+| 2 — Dataset, core and eval expansion | started: priority scored, page guarded |
 | 3 — Worker API | not started |
 | 4 — Web (Astro) | not started |
 | 5 — Docs (remaining ADRs, C4) | 1 of ~6 ADRs written |
@@ -45,6 +45,11 @@ calls.* All four are met.
 | Retrieval recall@1 | 60% | 8% (random) |
 | Retrieval recall@3 | 90% | 23% (random) |
 | Category accuracy | 60% | 20% (majority class) |
+| Priority accuracy | 70% | 40% (majority class) |
+
+Priority is the newest and the least impressive of these despite scoring
+highest: eight of the ten held-out cases are P2 or P3, so the four-way label
+behaves like a two-way one. It is a bar for the model, not an achievement.
 
 One recorded live call, Claude Haiku 4.5: 1,254 in / 263 out, **$0.0026**, about
 1,900 tickets per $5. Reproduce the scores with `python -m evals.run`.
@@ -63,6 +68,7 @@ triage-lab/
   web/index.html   the landing page, single file, no build step
   docs/            PLAN.md (plan + threat model + audit log), adr/, MAINTENANCE.md
   scripts/         canary-check.sh — proves the secret gates work
+                   check_page.py  — proves the page publishes only what it can produce
   PRODUCT.md       product truth (users, principles, what must not be invented)
   DESIGN.md        the visual system
 ```
@@ -72,6 +78,7 @@ triage-lab/
 ```bash
 python -m core.retrieve            # retrieval self-check, no dependencies
 python -m evals.run                # scorecard, no dependencies, no network
+python -m scripts.check_page       # page matches the fixture and the scorecard
 python -m core.triage --fixture    # replay the recorded result, no API call
 sh scripts/canary-check.sh         # verify the secret gates (needs Docker)
 ```
@@ -126,6 +133,18 @@ even if never pushed. Proven concretely: a key was committed, the file deleted,
 the deletion committed — a spotless working tree — and CI still failed, because
 history is permanent. → Added a pre-commit hook (`.githooks/pre-commit`) that
 blocks the commit before it exists.
+
+**The pre-commit hook blocked every commit whenever Docker Desktop was
+installed but not running** — the state a laptop is in most of the time. It
+tested `command -v docker`, which finds the CLI on PATH and says nothing about
+the daemon, so the guard passed, `docker run` failed on an npipe connection
+error, and `set -e` turned that into a blocked commit with a message about
+named pipes. The hook's own comment and the README both promise it warns and
+defers to CI when Docker is unavailable. It did the opposite, and neither CI
+nor `canary-check.sh` could catch it: both need Docker running to run at all,
+which is precisely the case where the bug is invisible. → Probe `docker info`,
+which covers a missing binary and a stopped daemon in one check. Found by
+trying to commit.
 
 **The pre-commit hook would have died on Linux CI.** Windows checkout would have
 given it CRLF line endings and an opaque "bad interpreter" error. → `.gitattributes`
@@ -212,8 +231,15 @@ which is the single source of truth.
 dropped from its reasoning, and the drafted reply lost its final sentence with no
 ellipsis. → Every string is now rendered verbatim from `fixtures/example.json`,
 with truncation shown rather than tidied, and a note explaining that the
-retriever stores the first 80 characters of an incident. A script asserts the
-page text still matches the fixture.
+retriever stores the first 80 characters of an incident.
+
+**That fix had no guard, and this document claimed it did.** The line here used
+to end "a script asserts the page text still matches the fixture". No such
+script existed, so the defect the review caught by hand could return the way it
+arrived. → `scripts/check_page.py`, now in CI, comparing the page against the
+fixture and against `evals.run`'s live output rather than a pasted copy. Proven
+in both directions: a one-word paraphrase of the recorded reply fails it, and so
+does nudging a published score by two points.
 
 **DESIGN.md did not describe what shipped** — wrong hex for `--urgent`, a token
 used throughout the build and absent from the table, stamps documented as
@@ -286,8 +312,14 @@ plus `checkout -- .` discards work in progress.
       also supplies the `_headers` file for the CSP promised in the threat model.
 - [ ] Alerts on the API account fire at $5 and $8 against a $5 balance, so they
       will never fire. Lower to ~$2/$4 for warning rather than notification.
-- [ ] The drafted reply in the fixture promises "before 9am tomorrow" while the
-      system prompt forbids timing promises. Worth a golden-set assertion.
+- [ ] **Nothing checks that the model keeps the prompt's no-timing-promises
+      rule.** This item used to say the fixture promised "before 9am tomorrow";
+      it does not, and has not since the fixture was re-recorded from EVAL-02 to
+      EVAL-03 — that phrase is in EVAL-02's *ticket*, not in any reply. The note
+      outlived the thing it described, which is its own lesson. The rule is
+      still unverified, and a keyword check for "tomorrow" or "within the hour"
+      would fire on the current reply's legitimate "prioritize the log review
+      now". Needs a real assertion or an honest deletion, not a regex.
 
 ## 7. Audit findings still open
 

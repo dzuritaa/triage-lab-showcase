@@ -62,7 +62,10 @@ service desk at ~200 incidents a month, not a generic chatbot demo.
   263 output tokens, $0.0026 at list pricing.
 - Measured evaluation on 10 held-out cases: retrieval recall@3 90% (random
   23%), recall@1 60% (random 8%), category accuracy 60% via nearest-neighbour
-  (majority-class 20%).
+  (majority-class 20%), priority accuracy 70% (majority-class 40%).
+- Priority's baseline is high because eight of the ten cases are P2 or P3. Say
+  so wherever the number appears; a four-way label that behaves like a two-way
+  one is not a hard target, and 70% is a bar to clear rather than a result.
 - **All data is synthetic** and must be labelled as such wherever a visitor
   could mistake it for real. No employer, client or university data, ever.
 - Live mode, the Cloudflare Worker, rate limiting and the budget cap are phase 3

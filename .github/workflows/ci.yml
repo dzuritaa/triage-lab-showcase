@@ -48,3 +48,8 @@ jobs:
 
       - name: Offline eval scorecard
         run: python -m evals.run
+
+      # The page claims every number on it is reproducible. This is what makes
+      # that true after an edit rather than only on the day it was written.
+      - name: Landing page matches its sources
+        run: python -m scripts.check_page

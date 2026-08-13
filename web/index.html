@@ -346,6 +346,13 @@
               <i style="width:20%" class="base-mark"></i><i style="width:40%"></i>
             </div>
           </div>
+          <div class="score">
+            <dt>Priority accuracy</dt>
+            <dd><span class="val">70%</span> <span class="base">vs 40% majority</span></dd>
+            <div class="meter" role="img" aria-label="70 percent against a 40 percent majority-class baseline">
+              <i style="width:40%" class="base-mark"></i><i style="width:30%"></i>
+            </div>
+          </div>
         </dl>
         <p class="note" style="margin-top:1.2rem">
           Held-out cases the system has never seen. Baselines computed exactly
@@ -460,6 +467,18 @@
       <div class="cap"><strong>Category accuracy</strong> <span class="of">6 of 10 cases</span> <span class="vs">majority-class baseline: 20%</span></div>
       <div class="boxes"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
     </div>
+    <div class="tally" role="img" aria-label="Priority accuracy: 7 of 10 cases, against a majority-class baseline of 40 percent">
+      <div class="cap"><strong>Priority accuracy</strong> <span class="of">7 of 10 cases</span> <span class="vs">majority-class baseline: 40%</span></div>
+      <div class="boxes"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+    </div>
+
+    <p class="note" style="margin-top:1.6rem">
+      Priority scores highest and deserves the least credit for it. Eight of the
+      ten held-out cases are P2 or P3, so a four-way label behaves like a
+      two-way one, and a ticket whose symptom resembles a past incident usually
+      carries a similar impact. The 70% is the bar the model has to clear, not a
+      result to be pleased with.
+    </p>
 
     <p class="note" style="margin-top:1.6rem">
       Every number in this section comes out of <code>python -m evals.run</code>.

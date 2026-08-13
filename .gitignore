@@ -31,3 +31,4 @@ Thumbs.db
 # out of context, unlike evals/live-results.json which is a published
 # measurement and IS committed.
 evals/dev-results.json
+evals/golden-v2.blind-review.json

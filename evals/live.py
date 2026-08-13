@@ -25,7 +25,15 @@ import anthropic
 from core.retrieve import Bm25, load_corpus
 from core.triage import MODEL, SCHEMA, SYSTEM, triage
 from evals.run import evaluate, summarize_live
-from evals.validate_data import DEV, REVIEW, SEALED, review_is_approved, sha256, validate_dataset
+from evals.validate_data import (
+    DEV,
+    REVIEW,
+    SEALED,
+    review_is_approved,
+    sha256,
+    text_hash,
+    validate_dataset,
+)
 
 ROOT = Path(__file__).resolve().parent.parent
 PUBLISHED = ROOT / "evals" / "live-results.json"
@@ -33,9 +41,6 @@ DEV_RESULTS = ROOT / "evals" / "dev-results.json"
 FAILED_SEALED = ROOT / "evals" / "sealed-results.failed.json"
 PRICE_IN, PRICE_OUT = 1.0, 5.0
 
-
-def text_hash(value: str) -> str:
-    return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
 def parse_runs(argv: list[str], default: int) -> int:

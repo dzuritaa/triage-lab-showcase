@@ -25,7 +25,9 @@ import re
 import sys
 from pathlib import Path
 
+from core.triage import SCHEMA, SYSTEM
 from evals.run import evaluate, summarize_live
+from evals.validate_data import text_hash
 
 ROOT = Path(__file__).resolve().parent.parent
 PAGE = ROOT / "web" / "index.html"
@@ -113,6 +115,41 @@ def check() -> list[str]:
     # model has to be paid to produce, the claim and the receipt stay married.
     if LIVE.exists():
         live = json.loads(LIVE.read_text(encoding="utf-8"))
+
+        # Provenance. evals/live.py records the prompt, schema and dataset it
+        # ran against; until now nothing read those fields back, which made
+        # them a receipt nobody checked. A model score is only reproducible if
+        # the thing that produced it still exists, so a results file whose
+        # prompt has since changed is not evidence for anything on the page.
+        #
+        # A file with no hash at all fails rather than being waved through.
+        # Grandfathering is how a guard stops guarding, and the exemption
+        # would outlive everyone's memory of why it was granted.
+        recorded_prompt = live.get("prompt_sha256")
+        recorded_schema = live.get("schema_sha256")
+        current_prompt = text_hash(SYSTEM)
+        current_schema = text_hash(
+            json.dumps(SCHEMA, sort_keys=True, ensure_ascii=False)
+        )
+        if recorded_prompt is None or recorded_schema is None:
+            problems.append(
+                f"  provenance: {LIVE.name} records no prompt or schema hash, so "
+                f"nothing can confirm the published model scores came from the "
+                f"code in this repository. Re-record with `python -m evals.live`."
+            )
+        else:
+            for name, was, now in (
+                ("prompt", recorded_prompt, current_prompt),
+                ("schema", recorded_schema, current_schema),
+            ):
+                if was != now:
+                    problems.append(
+                        f"  provenance: the {name} changed since these scores were "
+                        f"measured ({was[:12]} -> {now[:12]}). The page is citing "
+                        f"numbers produced by code that no longer exists. Re-record "
+                        f"with `python -m evals.live`, or stop publishing them."
+                    )
+
         if live.get("schema_version") == 2:
             rows = live["cases"]
         else:

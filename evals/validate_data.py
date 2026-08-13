@@ -35,6 +35,17 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def text_hash(value: str) -> str:
+    """Hash a prompt or a serialized schema.
+
+    Lives here rather than in evals/live.py because both the recorder and the
+    page checker need it and they must agree byte for byte, while only one of
+    them may import `anthropic`. This module is standard library only, which is
+    what lets CI check provenance with nothing installed.
+    """
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
 def load(path: Path) -> list[dict]:
     return json.loads(path.read_text(encoding="utf-8"))
 

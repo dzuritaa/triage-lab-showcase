@@ -24,6 +24,27 @@ from core.retrieve import Bm25, load_corpus
 ROOT = Path(__file__).resolve().parent.parent
 FIXTURES = ROOT / "fixtures"
 
+
+def _load_env() -> None:
+    """Read .env into the environment if present.
+
+    Ten lines instead of a python-dotenv dependency. Real environment variables
+    win over the file, so CI and shell exports are never overridden. Values are
+    never logged — this file holds the API key.
+    """
+    path = ROOT / ".env"
+    if not path.exists():
+        return
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        os.environ.setdefault(key.strip(), value.strip().strip("\"'"))
+
+
+_load_env()
+
 # Defaults to the current flagship. Never silently downgraded to a cheaper tier
 # to save money — that is the operator's call, made with eval numbers in hand,
 # not a default buried in code. Override to sweep tiers:

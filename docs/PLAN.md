@@ -235,6 +235,25 @@ and lets the eval decide, which turns ADR-003 from an opinion into evidence.
 
 **Python only.** No JavaScript until the Worker in phase 3.
 
+**The model call uses the official `anthropic` SDK, not hand-rolled HTTP.** An
+earlier draft of this plan proposed standard-library `urllib` to keep the whole
+project dependency-free. Anthropic's own guidance is explicit that the official
+SDK is the correct client wherever one exists, and raw HTTP is for languages
+that have none — so `core/triage.py` takes the dependency. `core/retrieve.py`
+and `evals/run.py` remain standard-library only, which is where it actually
+mattered: **CI installs nothing, and fork pull requests need no secret.**
+
+**The default model is `claude-opus-5`, overridable by `TRIAGE_MODEL`.** The
+earlier draft said "cheapest model that passes evals" and would have defaulted
+to Haiku. Choosing a cheaper tier is a decision to make with eval numbers in
+hand, not a default buried in code; the environment variable exists so the eval
+can sweep tiers and the trade-off is recorded rather than assumed.
+
+**Thinking stays on, at `low` effort.** Disabling thinking on this model can
+leak internal tags into the visible response; lower effort is the cheaper lever
+for a task this small. Sampling parameters are rejected on the model, so there
+are none to tune.
+
 **One hand-written `web/index.html`, not Astro.** Astro arrives in phase 4 with
 Starlight and the docs build. A toolchain for a single page would be three phases
 of maintenance for nothing; a static file has no dependencies and matches the

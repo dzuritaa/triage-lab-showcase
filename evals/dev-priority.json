@@ -1,0 +1,82 @@
+[
+  {
+    "id": "DEV-01",
+    "raw": "The CRM search has got really slow, takes half a minute to come back with anything. It does work in the end, it is just painful when you are on a call with someone. About 25 of us in sales use it all day. Started after the update a couple of weeks ago.",
+    "expected_category": "performance",
+    "expected_priority": "P3",
+    "tests": "Twenty-five affected users, no deadline, and the system works. Guards the measured bias directly: user count on its own must not raise priority.",
+    "guards": "over-escalation"
+  },
+  {
+    "id": "DEV-02",
+    "raw": "Our weekly stock summary has been turning up around lunchtime instead of first thing. It does arrive, so we are not stuck, but the morning meeting is at 9 and we end up going in without it. Been happening the last three or four weeks.",
+    "expected_category": "batch-reporting",
+    "expected_priority": "P3",
+    "tests": "A recurring meeting is not a dated commitment. The job completes and the impact is inconvenience, so this stays P3 even though a time of day is mentioned.",
+    "guards": "over-escalation"
+  },
+  {
+    "id": "DEV-03",
+    "raw": "The membership export has a load of duplicate rows in it, same person listed two or three times. We need it clean for the AGM pack but that is not until October so there is plenty of time. Flagging it now so it does not get forgotten.",
+    "expected_category": "data-quality",
+    "expected_priority": "P3",
+    "tests": "A stated deadline that the reporter explicitly calls comfortable. The failed prompt fix was aimed at exactly this shape and did not move it; any future fix has to.",
+    "guards": "over-escalation"
+  },
+  {
+    "id": "DEV-04",
+    "raw": "I cannot get into the tax submission portal, it just bounces me back out again. I am the only one here who files these. The VAT return has to be submitted by 5pm tomorrow or we get an automatic penalty from HMRC.",
+    "expected_category": "access-identity",
+    "expected_priority": "P2",
+    "tests": "One user, which reads as P3, lifted to P2 by a hard external deadline with a financial penalty. Guards against a fix that over-corrects the escalation bias into under-escalation.",
+    "guards": "under-escalation"
+  },
+  {
+    "id": "DEV-05",
+    "raw": "The journal upload from the payroll system into the ledger is failing validation and nothing is coming through. Month end close is tonight. We can key the entries by hand and we have started doing that, but it is taking about three times as long and there are 400 lines.",
+    "expected_category": "integration",
+    "expected_priority": "P2",
+    "tests": "A dated commitment tonight, with a real but expensive workaround. P2 rather than P1 because work has not stopped. The P1/P2 line here is impairment versus stoppage, not urgency.",
+    "guards": "under-escalation"
+  },
+  {
+    "id": "DEV-06",
+    "raw": "Customers cannot pay. The checkout gets to the card step and then errors, every single time, for everyone. Nothing is going through at all. This is the whole online shop.",
+    "expected_category": "integration",
+    "expected_priority": "P1",
+    "tests": "Fully stopped, no workaround, whole site. This is the case the reverted prompt fix broke, by reading a stoppage as degradation. Any wording that demotes this is wrong however well it scores elsewhere.",
+    "guards": "under-escalation"
+  },
+  {
+    "id": "DEV-07",
+    "raw": "Checkout is throwing an error for some customers, maybe one in ten. If they try again it usually goes through the second time. We have had four people phone up about it this morning but orders are still coming in.",
+    "expected_category": "integration",
+    "expected_priority": "P2",
+    "tests": "Deliberately paired with DEV-06: same system, same symptom class, intermittent rather than total. The pair pins the P1/P2 boundary from both sides, which a single case cannot do.",
+    "guards": "over-escalation"
+  },
+  {
+    "id": "DEV-08",
+    "raw": "VPN client throws error 809 on the new laptops. Old ones connect fine.",
+    "expected_category": "access-identity",
+    "expected_priority": "P3",
+    "tests": "Two sentences, no context, no deadline, and completely triageable: it names the system, the error and the discriminator. Must not be abstained on. Guards the regression where a priority edit leaked into abstention behaviour.",
+    "guards": "abstention-leak"
+  },
+  {
+    "id": "DEV-09",
+    "raw": "Hi, sorry to bother you again, I know you are all busy. I am not sure if this is one for you or for the finance team honestly, and it might just be me doing something wrong. Anyway when I try to approve a purchase order over £5,000 the approve button greys out and nothing happens. Under £5,000 is fine. Happy to be told I am clicking the wrong thing.",
+    "expected_category": "access-identity",
+    "expected_priority": "P3",
+    "tests": "A hedging, apologetic opening wrapped around a precise symptom with a clear threshold. Uncertain tone is not missing information, and the tool must read past it rather than abstaining.",
+    "guards": "abstention-leak"
+  },
+  {
+    "id": "DEV-10",
+    "raw": "Please fix urgently!! This is really affecting us and it has been going on too long now.",
+    "expected_category": "insufficient-information",
+    "expected_priority": "unknown",
+    "tests": "Pure urgency with no system and no symptom. Kept in this set so that tuning priority cannot quietly break abstention in the other direction, which is the failure the golden set would only catch at the end.",
+    "guards": "abstention-leak"
+  }
+]

@@ -26,3 +26,8 @@ Thumbs.db
 
 # canary-check.sh scratch dir
 .canary-check-tmp/
+
+# Development eval output. Regenerated on every tuning iteration and meaningless
+# out of context, unlike evals/live-results.json which is a published
+# measurement and IS committed.
+evals/dev-results.json

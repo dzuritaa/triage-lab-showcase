@@ -7,14 +7,23 @@ standard-library and offline so CI installs nothing and a fork pull request
 needs no secret. This module calls the API and needs a key, so it can never run
 there.
 
-    python -m evals.live               # all 15 cases (~15 calls)
+    python -m evals.live               # golden set, all 15 cases (~15 calls)
     python -m evals.live --ambiguous   # the 5 ambiguous cases only
+    python -m evals.live --dev         # the priority development set, 10 cases
+
+**Iterate against --dev. Measure with the golden set, once, at the end.**
+`evals/golden.json` is held out, and a prompt tuned until its ten cases pass is
+fitted to them — the number stops meaning anything, which is the leakage the
+phase-2 plan warns about. `evals/dev-priority.json` exists to be overfitted:
+tune there as much as you like, then spend one golden run to find out whether
+anything real improved.
 
 Costs real money. At Haiku 4.5 rates one full run is a few cents; the exact
 figure is printed at the end from the token counts, not estimated.
 
-Results are written to evals/live-results.json so the numbers are inspectable
-and citable rather than living in a console scrollback.
+Results are written to evals/live-results.json, or to
+evals/dev-results.json for a development run — separate files, so a dev
+iteration can never overwrite the measurement the landing page cites.
 """
 
 from __future__ import annotations
@@ -30,6 +39,8 @@ from evals.run import GOLDEN, evaluate
 
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "evals" / "live-results.json"
+DEV = ROOT / "evals" / "dev-priority.json"
+DEV_RESULTS = ROOT / "evals" / "dev-results.json"
 
 # Haiku 4.5 list pricing, dollars per million tokens. Not in the repository
 # anywhere else, and not derivable from it - the cost figure is the one number
@@ -92,11 +103,18 @@ def score(cases: list[dict], index: Bm25) -> tuple[list[dict], list[str]]:
 
 
 def main(argv: list[str]) -> int:
-    all_cases = json.loads(GOLDEN.read_text(encoding="utf-8"))
+    dev = "--dev" in argv
+    source = DEV if dev else GOLDEN
+    out = DEV_RESULTS if dev else RESULTS
+
+    all_cases = json.loads(source.read_text(encoding="utf-8"))
     if "--ambiguous" in argv:
         all_cases = [c for c in all_cases if c["expected_category"] == ABSTAIN]
 
-    print(f"\nRunning {len(all_cases)} live calls against {MODEL}. This costs money.\n")
+    print(f"\nRunning {len(all_cases)} live calls against {MODEL}. This costs money.")
+    print(f"Source: {source.name}"
+          + ("  (development set - tune freely, this is not the measurement)"
+             if dev else "  (held out - this is the measurement)") + "\n")
 
     index = Bm25(load_corpus())
     rows, failures = score(all_cases, index)
@@ -105,29 +123,55 @@ def main(argv: list[str]) -> int:
     ambiguous = [r for r in scored if r["should_abstain"]]
     answerable = [r for r in scored if not r["should_abstain"]]
 
-    base = evaluate()  # the deterministic baselines, for the comparison column
+    # Baselines are computed over the golden set, so they are meaningless next
+    # to a development run and are left out rather than printed misleadingly.
+    base = None if dev else evaluate()
 
-    print(f"triage-lab LIVE evals - {MODEL}, {date.today().isoformat()}\n")
-    print(f"  {'metric':<26}{'model':>8}{'baseline':>11}   {'baseline is':<24}")
-    print(f"  {'-' * 26}{'-' * 8}{'-' * 11}   {'-' * 24}")
+    label = "DEV run" if dev else "LIVE evals"
+    print(f"triage-lab {label} - {MODEL}, {date.today().isoformat()}\n")
+    head = f"  {'metric':<26}{'model':>8}"
+    if base:
+        head += f"{'baseline':>11}   {'baseline is':<24}"
+    print(head)
+    print(f"  {'-' * 26}{'-' * 8}" + (f"{'-' * 11}   {'-' * 24}" if base else ""))
+
+    def row(name: str, hits: int, total: int, base_key: str = "", base_is: str = "") -> None:
+        line = f"  {name:<26}{hits / total:>7.0%}"
+        if base and base_key:
+            line += f"{base[base_key]:>11.0%}   {base_is}"
+        print(line)
 
     if answerable:
-        cat = sum(r["got_category"] == r["expected_category"] for r in answerable)
-        pri = sum(r["got_priority"] == r["expected_priority"] for r in answerable)
-        held = sum(not r["abstained"] for r in answerable)
         n = len(answerable)
-        print(f"  {'category accuracy':<26}{cat / n:>7.0%}"
-              f"{base['category_accuracy_1nn']:>11.0%}   nearest neighbour")
-        print(f"  {'priority accuracy':<26}{pri / n:>7.0%}"
-              f"{base['priority_accuracy_1nn']:>11.0%}   nearest neighbour")
-        print(f"  {'held firm when it should':<26}{held / n:>7.0%}"
-              f"{base['no_abstention_on_answerable']:>11.0%}   score threshold")
+        row("category accuracy",
+            sum(r["got_category"] == r["expected_category"] for r in answerable), n,
+            "category_accuracy_1nn", "nearest neighbour")
+        row("priority accuracy",
+            sum(r["got_priority"] == r["expected_priority"] for r in answerable), n,
+            "priority_accuracy_1nn", "nearest neighbour")
+        row("held firm when it should", sum(not r["abstained"] for r in answerable), n,
+            "no_abstention_on_answerable", "score threshold")
 
     if ambiguous:
-        caught = sum(r["abstained"] for r in ambiguous)
-        n_amb = len(ambiguous)
-        print(f"  {'abstained when it should':<26}{caught / n_amb:>7.0%}"
-              f"{base['abstention_oracle']:>11.0%}   best possible threshold")
+        row("abstained when it should", sum(r["abstained"] for r in ambiguous),
+            len(ambiguous), "abstention_oracle", "best possible threshold")
+
+    # Development cases declare which failure mode they guard. Grouping by that
+    # is the whole point of the set: a change that fixes over-escalation while
+    # breaking the P1 floor shows up here as one class improving and another
+    # regressing, which a single accuracy figure hides.
+    guards = [c for c in all_cases if c.get("guards")]
+    if guards:
+        by_id = {r["id"]: r for r in scored}
+        print("\n  by failure mode guarded:")
+        for name in sorted({c["guards"] for c in guards}):
+            members = [c for c in guards if c["guards"] == name]
+            ok = sum(
+                by_id[c["id"]]["got_priority"] == c["expected_priority"]
+                and by_id[c["id"]]["got_category"] == c["expected_category"]
+                for c in members if c["id"] in by_id
+            )
+            print(f"    {name:<22}{ok} of {len(members)}")
 
     if failures:
         print("\n  cases below expectation:")
@@ -139,10 +183,11 @@ def main(argv: list[str]) -> int:
     print(f"\n  {len(scored)} calls, {tok_in:,} in / {tok_out:,} out, "
           f"${cost:.4f} at list pricing\n")
 
-    RESULTS.write_text(
+    out.write_text(
         json.dumps(
             {
                 "model": MODEL,
+                "source": source.name,
                 "date": date.today().isoformat(),
                 "n_cases": len(scored),
                 "input_tokens": tok_in,
@@ -156,7 +201,7 @@ def main(argv: list[str]) -> int:
         + "\n",
         encoding="utf-8",
     )
-    print(f"  written to {RESULTS.relative_to(ROOT)}\n")
+    print(f"  written to {out.relative_to(ROOT)}\n")
 
     # Exit non-zero on any failure so this can gate a trusted workflow later,
     # but there are deliberately no floors yet: nothing has been measured, and a

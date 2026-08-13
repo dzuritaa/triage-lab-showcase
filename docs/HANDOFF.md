@@ -129,7 +129,32 @@ python -m core.triage "ticket text here"
 python -m core.triage --record EVAL-03      # re-record the fixture
 python -m evals.live                        # score the model, ~15 calls, ~$0.05
 python -m evals.live --ambiguous            # the 5 abstention cases only, ~$0.02
+python -m evals.live --dev                  # priority development set, 10 calls, ~$0.03
 ```
+
+**Tune against `--dev`. Measure with the golden set, once, at the end.**
+`evals/dev-priority.json` exists to be overfitted; `evals/golden.json` is held
+out, and a prompt tuned until its ten cases pass is fitted to them. The two
+runs write to different files so an iteration cannot overwrite the measurement
+the landing page cites, and `evals/dev-results.json` is gitignored because it is
+regenerated on every attempt.
+
+The dev set is built from the failure modes actually observed, not from
+imagined coverage, and every case declares which one it guards:
+
+| Guard | Cases | What it pins |
+|---|---|---|
+| `over-escalation` | DEV-01, 02, 03, 07 | The measured bias — user count alone, a recurring meeting, a comfortable deadline, an intermittent fault |
+| `under-escalation` | DEV-04, 05, 06 | The over-correction — a real external deadline, a dated commitment with an expensive workaround, and a genuine full stoppage |
+| `abstention-leak` | DEV-08, 09, 10 | The regression nobody predicted — terse-but-sufficient and hedged-but-specific tickets must still be triaged, and an empty one must still abstain |
+
+`--dev` prints a per-guard breakdown. That is the point of the set: a change
+that fixes over-escalation while breaking the P1 floor shows as one class
+improving and another regressing, which a single accuracy figure hides — and
+which is exactly what the reverted attempt did.
+
+DEV-06 and DEV-07 are deliberately the same system and symptom class, total
+versus intermittent. A single case cannot pin a boundary; a pair can.
 
 `evals/live.py` is the only thing that scores the *model*; everything in
 `evals/run.py` measures what retrieval can do alone. It writes
@@ -414,14 +439,20 @@ plus `checkout -- .` discards work in progress.
 - [x] ~~Fix the one-directional deadline rule.~~ **Tried 2026-08-13 and it made
       things worse — reverted.** See §5, "The obvious fix for the escalation
       bias". Priority went 6/10 → 4/10. Do not retry this wording.
-- [ ] **Priority over-escalation is still unfixed, and the next attempt needs a
-      dev set.** Three cases (EVAL-06, 07, 10) escalate under both prompts
-      tried so far. The blocker is methodological rather than a missing idea:
-      the golden set is ten cases, and a prompt tuned until they pass is fitted
-      to them. Write a handful of *development* priority cases — deliberately
-      separate from `golden.json`, in the spirit of the phase-2 leakage rule —
-      iterate against those, and use the golden set once, at the end, as the
-      held-out measurement it is supposed to be.
+- [ ] **Priority over-escalation is still unfixed. The dev set now exists; the
+      tuning has not been done.** Three cases (EVAL-06, 07, 10) escalate under
+      both prompts tried so far. `evals/dev-priority.json` and
+      `python -m evals.live --dev` are the tools — iterate there until the
+      per-guard breakdown is clean in all three classes, *then* spend one golden
+      run. Two rules learned the expensive way: change one thing per run, and
+      treat a regression in a guard class you were not aiming at as a stop
+      signal rather than a rounding error.
+- [ ] **The dev set has never been run against the live model.** It is verified
+      end to end with the API stubbed, so the plumbing and the per-guard
+      grouping work, but the ten cases have no recorded baseline. The first
+      `--dev` run (~$0.03) establishes where the current prompt actually stands
+      on them — do that before changing anything, or there is nothing to
+      compare against.
 - [ ] **Consider whether over-escalation deserves its own metric.** Averaged
       into a single accuracy figure the bias is invisible — six of ten reads as
       noise until you look at which way each miss went. A signed mean error, or

@@ -31,8 +31,10 @@ Paste a raw support ticket. It returns:
 3. **A drafted first response** in the tone of a support engineer
 4. **A suggested root-cause direction**
 
-All against a **synthetic** banking-support dataset. No real client data, ever —
-stated publicly on the site as a deliberate choice.
+All against a **synthetic enterprise IT support** dataset — access and identity,
+integrations, performance, data quality, batch and reporting. Deliberately
+domain-general rather than modelled on any current employer's product area. No
+real client data, ever, stated publicly on the site as a deliberate choice.
 
 ## 3. Architecture
 
@@ -78,7 +80,7 @@ triage-lab/
 
 This is public on the internet with an API key behind it. Security is a **phase-0
 concern, not a polish item** — and the threat model itself becomes a showcase
-artifact (ADR-006), which is worth more to a banking-sector reader than the demo.
+artifact (ADR-006), which is worth more to an enterprise reader than the demo.
 
 ### Threat 1 — Cost exhaustion (the real risk)
 
@@ -222,8 +224,49 @@ key fails, and a clean tree passes. **All verified — see the closure notes in
 *Done when:* a cold visitor can see one complete result, inspect the code and
 evaluation, understand one design decision and contact David — with zero API calls.
 
+#### Phase 1 decisions
+
+**Retrieval is BM25, not embeddings.** Anthropic ships no embeddings endpoint —
+using vectors means adding a second vendor, key and bill on day one. At ~15
+documents, BM25 is ~60 lines of standard-library Python with no dependency, no
+API and no cost. Phase 1 already requires a trivial baseline, so BM25 is measured
+against random retrieval and the numbers are published. Phase 2 adds embeddings
+and lets the eval decide, which turns ADR-003 from an opinion into evidence.
+
+**Python only.** No JavaScript until the Worker in phase 3.
+
+**One hand-written `web/index.html`, not Astro.** Astro arrives in phase 4 with
+Starlight and the docs build. A toolchain for a single page would be three phases
+of maintenance for nothing; a static file has no dependencies and matches the
+project's supply-chain posture. Discarding it later costs nothing.
+
+**The single live model call is run by David, not by the assistant.** The
+recorder is committed; David runs it once with his own key to produce a genuinely
+recorded fixture. The key is never shared, and the committed response is real
+rather than hand-written and labelled real.
+
+Everything except that one call — retrieval, evals, baseline, page — is
+deterministic and runs with no key at all.
+
+#### Phase 1 build order
+
+| # | Step | Output |
+|---|---|---|
+| 1 | Dataset | 10 incidents + ~15 KB articles, labelled. **David reviews for realism.** |
+| 2 | Retrieval | `core/retrieve.py` — BM25, stdlib only, with a self-check |
+| 3 | Evals | `evals/run.py` — recall@3 vs random baseline, category/priority accuracy |
+| 4 | Triage CLI | `core/triage.py` — prompt, model call, strict schema validation |
+| 5 | Fixture | Recorder; David runs it once |
+| 6 | ADR-001 | BM25 vs embeddings, carrying the eval numbers |
+| 7 | Page | `web/index.html` — result, method, one decision, contact CTA |
+
+Scoring exists before there is a prompt to overfit to, hence 2–3 ahead of 4.
+
+**Repository is private during phase 1** and flipped public at the end, so no
+visitor meets an empty skeleton and no mid-phase mistake is public.
+
 ### Phase 2 — Dataset + core + eval expansion *(the real signal)*
-- Expand the generator toward ~300 banking-support incidents and ~200 KB articles
+- Expand the generator toward ~300 enterprise IT support incidents and ~200 KB articles
 - Label category, priority, resolution and root cause; publish a data dictionary
 - David reviews the dataset for realism and removes generator-shaped filler
 - Both retrieval adapters behind one interface

@@ -444,8 +444,16 @@ Tactical work — a prompt wording to try, a test case to rewrite — lives in
 
 ### 3. Resolve the sealed-label review — closed 2026-08-14, not adopted
 
-**No reviewer is available and none is expected, so `golden-v2.json` stays
-unreviewed and unspent.** `golden-v2.review.json` keeps its
+**Two reasons, and the second is the one that matters.** No reviewer is
+available and none is expected — and `golden-v2.json` was then found to agree
+with `dev.json` on the expected priority and category of all thirty cases,
+position for position. It is a rewrite of the development set rather than a
+holdout, so it could never have produced an independent number whether it was
+reviewed or not. ADR-004 carries the figures and
+`python -m evals.validate_data` reproduces them. The set is retired as sealed
+evidence.
+
+**Therefore `golden-v2.json` stays unreviewed and unspent.** `golden-v2.review.json` keeps its
 `pending-human-review` status deliberately: it is what makes
 `evals/live.py --sealed` refuse to run, and that refusal is now the intended
 end state rather than a blocker. The fallback this plan and ADR-006 both stated
@@ -489,9 +497,9 @@ SHA-256 that matches the file.
 
 ### 4. Close the two-golden-set fork — closed 2026-08-14 by the decision above
 
-**`golden.json` stays canonical and `golden-v2.json` stays sealed.** There is no
-fork to close while v2 is unspent: one dataset produces every published number
-and the other produces none. The structured candidate lives on
+**`golden.json` stays canonical and `golden-v2.json` is retired.** There is no
+fork to close: one dataset produces every published number, and the other turned
+out not to be a holdout at all. The structured candidate lives on
 `feature/structured-triage-evidence` as a documented experiment, which is the
 useful thing it can still be — a change that was built, measured, and left
 behind on purpose, with the receipt to show for it.

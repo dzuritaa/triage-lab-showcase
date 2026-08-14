@@ -41,7 +41,7 @@ in all three passes, and abstention is 10/10 in each.
 
 | Case | Passes affected | Cause |
 |---|---|---|
-| DEV2-010 | all three | Category label disputed. The set said `performance`; the model said `batch-reporting` three times out of three, and on review the model was right. Relabelled. |
+| DEV2-010 | all three | Category label disputed. The set said `performance`; the model said `batch-reporting` three times out of three. It was relabelled on that basis and the relabel was **reversed the next day** — see "The label that moved twice". |
 | DEV2-016 | all three | A no-malfunction request ("standardise Ltd and LTD when convenient") drives an abstention. Twice it abstains outright; once it names a category *and* marks the ticket untriageable, which the validator rejects. |
 | DEV2-017 | 1 and 3 | The same self-contradiction. Category and priority are right whenever the response survives validation. |
 | DEV2-003, DEV2-006, DEV2-015 | one each | One impact-label flip apiece: `limited`↔`significant-impairment`, `multiple-users`↔`whole-site-or-department`, `limited`↔`request-or-cosmetic`. |
@@ -80,9 +80,51 @@ thrown away, and one ticket costs a category point, a priority point and a
 retention point at once. One occurrence in ninety attempts, and it failed a pass
 on its own.
 
+### The label that moved twice
+
+DEV2-010 — *"the annual compliance report times out whenever the full period is
+selected"* — was labelled `performance`, relabelled `batch-reporting` because
+the model had said so three times running, and then reverted to `performance`
+the following day. The reversal is worth more than the label.
+
+| Prompt | What the model answered |
+|---|---|
+| `48e38bad…` (three passes) | `batch-reporting` ×3 |
+| `8eb73c0f…` (one pass) | `performance` |
+| `8aafd1b6…` (three passes) | `performance` ×3 |
+
+The model did not have a stable opinion. It answered one way under one prompt
+and the other way under the next, so the three answers that justified the
+relabel were not independent evidence about the ticket — they were three samples
+of one prompt. The ticket sits on a boundary the taxonomy does not resolve:
+"times out" is `performance` by the enum's own wording, and a report failing to
+produce is `batch-reporting` by its own wording. Both readings are defensible,
+which is what made the model's answer look like a verdict.
+
+It was reverted to `performance` on the merits: the discriminating fact is that
+a smaller range completes, which is a cost problem rather than a job that did
+not run. `evals/dev.json` is now byte-identical to its pre-session state, hash
+`06b3f6bbb5aa…`, which is the same dataset the older frozen receipt cites.
+
+**The label change did not alter any verdict, and that is the point.**
+Re-scoring the post-fix receipt against the reverted label gives category
+18/19/19 instead of 17/18/18 — better, and still fail/pass/pass, because run 1
+fails on a validation rejection either way. A relabel that improves the number
+without changing the outcome is one that can be made honestly.
+
+### What was left alone
+
+The prompt is exactly as measured. The example sentence added for requests —
+*"rename a field, tidy a display value or reschedule a job"* — mixes three
+categories in one list and is the leading suspect for DEV2-016 now answering
+`batch-reporting` where it previously abstained. The fix is known and small:
+move the examples next to the categories they belong to. It has deliberately not
+been applied, because applying it would leave the branch carrying a prompt that
+no receipt in the repository measured, and shipping a claim whose evidence
+describes different code is the defect this project has already corrected twice.
+
 Both remaining category misses are label questions rather than judgement
-failures, and both are open — see `docs/REVIEW-THREAD.md`. Neither will be
-changed to make the gate pass.
+failures. Neither was changed to make the gate pass.
 
 The sealed candidate has never been sent to the model and will not be; see the
 limitation below. No improvement claim is justified.
@@ -90,11 +132,16 @@ limitation below. No improvement claim is justified.
 ## Limitations
 
 - The corpus remains 25 synthetic documents.
-- **No independent reviewer was available, so `evals/golden-v2.json` stays
-  unreviewed and unspent.** The development set can show that a candidate is
-  worth keeping; it cannot produce a publishable score, because it is the set
-  the candidate was tuned against. The structured work therefore stays on its
-  branch and the page keeps citing the phase-1 measurement.
+- **There is no holdout.** `evals/golden-v2.json` was built to be one and is
+  not: it agrees with the development set on the expected priority and category
+  of all thirty cases, position for position, so it re-asks the development
+  questions in different words. It is retired as sealed evidence and never ran.
+  ADR-004 carries the figures; `python -m evals.validate_data` reproduces them.
+- **No independent reviewer was available either**, which blocked the review
+  first and would not have fixed the dataset. The development set can show that
+  a candidate is worth keeping; it cannot produce a publishable score, because
+  it is the set the candidate was tuned against. The structured work therefore
+  stays on its branch and the page keeps citing the phase-1 measurement.
 - The three-pass run above was produced by a prompt that was never committed.
 - Repeated model passes measure output stability, not additional independent
   cases. They are reported separately rather than pooled as 90 observations.

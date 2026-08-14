@@ -1,7 +1,7 @@
 # ADR-006: Evaluation labels are reviewed blind, by someone who is not the author
 
-- **Status:** not adopted — no reviewer available. The sealed set stays
-  unreviewed and unspent; see "Outcome" below.
+- **Status:** not adopted — no reviewer available, and the dataset it would have
+  reviewed turned out not to be independent. See "Outcome" below.
 - **Date:** 2026-08-13, closed 2026-08-14
 - **Reverses:** nothing
 - **Reversed by:** nothing yet
@@ -137,6 +137,16 @@ Consequences, all of them real:
 - Thirty sealed cases and a written rubric remain, unspent and undisclosed. If a
   reviewer ever appears, the review is still runnable exactly as designed, which
   is why the tooling is kept rather than deleted.
+
+**Amended the same day: reviewing those thirty cases would not have helped.**
+`golden-v2.json` agrees with `evals/dev.json` on the expected priority of all
+thirty cases and the expected category of all thirty, position for position —
+see ADR-004. A blind reviewer confirming the labels would have confirmed labels
+that were correct and still not independent, and the receipt would have carried
+a reviewer's role beside a measurement that re-asked the development questions.
+The review was blocked on a person; the dataset was broken regardless of the
+person. That ordering matters: a missing reviewer looks like a scheduling
+problem, and this was never one.
 - A fallback stated in advance and then not taken is worth recording as such.
   Pre-committing to a weaker option makes it easier to choose, and that is the
   point of writing it down — but it does not oblige anyone to take it when the

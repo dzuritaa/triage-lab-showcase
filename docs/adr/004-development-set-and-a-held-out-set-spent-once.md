@@ -1,7 +1,8 @@
 # ADR-004: Prompts are tuned on a development set; the held-out set is spent once
 
-- **Status:** accepted
-- **Date:** 2026-08-13
+- **Status:** accepted as a principle; **its second dataset failed to implement
+  it** — see "The holdout was not one" below
+- **Date:** 2026-08-13, amended 2026-08-14
 - **Reverses:** the implicit practice of iterating against `golden.json`
 - **Reversed by:** nothing yet
 
@@ -100,6 +101,48 @@ tripling the runs triples the cost.
 and the labels were assigned by the same person tuning against them. A wording
 that satisfies the guard without fixing the behaviour would pass.
 
+## The holdout was not one — found 2026-08-14
+
+`evals/golden-v2.json` was written to be the sealed set this decision requires.
+It is not independent of `evals/dev.json`, and it never was. Compared row by row
+in file order:
+
+| Check | Result |
+|---|---:|
+| Same expected priority at the same position | **30/30** |
+| Same expected category at the same position | **30/30** |
+| Same relevant documents at the same position | 28/30 |
+
+Thirty out of thirty on priority is not a coincidence between independent sets.
+The two files were written case for case in the same order — same scenario
+shape, same answer, same slot — so the "held-out" set re-asks the development
+questions in different words. A prompt tuned until the development cases pass is
+tuned onto its twin, and the sealed measurement would have come back optimistic
+with nothing in the repository able to say so.
+
+`python -m evals.validate_data` now prints those three figures on every run, so
+the claim above is reproducible rather than asserted.
+
+**Why the guard did not catch it.** `validate_dataset` asserted that no ticket
+text was duplicated between the sets, and that assertion passed and still
+passes. It checks for copied *words*; the leak was copied *structure*. A
+uniqueness check on strings cannot see that case 17 in both files is the same
+question.
+
+**Consequence.** `golden-v2.json` is retired as sealed evidence. It may be used
+as a regression set with its provenance stated, and it must never be described
+as an independent measurement. A real holdout has to be written by someone who
+has not read the development set, and kept out of this workspace until the
+prompt and schema are frozen — which, with no independent author available, is
+not a thing this project can currently produce. That is the honest end state
+rather than a task waiting to be done.
+
+**This is the second time a measurement here was made on favourable ground and
+the repository could not see it.** The first was ADR-003's abstention retention,
+10 out of 10 on cases that all shared subject matter with the corpus. Same
+failure mode, one level up: the test was built by the person who built the
+thing it tests.
+
 ## Consequences
 
 **Accepted.** Prompt changes are attributable. The published number means what
@@ -120,6 +163,10 @@ opinion, no second labeller.
 - **The corpus and datasets grow enough** that a single held-out spend stops
   being statistically fragile, at which point the ceremony around spending it
   can relax.
+- **Someone who has not read `dev.json` writes the holdout.** That is the only
+  thing that makes a second dataset independent, and it is a person, not a
+  process. Until then this decision has a development set and no holdout, and
+  says so.
 
 ## Notes
 

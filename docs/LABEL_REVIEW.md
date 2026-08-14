@@ -1,10 +1,16 @@
 # Blind label review rubric
 
-> **Not in use.** No independent support-domain reviewer was available, so
-> `evals/golden-v2.json` stays unreviewed and **unspent** — see ADR-006. Nothing
-> here has been run, and `evals/live.py --sealed` refuses to run until it is.
-> The rubric is kept, not archived, because the sealed cases are still sealed:
-> whoever can do this review can still do it exactly as written.
+> **Not in use, and the dataset it describes is retired.** No independent
+> support-domain reviewer was available, and `evals/golden-v2.json` was then
+> found to agree with the development set on the expected priority and category
+> of all thirty cases, position for position — it is a rewrite of `dev.json`,
+> not a holdout (ADR-004). Reviewing it would have confirmed correct labels on a
+> dataset that could not measure anything independently.
+>
+> The rubric is kept because the procedure is still right and would apply
+> unchanged to a set written by someone who has not read the development cases.
+> `evals/live.py --sealed` refuses to run, and nothing here should be taken as a
+> route to unblocking it.
 
 The reviewer must be a support-domain practitioner and must not see model output,
 retrieval results, prompt text, or expected labels. Export the blind form first:

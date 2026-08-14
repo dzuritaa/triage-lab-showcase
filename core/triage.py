@@ -158,8 +158,13 @@ dated_deadline_at_risk false, and put the questions you need answered in
 clarifying_questions. Every other category requires a business_impact that is
 not unspecified: if you can name the category you can judge the impact.
 
-A ticket is triageable when you can tell what system is involved and what it is
-doing wrong. Missing either one is not enough to classify:
+A ticket is triageable when you can tell what system or data is involved and
+what is being asked of you: either what is going wrong, or what change is
+wanted. Nothing has to be broken. A request to rename a field, tidy a display
+value or reschedule a job names both, and is triaged like anything else — its
+impact is request-or-cosmetic, which is a priority rather than a reason to
+refuse. Missing the system, or missing the ask, is what is not enough to
+classify:
 
 - "cannot enter site" - no system, and "site" could be a website or a building.
 - "it is happening again, same as last time" - the context is in a conversation
@@ -174,8 +179,9 @@ Length is not information. A long, chatty ticket that never names a system or a
 symptom is exactly as untriageable as a three-word one, and it is the case a
 keyword search gets most wrong, because more words look like more signal.
 
-Do not abstain to be safe. A ticket that names a system and a symptom is
-triageable even if it is short, terse or missing detail you would like to have -
+Do not abstain to be safe. A ticket that names a system and either a symptom or
+a request is triageable even if it is short, terse or missing detail you would
+like to have -
 "SSO login loops after password reset" is enough. Refusing a ticket the desk
 could have acted on wastes the reporter's time and yours, and it is the more
 expensive mistake of the two.

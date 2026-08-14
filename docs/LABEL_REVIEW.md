@@ -1,5 +1,11 @@
 # Blind label review rubric
 
+> **Not in use.** No independent support-domain reviewer was available, so
+> `evals/golden-v2.json` stays unreviewed and **unspent** — see ADR-006. Nothing
+> here has been run, and `evals/live.py --sealed` refuses to run until it is.
+> The rubric is kept, not archived, because the sealed cases are still sealed:
+> whoever can do this review can still do it exactly as written.
+
 The reviewer must be a support-domain practitioner and must not see model output,
 retrieval results, prompt text, or expected labels. Export the blind form first:
 
@@ -26,8 +32,11 @@ Priority mapping:
 - P4: a working-behavior change or presentation request; no malfunction.
 - unknown: the ticket cannot be triaged from its own text.
 
-Resolve disagreements with the project author before any model call and update
-the sealed labels or agreed review form to match the resolution. Then run:
+Discuss disagreements with the project author before any model call, and resolve
+each one by changing the **sealed label** or by recording that the sealed label
+stands. Never edit the reviewer's answers: a review that can be rewritten until
+it agrees is not a review, and the agreement rate is worth publishing precisely
+because it might not be perfect. Then run:
 
 ```bash
 python -m evals.review approve --reviewer-role "support practitioner"

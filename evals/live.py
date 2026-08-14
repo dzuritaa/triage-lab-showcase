@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 import sys
 from datetime import date
 from pathlib import Path
@@ -41,6 +42,28 @@ DEV_RESULTS = ROOT / "evals" / "dev-results.json"
 FAILED_SEALED = ROOT / "evals" / "sealed-results.failed.json"
 PRICE_IN, PRICE_OUT = 1.0, 5.0
 
+
+
+def git_state() -> dict:
+    """The commit this run was made from, and whether the tree was dirty.
+
+    The hashes above say what the prompt and schema were; this says whether that
+    prompt exists anywhere but on the machine that ran it. The three-pass
+    development run of 2026-08-13 records a prompt hash that matches no commit,
+    which nothing could have told you at the time.
+    """
+    def git(*args: str) -> str | None:
+        try:
+            out = subprocess.run(
+                ["git", *args], cwd=ROOT, capture_output=True, timeout=10
+            )
+        except (OSError, subprocess.SubprocessError):
+            return None
+        return out.stdout.decode("utf-8", "replace").strip() if out.returncode == 0 else None
+
+    head = git("rev-parse", "HEAD")
+    status = git("status", "--porcelain")
+    return {"head": head, "dirty": None if status is None else bool(status)}
 
 
 def parse_runs(argv: list[str], default: int) -> int:
@@ -70,6 +93,11 @@ def run_pass(cases: list[dict], index: Bm25, run: int) -> list[dict]:
                     "id": case["id"],
                     "run": run,
                     "rejected": f"{type(exc).__name__}: {exc}",
+                    # The response that broke the rule, when there was one. An
+                    # API error has none. Without this, a rejected attempt can
+                    # never be re-scored under a changed rule and the run has to
+                    # be bought again to answer the question.
+                    "raw": getattr(exc, "raw", None),
                 }
             )
             continue
@@ -122,10 +150,40 @@ def print_summary(summary: dict) -> None:
             f"{count('correct_abstention'):>11}{count('actionable_retention'):>11}"
             f"{count('p1_recall'):>9}  {'PASS' if metrics['passes_gate'] else 'FAIL'}"
         )
+    # Why each pass failed, and on which tickets. The gate is a conjunction of
+    # eight conditions, so "FAIL" on its own says almost nothing.
+    for run, metrics in summary["per_run"].items():
+        if not metrics["failed_conditions"]:
+            continue
+        print(f"\n  run {run} failed on:")
+        for failed in metrics["failed_conditions"]:
+            cases = metrics["missed_by"].get(failed["metric"], [])
+            print(f"    {failed['condition']:<30}{', '.join(cases)}")
+
+    # Pooled across passes. Reporting only - the release gate stays per-pass,
+    # because repeated passes measure stability, not new cases.
+    aggregate = summary["aggregate"]
+    print("\n  pooled across all passes (not a gate)")
+    for name in ("category", "priority", "correct_abstention",
+                 "actionable_retention", "p1_recall"):
+        value = aggregate[name]
+        print(f"    {name:<24}{value['hits']:>4}/{value['total']:<5}{value['rate']:>7.0%}")
+
     print(
         f"\n  unanimously correct: {summary['unanimously_correct_cases']}/"
         f"{summary['total_cases']} cases"
     )
+    unstable = summary.get("unstable_cases", [])
+    if unstable:
+        print(f"  differed between passes: {', '.join(unstable)}")
+    always_wrong = (
+        summary["total_cases"]
+        - summary["unanimously_correct_cases"]
+        - len(unstable)
+    )
+    if always_wrong:
+        print(f"  wrong the same way in every pass: {always_wrong} "
+              f"case{'s' if always_wrong != 1 else ''} - a label or a prompt, not stability")
 
 
 def main(argv: list[str]) -> int:
@@ -174,6 +232,7 @@ def main(argv: list[str]) -> int:
         "schema_sha256": text_hash(
             json.dumps(SCHEMA, sort_keys=True, ensure_ascii=False)
         ),
+        "git": git_state(),
         "date": date.today().isoformat(),
         "runs": runs,
         "n_cases": len(cases),

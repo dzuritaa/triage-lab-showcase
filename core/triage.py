@@ -102,10 +102,13 @@ Categories:
 - data-quality: duplicates, rounding, mismatched or malformed values
 - batch-reporting: scheduled jobs, report generation and delivery
 
+Choose the category from the ticket only, before reading retrieved context.
+Retrieved documents must never fill in facts the reporter omitted. A ticket that
+does not name enough to choose a category and a sensible first step gets
+"insufficient-information"; there is no separate flag for that, and no other
+category may be combined with it.
+
 Decision factors:
-- triageable: whether the ticket itself names enough to choose a category and a
-  sensible first step. Decide this from the ticket only, before reading retrieved
-  context. Retrieved documents must never fill in facts the reporter omitted.
 - affected_scope: single-user, multiple-users, whole-site-or-department, or
   unspecified. This counts people whose work is affected, not records,
   transactions, customers, suppliers, files or technical components. Use
@@ -131,7 +134,7 @@ maps to P2. A request or cosmetic issue maps to P4. Everything else maps to P3.
 Do not write a priority yourself; report the evidence faithfully.
 
 Choose factors in this order:
-1. Decide triageable from the ticket alone. A product or vendor name is not
+1. Choose the category from the ticket alone. A product or vendor name is not
    required when the technical object and requested action are clear. "Register
    a sandbox callback URL" and "move my monthly report to Monday" are triageable
    requests. "Need access" is not, because it names neither object nor role.
@@ -150,9 +153,10 @@ records created by a webhook, API retry or transfer are integration; duplicates
 already present in an import or master-data matching process are data-quality.
 
 When a ticket does not give you enough to work with, say so instead of guessing.
-Use category "insufficient-information", set triageable false, use unspecified
-scope and impact, set dated_deadline_at_risk false, and put the questions you
-need answered in clarifying_questions.
+Use category "insufficient-information", use unspecified scope and impact, set
+dated_deadline_at_risk false, and put the questions you need answered in
+clarifying_questions. Every other category requires a business_impact that is
+not unspecified: if you can name the category you can judge the impact.
 
 A ticket is triageable when you can tell what system is involved and what it is
 doing wrong. Missing either one is not enough to classify:
@@ -205,13 +209,6 @@ SCHEMA = {
         "decision_factors": {
             "type": "object",
             "properties": {
-                "triageable": {
-                    "type": "boolean",
-                    "description": (
-                        "From ticket text only. False means every other factor is "
-                        "unspecified/false regardless of urgency or deadline language."
-                    ),
-                },
                 "affected_scope": {
                     "type": "string",
                     "enum": SCOPES,
@@ -227,19 +224,21 @@ SCHEMA = {
                     "description": (
                         "Business-stopping is forbidden unless affected_scope is "
                         "whole-site-or-department. Request-or-cosmetic is forbidden for "
-                        "a malfunction, duplicate, incorrect result or failed process."
+                        "a malfunction, duplicate, incorrect result or failed process. "
+                        "Unspecified is allowed only with category "
+                        "insufficient-information."
                     ),
                 },
                 "dated_deadline_at_risk": {
                     "type": "boolean",
                     "description": (
                         "A real dated cutoff named by a triageable ticket. Always false "
-                        "when triageable is false. Does not change business_impact."
+                        "when the category is insufficient-information. Does not change "
+                        "business_impact."
                     ),
                 },
             },
             "required": [
-                "triageable",
                 "affected_scope",
                 "business_impact",
                 "dated_deadline_at_risk",
@@ -286,14 +285,20 @@ def build_prompt(ticket: str, hits: list[dict]) -> str:
     ) or "(no similar incidents found)"
     return (
         f"<ticket>\n{ticket}\n</ticket>\n\n"
-        "Decide triageability and decision factors from <ticket> only.\n\n"
+        "Decide the category and decision factors from <ticket> only.\n\n"
         f"<optional_retrieved_context>\n{context}\n</optional_retrieved_context>"
     )
 
 
-def derive_priority(factors: dict) -> str:
-    """Map validated decision evidence to one priority."""
-    if not factors["triageable"]:
+def derive_priority(category: str, factors: dict) -> str:
+    """Map a validated category and its decision evidence to one priority.
+
+    The category selects `unknown` versus actionable and nothing more. A named
+    category never maps to a priority: what a fault is and how much it hurts are
+    different questions, and conflating them is how a taxonomy quietly becomes a
+    severity scale.
+    """
+    if category == ABSTAIN:
         return "unknown"
     if (
         factors["business_impact"] == "business-stopping"
@@ -308,6 +313,18 @@ def derive_priority(factors: dict) -> str:
     if factors["business_impact"] == "request-or-cosmetic":
         return "P4"
     return "P3"
+
+
+class InvalidResponse(RuntimeError):
+    """A response that broke a validation rule, with the response kept.
+
+    Subclasses RuntimeError so every existing `except RuntimeError` still
+    catches it.
+    """
+
+    def __init__(self, message: str, raw: dict | None = None):
+        super().__init__(message)
+        self.raw = raw
 
 
 def validate(result: dict) -> dict:
@@ -344,29 +361,32 @@ def validate(result: dict) -> dict:
         raise RuntimeError(f"unknown affected_scope: {factors['affected_scope']!r}")
     if factors["business_impact"] not in IMPACTS:
         raise RuntimeError(f"unknown business_impact: {factors['business_impact']!r}")
-    if not isinstance(factors["triageable"], bool):
-        raise RuntimeError("triageable must be boolean")
     if not isinstance(factors["dated_deadline_at_risk"], bool):
         raise RuntimeError("dated_deadline_at_risk must be boolean")
 
-    # Abstention is all or nothing. A half-abstention - "insufficient
-    # information, P2, 8 hour SLA" - is worse than either honest answer, because
-    # a queue reads the priority and starts a clock on a ticket nobody can act
-    # on. Enforced here rather than in the schema: JSON Schema can express the
-    # dependency, but only through a branching construct that structured output
-    # may not accept, and this is three lines.
+    # Abstention is all or nothing, and the category is the only thing that says
+    # so. There used to be a `triageable` boolean beside it carrying the same
+    # information, which meant the model could contradict itself - a named
+    # category with triageable false - and the contradiction was rejected here.
+    # Three of ninety recorded attempts died that way, each one costing a
+    # category point and a retention point as well as the answer. A state worth
+    # rejecting is better made unrepresentable: the flag is gone and derived
+    # back for the response, so there is nothing left to disagree with.
     abstained = result["category"] == ABSTAIN
-    if abstained != (not factors["triageable"]):
-        raise RuntimeError(
-            f"half-abstention: category {result['category']!r} with "
-            f"triageable={factors['triageable']} - both or neither"
-        )
     if abstained and (
         factors["affected_scope"] != "unspecified"
         or factors["business_impact"] != "unspecified"
         or factors["dated_deadline_at_risk"]
     ):
         raise RuntimeError("abstention must use unspecified scope/impact and no deadline")
+    # The other direction. Without this, a named category with no impact falls
+    # through derive_priority to P3, so "the model did not say" and "the model
+    # judged it routine" become the same output and nobody can tell them apart.
+    if not abstained and factors["business_impact"] == "unspecified":
+        raise RuntimeError(
+            f"category {result['category']!r} with unspecified business_impact - "
+            "name the impact or abstain"
+        )
     if (
         factors["business_impact"] == "business-stopping"
         and factors["affected_scope"] != "whole-site-or-department"
@@ -384,7 +404,16 @@ def validate(result: dict) -> dict:
             "clarifying_questions on a triaged ticket - ask in draft_reply instead"
         )
 
-    result["priority"] = derive_priority(factors)
+    # Derived, not reported. `triageable` stays in the public response because
+    # the accepted plan promised it there; it is computed from the category so
+    # the two cannot drift apart. A model that supplies it is already rejected
+    # by the unknown-field check above, which is where derived fields belong.
+    # Rebound rather than mutated: validate() already writes priority and
+    # sla_hours into the result it was handed, and reaching a level deeper to
+    # edit the caller's nested dict as well is how a second call on the same
+    # object starts failing on a field the first call added.
+    result["decision_factors"] = {**factors, "triageable": not abstained}
+    result["priority"] = derive_priority(result["category"], factors)
     result["sla_hours"] = SLA_HOURS[result["priority"]]
     return result
 
@@ -448,7 +477,14 @@ def triage(ticket: str, index: Bm25 | None = None) -> dict:
             f"invalid JSON response (stop_reason={response.stop_reason}, "
             f"line={exc.lineno}, column={exc.colno})"
         ) from exc
-    result = validate(decoded)
+    try:
+        result = validate(decoded)
+    except RuntimeError as exc:
+        # Keep the response that failed. An evaluation that records only the
+        # reason cannot answer what the model would have scored had the rule not
+        # fired, and three such attempts have already had to be argued about
+        # from an error string.
+        raise InvalidResponse(str(exc), raw=decoded) from exc
     result["similar"] = [
         {"id": h["id"], "type": h["type"], "title": h["title"], "score": h["score"]}
         for h in hits
@@ -488,7 +524,6 @@ def _self_check() -> None:
     good = {
         "category": "integration",
         "decision_factors": {
-            "triageable": True,
             "affected_scope": "whole-site-or-department",
             "business_impact": "business-stopping",
             "dated_deadline_at_risk": False,
@@ -502,7 +537,6 @@ def _self_check() -> None:
         **good,
         "category": ABSTAIN,
         "decision_factors": {
-            "triageable": False,
             "affected_scope": "unspecified",
             "business_impact": "unspecified",
             "dated_deadline_at_risk": False,
@@ -513,6 +547,9 @@ def _self_check() -> None:
     assert validate(dict(good))["priority"] == "P1"
     # No SLA on an abstention: nothing to start a clock on.
     assert validate(dict(abstained))["sla_hours"] is None
+    # triageable is derived from the category, in both directions.
+    assert validate(dict(good))["decision_factors"]["triageable"] is True
+    assert validate(dict(abstained))["decision_factors"]["triageable"] is False
 
     def rejects(result: dict, because: str) -> None:
         try:
@@ -534,7 +571,10 @@ def _self_check() -> None:
                                  business_impact="limited",
                                  dated_deadline_at_risk=True))["priority"] == "P2"
 
-    rejects({**good, "category": ABSTAIN}, "abstained category marked triageable")
+    rejects({**good, "category": ABSTAIN}, "an abstention carrying scope and impact")
+    rejects(with_factors(good, business_impact="unspecified"),
+            "a named category with no impact")
+    rejects(with_factors(good, triageable=True), "a model-supplied triageable")
     rejects({**good, "priority": "P1"}, "caller-supplied priority")
     rejects({**good, "sla_hours": 4}, "caller-supplied SLA")
     rejects({**abstained, "clarifying_questions": []}, "an abstention asking nothing")

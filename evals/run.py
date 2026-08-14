@@ -258,6 +258,9 @@ def summarize_live(case_rows: list[dict], baseline: dict) -> dict:
         def metric(hits: int, total: int) -> dict:
             return {"hits": hits, "total": total, "rate": hits / total if total else 0.0}
 
+        def ids(rows) -> list[str]:
+            return sorted({a["id"] for a in rows})
+
         return {
             "category": metric(
                 sum(a["got_category"] == a["expected_category"] for a in answerable),
@@ -277,6 +280,33 @@ def summarize_live(case_rows: list[dict], baseline: dict) -> dict:
                 sum(a["got_priority"] == "P1" for a in p1), len(all_p1)
             ),
             "rejected": len(attempts) - len(accepted),
+            # Which cases, not just how many. A failing pass reported as
+            # "17/20" costs somebody a replay script to find out that the same
+            # two tickets caused it every time.
+            # Counted over the full denominators, so a rejected attempt shows up
+            # as the miss it already is arithmetically: it leaves the numerator
+            # and stays in the total.
+            "missed_by": {
+                "category": ids(
+                    a for a in all_answerable
+                    if "rejected" in a or a["got_category"] != a["expected_category"]
+                ),
+                "priority": ids(
+                    a for a in all_answerable
+                    if "rejected" in a or a["got_priority"] != a["expected_priority"]
+                ),
+                "actionable_retention": ids(
+                    a for a in all_answerable if "rejected" in a or a["abstained"]
+                ),
+                "correct_abstention": ids(
+                    a for a in all_ambiguous if "rejected" in a or not a["abstained"]
+                ),
+                "p1_recall": ids(
+                    a for a in all_p1
+                    if "rejected" in a or a["got_priority"] != "P1"
+                ),
+                "rejected": ids(a for a in attempts if "rejected" in a),
+            },
         }
 
     attempts = [
@@ -291,20 +321,41 @@ def summarize_live(case_rows: list[dict], baseline: dict) -> dict:
     }
     aggregate = summarize_attempts(attempts)
 
+    # The gate, condition by condition rather than as one boolean. Eight
+    # conditions have to hold in every pass, so a failure needs to name which
+    # one; an `and` chain reports only that something was false.
     for metrics in per_run.values():
-        metrics["passes_gate"] = (
-            metrics["category"]["rate"] >= 0.90
-            and metrics["priority"]["rate"] >= 0.80
-            and metrics["correct_abstention"]["rate"] >= 0.90
-            and metrics["actionable_retention"]["rate"] >= 0.95
-            and metrics["p1_recall"]["hits"] == metrics["p1_recall"]["total"]
-            and metrics["rejected"] == 0
-            and metrics["category"]["rate"] > baseline["category_accuracy_1nn"]
-            and metrics["priority"]["rate"] > baseline["priority_accuracy_1nn"]
-        )
+        conditions = [
+            ("category >= 0.90", metrics["category"]["rate"] >= 0.90, "category"),
+            ("priority >= 0.80", metrics["priority"]["rate"] >= 0.80, "priority"),
+            ("correct_abstention >= 0.90",
+             metrics["correct_abstention"]["rate"] >= 0.90, "correct_abstention"),
+            ("actionable_retention >= 0.95",
+             metrics["actionable_retention"]["rate"] >= 0.95, "actionable_retention"),
+            ("p1_recall complete",
+             metrics["p1_recall"]["hits"] == metrics["p1_recall"]["total"], "p1_recall"),
+            ("no rejected responses", metrics["rejected"] == 0, "rejected"),
+            ("category beats 1nn",
+             metrics["category"]["rate"] > baseline["category_accuracy_1nn"], "category"),
+            ("priority beats 1nn",
+             metrics["priority"]["rate"] > baseline["priority_accuracy_1nn"], "priority"),
+        ]
+        metrics["failed_conditions"] = [
+            {"condition": label, "metric": key} for label, ok, key in conditions if not ok
+        ]
+        metrics["passes_gate"] = not metrics["failed_conditions"]
 
     unanimous = 0
+    unstable = []
     for row in case_rows:
+        outcomes = {
+            (
+                a.get("rejected", "")[:40],
+                a.get("got_category"),
+                a.get("got_priority"),
+            )
+            for a in row["attempts"]
+        }
         if all(
             "rejected" not in a
             and a["got_category"] == row["expected_category"]
@@ -312,6 +363,11 @@ def summarize_live(case_rows: list[dict], baseline: dict) -> dict:
             for a in row["attempts"]
         ):
             unanimous += 1
+        # Deterministically wrong and intermittently wrong are different
+        # defects: one is a label or a prompt, the other is stability, and a
+        # single accuracy figure hides which you have.
+        elif len(outcomes) > 1:
+            unstable.append(row["id"])
 
     return {
         "baseline": {
@@ -334,6 +390,7 @@ def summarize_live(case_rows: list[dict], baseline: dict) -> dict:
             )
         } if per_run else {},
         "unanimously_correct_cases": unanimous,
+        "unstable_cases": sorted(unstable),
         "total_cases": len(case_rows),
         "passes_gate": bool(per_run) and all(m["passes_gate"] for m in per_run.values()),
     }

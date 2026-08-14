@@ -36,9 +36,13 @@ Twelve years of incident management, ITSM and internal tooling — all of it beh
 corporate walls. This is that experience rebuilt in the open, where the code, the
 reasoning and the evals can actually be read.
 
-The interesting part is not the demo. It's `docs/` — the decision records,
-including why this deliberately has **no vector database** and what its
-**threat model** is.
+The interesting part is not the demo. It's [`docs/adr/`](docs/adr/) — six
+decision records, each carrying the case against itself: why this deliberately
+has **no vector database**, why the tool is allowed to **refuse a ticket** and
+where that still fails, why a published number is worthless without the hash of
+the prompt that produced it, and why the evaluation labels should not be
+reviewed by the person who wrote them. The **threat model** is
+[`docs/PLAN.md` §4](docs/PLAN.md#4-security).
 
 ## No real data, ever
 

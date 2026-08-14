@@ -442,12 +442,34 @@ Tactical work — a prompt wording to try, a test case to rewrite — lives in
       setting — a balance is a hard stop that cannot bill the card without a
       human action, which no application-level limiter can promise.
 
-### 3. Resolve the sealed-label review — in flight
+### 3. Resolve the sealed-label review — closed 2026-08-14, not adopted
+
+**Two reasons, and the second is the one that matters.** No reviewer is
+available and none is expected — and `golden-v2.json` was then found to agree
+with `dev.json` on the expected priority and category of all thirty cases,
+position for position. It is a rewrite of the development set rather than a
+holdout, so it could never have produced an independent number whether it was
+reviewed or not. ADR-004 carries the figures and
+`python -m evals.validate_data` reproduces them. The set is retired as sealed
+evidence.
+
+**Therefore `golden-v2.json` stays unreviewed and unspent.** `golden-v2.review.json` keeps its
+`pending-human-review` status deliberately: it is what makes
+`evals/live.py --sealed` refuse to run, and that refusal is now the intended
+end state rather than a blocker. The fallback this plan and ADR-006 both stated
+in advance — author-label, publish with the limitation attached — was considered
+and rejected: it would put a number produced from author-written labels where a
+held-out measurement belongs, which costs more than the number is worth. ADR-006
+records the reasoning and ADR-002 is now development-set only.
+
+Item 4 below is closed by the same decision. Item 5 never depended on it.
+
+The original entry is kept below because the evidence in it is still true and
+the shape of the decision is worth reading.
 
 `golden-v2.review.json` is `pending-human-review`. `LABEL_REVIEW.md` requires a
 support-domain practitioner who is not the author and never sees model output,
-prompts or expected labels. ADR-002 stays `proposed` until this resolves, and
-items 4 and 5 of the structured-priority work sit behind it.
+prompts or expected labels.
 
 **De-risked 2026-08-13.** An independent blind pass over all 30 cases agreed with
 the sealed labels on **category 30/30 and priority 30/30**, disagreeing only on
@@ -473,7 +495,18 @@ better than a sealed set that never unseals. Decide within the week.
 *Done when:* the receipt carries a status that is not `pending` and a dataset
 SHA-256 that matches the file.
 
-### 4. Close the two-golden-set fork
+### 4. Close the two-golden-set fork — closed 2026-08-14 by the decision above
+
+**`golden.json` stays canonical and `golden-v2.json` is retired.** There is no
+fork to close: one dataset produces every published number, and the other turned
+out not to be a holdout at all. The structured candidate lives on
+`feature/structured-triage-evidence` as a documented experiment, which is the
+useful thing it can still be — a change that was built, measured, and left
+behind on purpose, with the receipt to show for it.
+
+`evals/run.py` keeps its `golden.json` default. Nothing below happens.
+
+The original entry follows.
 
 **Why.** `evals/run.py` scores `golden.json` — 15 cases, 10 answerable and 5
 ambiguous — and every published number rests on it. `golden-v2.json` is 30 cases,

@@ -31,4 +31,8 @@ Thumbs.db
 # out of context, unlike evals/live-results.json which is a published
 # measurement and IS committed.
 evals/dev-results.json
+evals/sealed-results.failed.json
 evals/golden-v2.blind-review.json
+
+# Agent-to-agent working notes. Kept locally, not part of the published docs.
+docs/REVIEW-THREAD.md

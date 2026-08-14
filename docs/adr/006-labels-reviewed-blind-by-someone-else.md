@@ -1,7 +1,8 @@
 # ADR-006: Evaluation labels are reviewed blind, by someone who is not the author
 
-- **Status:** proposed — blocked on a reviewer
-- **Date:** 2026-08-13
+- **Status:** not adopted — no reviewer available, and the dataset it would have
+  reviewed turned out not to be independent. See "Outcome" below.
+- **Date:** 2026-08-13, closed 2026-08-14
 - **Reverses:** nothing
 - **Reversed by:** nothing yet
 
@@ -105,6 +106,52 @@ produces. That is weaker than independent review and stronger than an
 indefinite wait, and saying so up front is what stops the fallback becoming a
 quiet default.
 
+## Outcome — 2026-08-14
+
+No support-domain practitioner outside the project was available, and none is
+expected. The decision cannot be executed, so it is closed as **not adopted**
+rather than left proposed indefinitely.
+
+**The pre-committed fallback was not taken either.** This document said in
+advance that the answer would be to author-label, record `author-labelled` and
+publish with the limitation stated. The decision actually taken is a third
+option: `evals/golden-v2.json` stays **unreviewed and unspent**.
+`golden-v2.review.json` remains `pending-human-review`, which is what makes
+`evals/live.py --sealed` refuse to run, and the refusal is now the intended
+behaviour rather than an obstacle.
+
+The reasoning for going further than the fallback: author-labelled numbers from
+a set the author also wrote would be presented as a held-out measurement, and
+the failure this ADR exists to prevent — measuring onto favourable ground
+without noticing — is exactly the one that survives author labelling. Publishing
+nothing costs a number. Publishing an author-labelled number costs the argument
+that every claim here is checkable, which is the whole product.
+
+Consequences, all of them real:
+
+- The structured-priority candidate has no publishable score and stays on its
+  branch. The page keeps citing the phase-1 measurement.
+- The development set can still say whether a candidate is worth keeping. It
+  cannot say how good it is, because it is the set the candidate is tuned
+  against.
+- Thirty sealed cases and a written rubric remain, unspent and undisclosed. If a
+  reviewer ever appears, the review is still runnable exactly as designed, which
+  is why the tooling is kept rather than deleted.
+
+**Amended the same day: reviewing those thirty cases would not have helped.**
+`golden-v2.json` agrees with `evals/dev.json` on the expected priority of all
+thirty cases and the expected category of all thirty, position for position —
+see ADR-004. A blind reviewer confirming the labels would have confirmed labels
+that were correct and still not independent, and the receipt would have carried
+a reviewer's role beside a measurement that re-asked the development questions.
+The review was blocked on a person; the dataset was broken regardless of the
+person. That ordering matters: a missing reviewer looks like a scheduling
+problem, and this was never one.
+- A fallback stated in advance and then not taken is worth recording as such.
+  Pre-committing to a weaker option makes it easier to choose, and that is the
+  point of writing it down — but it does not oblige anyone to take it when the
+  weaker option turns out to cost more than it buys.
+
 ## What would change this decision
 
 - **The dataset grows past what one reviewer can read.** Sampled review with a
@@ -112,7 +159,9 @@ quiet default.
 - **A second reviewer becomes available.** Then inter-rater reliability is worth
   more than the exact-agreement gate, and the gate should be relaxed to a
   measured disagreement threshold.
-- **No reviewer is found within the week.** Take the fallback and say so.
+- ~~**No reviewer is found within the week.** Take the fallback and say so.~~
+  Resolved 2026-08-14: no reviewer, and the fallback was rejected in favour of
+  leaving the set unspent. See "Outcome".
 
 ## Notes
 

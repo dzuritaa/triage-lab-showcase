@@ -135,7 +135,7 @@ triage-lab/
     golden.json         10 answerable + 5 ambiguous. HELD OUT — never tune against it
     run.py              offline scorecard, stdlib only, the CI gate
     live.py             the only thing that scores the MODEL. Needs a key, costs money
-    dev-priority.json   10 development cases. Tune against these instead
+    dev.json            30 development cases. Tune against these instead
     live-results.json   the measurement the landing page cites
     *-baseline.json,    recorded evidence for published claims; see docs/MAINTENANCE.md
       *-failed-*.json
@@ -172,7 +172,7 @@ python -m evals.live --dev                  # priority development set, 10 calls
 ```
 
 **Tune against `--dev`. Measure with the golden set, once, at the end.**
-`evals/dev-priority.json` exists to be overfitted; `evals/golden.json` is held
+`evals/dev.json` exists to be overfitted; `evals/golden.json` is held
 out, and a prompt tuned until its ten cases pass is fitted to them. The two
 runs write to different files so an iteration cannot overwrite the measurement
 the landing page cites, and `evals/dev-results.json` is gitignored because it is
@@ -568,7 +568,7 @@ plus `checkout -- .` discards work in progress.
       bias". Priority went 6/10 → 4/10. Do not retry this wording.
 - [ ] **Priority over-escalation is still unfixed. The dev set now exists; the
       tuning has not been done.** Three cases (EVAL-06, 07, 10) escalate under
-      both prompts tried so far. `evals/dev-priority.json` and
+      both prompts tried so far. `evals/dev.json` and
       `python -m evals.live --dev` are the tools — iterate there until the
       per-guard breakdown is clean in all three classes, *then* spend one golden
       run. Two rules learned the expensive way: change one thing per run, and

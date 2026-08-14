@@ -100,7 +100,7 @@ Learned twice, expensively, on 2026-08-13 — both attempts are written up in
 
 - **One change per run.** The first attempt bundled two edits, and only luck in
   where the failures landed made the damage attributable at all.
-- **Tune against `evals/dev-priority.json`, never against `golden.json`.** The
+- **Tune against `evals/dev.json`, never against `golden.json`.** The
   golden set is the measurement; a prompt tuned until its cases pass is fitted
   to them and the number stops meaning anything.
 - **Read all three guard classes, not the one being aimed at.** The failed

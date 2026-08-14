@@ -76,9 +76,11 @@ service desk at ~200 incidents a month, not a generic chatbot demo.
   does not cover the figure is 4 of 9 — the tool refuses ordinary work when
   retrieval finds nothing related. Any claim about abstention must carry that
   condition until it is fixed.
-- **Priority is the weak spot and must be stated as one.** The model scores 6 of
-  10 against a 7 of 10 keyword baseline, and every miss is an escalation by one
-  level. Do not quote the category and abstention wins without it.
+- **Priority is the weak spot and must be stated as one.** The model scores 7 of
+  10 against a 7 of 10 keyword baseline — level, so the model call buys nothing
+  here — and every miss is an escalation by one level. Do not quote the category
+  and abstention wins without it, and do not describe a one-case movement
+  between single runs as an improvement.
 - Abstention is all or nothing wherever it is shown. A category of
   `insufficient-information` carries no priority and no SLA, because a clock
   cannot start on a ticket nobody can act on yet.
@@ -105,7 +107,7 @@ service desk at ~200 incidents a month, not a generic chatbot demo.
   and scorecard. The replacement candidate stays separate until it passes.
 - `data/incidents.json`, `data/kb.json`, `data/README.md` — the synthetic
   corpus and its data dictionary, including its stated limitations.
-- `docs/CASE_STUDY.md`, `docs/THREAT_MODEL.md` — measured experiments,
+- `docs/CASE_STUDY.md`, `docs/PLAN.md` §4 — measured experiments,
   limitations, and the public-demo security requirements.
 - `.gitleaks.toml`, `scripts/canary-check.sh` — the secret-scanning gates and
   the test that proves they work.

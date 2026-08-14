@@ -1,0 +1,189 @@
+{
+  "model": "claude-haiku-4-5",
+  "source": "dev-priority.json",
+  "date": "2026-08-13",
+  "n_cases": 10,
+  "input_tokens": 16481,
+  "output_tokens": 2381,
+  "cost_usd": 0.028386,
+  "cases": [
+    {
+      "id": "DEV-01",
+      "expected_category": "performance",
+      "got_category": "performance",
+      "expected_priority": "P3",
+      "got_priority": "P2",
+      "abstained": false,
+      "should_abstain": false,
+      "questions": [],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1737,
+        "output_tokens": 243
+      }
+    },
+    {
+      "id": "DEV-02",
+      "expected_category": "batch-reporting",
+      "got_category": "batch-reporting",
+      "expected_priority": "P3",
+      "got_priority": "P2",
+      "abstained": false,
+      "should_abstain": false,
+      "questions": [],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1699,
+        "output_tokens": 241
+      }
+    },
+    {
+      "id": "DEV-03",
+      "expected_category": "data-quality",
+      "got_category": "insufficient-information",
+      "expected_priority": "P3",
+      "got_priority": "unknown",
+      "abstained": true,
+      "should_abstain": false,
+      "questions": [
+        "What system or tool generates the membership export?",
+        "How are the duplicates occurring — are they being created during export, or do they already exist in the source data?",
+        "Is this a one-off issue with the current export, or has it been happening repeatedly across multiple exports?"
+      ],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1682,
+        "output_tokens": 211
+      }
+    },
+    {
+      "id": "DEV-04",
+      "expected_category": "access-identity",
+      "got_category": "access-identity",
+      "expected_priority": "P2",
+      "got_priority": "P2",
+      "abstained": false,
+      "should_abstain": false,
+      "questions": [],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1687,
+        "output_tokens": 230
+      }
+    },
+    {
+      "id": "DEV-05",
+      "expected_category": "integration",
+      "got_category": "integration",
+      "expected_priority": "P2",
+      "got_priority": "P1",
+      "abstained": false,
+      "should_abstain": false,
+      "questions": [],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1646,
+        "output_tokens": 216
+      }
+    },
+    {
+      "id": "DEV-06",
+      "expected_category": "integration",
+      "got_category": "insufficient-information",
+      "expected_priority": "P1",
+      "got_priority": "unknown",
+      "abstained": true,
+      "should_abstain": false,
+      "questions": [
+        "What is the exact error message shown at checkout?",
+        "When did this start - approximate time and date?",
+        "Has checkout ever worked in your environment, or is this a new deployment?",
+        "What payment processor or gateway handles card transactions (e.g. Stripe, Square, Adyen)?"
+      ],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1568,
+        "output_tokens": 225
+      }
+    },
+    {
+      "id": "DEV-07",
+      "expected_category": "integration",
+      "got_category": "insufficient-information",
+      "expected_priority": "P2",
+      "got_priority": "unknown",
+      "abstained": true,
+      "should_abstain": false,
+      "questions": [
+        "Which checkout system or platform is affected?",
+        "What error message or symptom do customers see?",
+        "Is this affecting a specific product, payment method, region, or browser?",
+        "When did this start?"
+      ],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1577,
+        "output_tokens": 215
+      }
+    },
+    {
+      "id": "DEV-08",
+      "expected_category": "access-identity",
+      "got_category": "insufficient-information",
+      "expected_priority": "P3",
+      "got_priority": "unknown",
+      "abstained": true,
+      "should_abstain": false,
+      "questions": [
+        "What is the complete error message or any additional text shown with error 809?",
+        "Which VPN client software and version is installed on the new laptops?",
+        "What operating system and version are the new laptops running?",
+        "Are the new laptops domain-joined and receiving group policy, or are they standalone?",
+        "Have any of these new laptops successfully connected to the VPN before, or is this the first attempt?"
+      ],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1532,
+        "output_tokens": 331
+      }
+    },
+    {
+      "id": "DEV-09",
+      "expected_category": "access-identity",
+      "got_category": "insufficient-information",
+      "expected_priority": "P3",
+      "got_priority": "unknown",
+      "abstained": true,
+      "should_abstain": false,
+      "questions": [
+        "Which system or application are you trying to approve the purchase order in?",
+        "When did this start happening - has it ever worked for POs over £5,000, or is this new behaviour?",
+        "Do you have the required approval authority for amounts over £5,000 in your role?"
+      ],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1677,
+        "output_tokens": 246
+      }
+    },
+    {
+      "id": "DEV-10",
+      "expected_category": "insufficient-information",
+      "got_category": "insufficient-information",
+      "expected_priority": "unknown",
+      "got_priority": "unknown",
+      "abstained": true,
+      "should_abstain": true,
+      "questions": [
+        "What system or application are you experiencing a problem with?",
+        "What is the specific symptom or error you are seeing? For example: is something slow, broken, unavailable, or showing wrong data?",
+        "How many people are affected and are you unable to work, or can you work with difficulty?"
+      ],
+      "tokens": {
+        "model": "claude-haiku-4-5-20251001",
+        "input_tokens": 1676,
+        "output_tokens": 223
+      }
+    }
+  ]
+}

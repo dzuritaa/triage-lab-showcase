@@ -608,7 +608,7 @@
       Asked about <q>cannot enter site</q>, it wanted to know which site:
       building, website, or application. That is the ambiguity the case was
       written to test. Measured with one command,
-      <code>python -m evals.live</code>, at a cost of $0.0424 for the full run.
+      <code>python -m evals.live</code>, at a cost of $0.0448 for the full run.
     </p>
 
     <h3 style="margin-top:2.2rem">The second half of that result did not survive a harder test</h3>
@@ -658,30 +658,32 @@
   </section>
 
   <section id="escalation">
-    <h2>The one thing it does worse than a keyword search</h2>
+    <h2>The one thing it cannot beat a keyword search at</h2>
     <p>
       The same run scored category and priority against the baselines those
       metrics exist to challenge. Category went from six of ten to
-      <strong>ten of ten</strong>. Priority went the other way: the model gets
-      <strong>six of ten</strong> where returning the priority of the nearest
-      document gets seven.
+      <strong>ten of ten</strong>. Priority did not move at all: the model gets
+      <strong>seven of ten</strong>, and so does returning the priority of the
+      nearest document. Paying for a language model bought nothing here.
     </p>
 
     <div class="tally" role="img" aria-label="Model category accuracy: 10 of 10 cases, against a nearest-neighbour baseline of 6 of 10">
       <div class="cap"><strong>Model, category accuracy</strong> <span class="of">10 of 10 cases</span> <span class="vs">nearest neighbour: 6 of 10</span></div>
       <div class="boxes"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
     </div>
-    <div class="tally" role="img" aria-label="Model priority accuracy: 6 of 10 cases, below the nearest-neighbour baseline of 7 of 10">
-      <div class="cap"><strong>Model, priority accuracy</strong> <span class="of">6 of 10 cases</span> <span class="vs">nearest neighbour: 7 of 10 — the model loses</span></div>
-      <div class="boxes"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+    <div class="tally" role="img" aria-label="Model priority accuracy: 7 of 10 cases, level with the nearest-neighbour baseline of 7 of 10">
+      <div class="cap"><strong>Model, priority accuracy</strong> <span class="of">7 of 10 cases</span> <span class="vs">nearest neighbour: 7 of 10 — level</span></div>
+      <div class="boxes"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
     </div>
 
     <p style="margin-top:1.6rem">
-      The four misses are not scattered. Every one is an <strong>escalation, by
-      exactly one level</strong>. Nothing was ever rated too low. A tool that
-      inflates one ticket in three floods the queue it was built to sort, and
-      averaged into a single accuracy figure that bias is invisible — six of ten
-      looks like noise until you read which way each miss went.
+      The three misses are not scattered. Every one is an <strong>escalation, by
+      exactly one level</strong>. Nothing was ever rated too low, and the same
+      three tickets have escalated under every version of the prompt tried so
+      far. A tool that inflates one ticket in three floods the queue it was
+      built to sort, and averaged into a single accuracy figure that bias is
+      invisible — seven of ten looks respectable until you read which way each
+      miss went.
     </p>
 
     <div class="vs2">
@@ -704,22 +706,31 @@
       thing that sentence forbids.
     </p>
     <p style="margin-top:1.6rem">
-      That diagnosis was tested, and it was wrong. Adding the missing downward
-      rule — a comfortable deadline is not pressure, user count alone does not
-      raise priority, reserve P1 for work that has stopped — took priority from
-      six of ten to <strong>four of ten</strong>. It repaired one case, broke
-      three, and did nothing at all to the three it was aimed at, which escalated
-      exactly as before. The clause narrowing P1 pushed a genuine P1 down: a
-      nightly load that had halted, with every dashboard in the business stale,
-      was read as merely degraded. A fourth case stopped being triaged at all.
+      That diagnosis was tested, and it was wrong. An earlier version of the
+      prompt scored six of ten here. Adding the missing downward rule — a
+      comfortable deadline is not pressure, user count alone does not raise
+      priority, reserve P1 for work that has stopped — took it to
+      <strong>four</strong>. It repaired one case, broke three, and did nothing
+      at all to the three it was aimed at, which escalated exactly as before.
+      The clause narrowing P1 pushed a genuine P1 down: a nightly load that had
+      halted, with every dashboard in the business stale, was read as merely
+      degraded. A fourth case stopped being triaged at all. It was reverted.
+    </p>
+    <p>
+      The seven above was measured later still, after an unrelated change to
+      when the tool is allowed to decline. One case moved. That is not evidence
+      the change helped priority: these are single runs of a system that does
+      not have to answer identically twice, and one ticket in ten is inside the
+      range where nothing needs to have caused it. The stable signal is the
+      three tickets that have escalated under every prompt tried.
     </p>
     <p class="note">
-      The prompt was reverted and the numbers above are the ones that stand. The
-      failed run is in the repository next to the good one. Two things are worth
-      taking from it: a plausible diagnosis of a measured bias can be wrong in a
-      direction that makes everything worse, and the only reason that is a
-      sentence on this page rather than a quiet regression is that the run was
-      scored before and after.
+      Two things are worth taking from this. A plausible diagnosis of a measured
+      bias can be wrong in a direction that makes everything worse — the failed
+      run sits in the repository next to the good one. And the only reason any
+      of it is a sentence on this page rather than a quiet regression is that
+      each version was scored before and after, against the same held-out cases,
+      with the prompt that produced every number recorded beside it.
     </p>
   </section>
 

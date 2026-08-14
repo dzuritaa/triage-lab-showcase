@@ -38,10 +38,14 @@ Twelve years of incident management, ITSM and internal tooling — all of it beh
 corporate walls. This is that experience rebuilt in the open, where the code, the
 reasoning and the evals can actually be read.
 
-The interesting part is not the demo. It's `docs/` — the decision records,
-including why this deliberately has **no vector database** and what its
-**threat model** is, the [evaluation case study](docs/CASE_STUDY.md) with the
-experiments that failed, and [what is left](docs/PLAN.md).
+The interesting part is not the demo. It's [`docs/adr/`](docs/adr/) — six
+decision records, each carrying the case against itself: why this deliberately
+has **no vector database**, why the tool is allowed to **refuse a ticket** and
+where that still fails, why a published number is worthless without the hash of
+the prompt that produced it, and why the evaluation labels should not be
+reviewed by the person who wrote them. The **threat model** is
+[`docs/PLAN.md` §4](docs/PLAN.md#4-security), and the
+[evaluation case study](docs/CASE_STUDY.md) carries the experiments that failed.
 
 ## No real data, ever
 
@@ -62,7 +66,7 @@ threat is cost exhaustion rather than data theft:
 - Past the cap the demo degrades back to fixtures instead of erroring
 - An independent spend cap is set on the API key itself
 
-Threat model: [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md).
+Threat model: [`docs/PLAN.md` §4](docs/PLAN.md#4-security).
 
 ## Development
 

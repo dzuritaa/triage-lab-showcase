@@ -1,0 +1,2345 @@
+{
+  "schema_version": 2,
+  "model": "claude-haiku-4-5",
+  "dataset": {
+    "file": "dev.json",
+    "sha256": "f18e6ec9e5852098dfa3f061908538a697381fe3f0bdb76aa7eef506aad5009d"
+  },
+  "prompt_sha256": "8aafd1b67c3b2b787e2fcf7314ef15b6ffa5e5ed52eacfc0a32891d89600b713",
+  "schema_sha256": "3c9b01edbcd610502afc85061d9334f6b017b0066f9a8d0bde1a24b6c334aea9",
+  "git": {
+    "head": "8abd3951101ef8d40f39a1a64e5874091d08260e",
+    "dirty": false
+  },
+  "date": "2026-08-14",
+  "runs": 3,
+  "n_cases": 30,
+  "input_tokens": 251588,
+  "output_tokens": 23611,
+  "cost_usd": 0.369643,
+  "summary": {
+    "baseline": {
+      "category_accuracy_1nn": 0.55,
+      "priority_accuracy_1nn": 0.35
+    },
+    "per_run": {
+      "1": {
+        "category": {
+          "hits": 17,
+          "total": 20,
+          "rate": 0.85
+        },
+        "priority": {
+          "hits": 18,
+          "total": 20,
+          "rate": 0.9
+        },
+        "actionable_retention": {
+          "hits": 19,
+          "total": 20,
+          "rate": 0.95
+        },
+        "correct_abstention": {
+          "hits": 10,
+          "total": 10,
+          "rate": 1.0
+        },
+        "p1_recall": {
+          "hits": 4,
+          "total": 4,
+          "rate": 1.0
+        },
+        "rejected": 1,
+        "missed_by": {
+          "category": [
+            "DEV2-002",
+            "DEV2-010",
+            "DEV2-016"
+          ],
+          "priority": [
+            "DEV2-002",
+            "DEV2-003"
+          ],
+          "actionable_retention": [
+            "DEV2-002"
+          ],
+          "correct_abstention": [],
+          "p1_recall": [],
+          "rejected": [
+            "DEV2-002"
+          ]
+        },
+        "failed_conditions": [
+          {
+            "condition": "category >= 0.90",
+            "metric": "category"
+          },
+          {
+            "condition": "no rejected responses",
+            "metric": "rejected"
+          }
+        ],
+        "passes_gate": false
+      },
+      "2": {
+        "category": {
+          "hits": 18,
+          "total": 20,
+          "rate": 0.9
+        },
+        "priority": {
+          "hits": 20,
+          "total": 20,
+          "rate": 1.0
+        },
+        "actionable_retention": {
+          "hits": 20,
+          "total": 20,
+          "rate": 1.0
+        },
+        "correct_abstention": {
+          "hits": 10,
+          "total": 10,
+          "rate": 1.0
+        },
+        "p1_recall": {
+          "hits": 4,
+          "total": 4,
+          "rate": 1.0
+        },
+        "rejected": 0,
+        "missed_by": {
+          "category": [
+            "DEV2-010",
+            "DEV2-016"
+          ],
+          "priority": [],
+          "actionable_retention": [],
+          "correct_abstention": [],
+          "p1_recall": [],
+          "rejected": []
+        },
+        "failed_conditions": [],
+        "passes_gate": true
+      },
+      "3": {
+        "category": {
+          "hits": 18,
+          "total": 20,
+          "rate": 0.9
+        },
+        "priority": {
+          "hits": 20,
+          "total": 20,
+          "rate": 1.0
+        },
+        "actionable_retention": {
+          "hits": 20,
+          "total": 20,
+          "rate": 1.0
+        },
+        "correct_abstention": {
+          "hits": 10,
+          "total": 10,
+          "rate": 1.0
+        },
+        "p1_recall": {
+          "hits": 4,
+          "total": 4,
+          "rate": 1.0
+        },
+        "rejected": 0,
+        "missed_by": {
+          "category": [
+            "DEV2-010",
+            "DEV2-016"
+          ],
+          "priority": [],
+          "actionable_retention": [],
+          "correct_abstention": [],
+          "p1_recall": [],
+          "rejected": []
+        },
+        "failed_conditions": [],
+        "passes_gate": true
+      }
+    },
+    "aggregate": {
+      "category": {
+        "hits": 53,
+        "total": 60,
+        "rate": 0.8833333333333333
+      },
+      "priority": {
+        "hits": 58,
+        "total": 60,
+        "rate": 0.9666666666666667
+      },
+      "actionable_retention": {
+        "hits": 59,
+        "total": 60,
+        "rate": 0.9833333333333333
+      },
+      "correct_abstention": {
+        "hits": 30,
+        "total": 30,
+        "rate": 1.0
+      },
+      "p1_recall": {
+        "hits": 12,
+        "total": 12,
+        "rate": 1.0
+      },
+      "rejected": 1,
+      "missed_by": {
+        "category": [
+          "DEV2-002",
+          "DEV2-010",
+          "DEV2-016"
+        ],
+        "priority": [
+          "DEV2-002",
+          "DEV2-003"
+        ],
+        "actionable_retention": [
+          "DEV2-002"
+        ],
+        "correct_abstention": [],
+        "p1_recall": [],
+        "rejected": [
+          "DEV2-002"
+        ]
+      }
+    },
+    "ranges": {
+      "category": {
+        "min": 0.85,
+        "max": 0.9
+      },
+      "priority": {
+        "min": 0.9,
+        "max": 1.0
+      },
+      "correct_abstention": {
+        "min": 1.0,
+        "max": 1.0
+      },
+      "actionable_retention": {
+        "min": 0.95,
+        "max": 1.0
+      },
+      "p1_recall": {
+        "min": 1.0,
+        "max": 1.0
+      }
+    },
+    "unanimously_correct_cases": 26,
+    "unstable_cases": [
+      "DEV2-002",
+      "DEV2-003"
+    ],
+    "total_cases": 30,
+    "passes_gate": false
+  },
+  "cases": [
+    {
+      "id": "DEV2-001",
+      "expected_category": "access-identity",
+      "expected_priority": "P1",
+      "attempts": [
+        {
+          "id": "DEV2-001",
+          "run": 1,
+          "got_category": "access-identity",
+          "got_priority": "P1",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "whole-site-or-department",
+            "business_impact": "business-stopping",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2796,
+            "output_tokens": 334
+          },
+          "should_abstain": false,
+          "expected_category": "access-identity",
+          "expected_priority": "P1"
+        },
+        {
+          "id": "DEV2-001",
+          "run": 2,
+          "got_category": "access-identity",
+          "got_priority": "P1",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "whole-site-or-department",
+            "business_impact": "business-stopping",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2796,
+            "output_tokens": 263
+          },
+          "should_abstain": false,
+          "expected_category": "access-identity",
+          "expected_priority": "P1"
+        },
+        {
+          "id": "DEV2-001",
+          "run": 3,
+          "got_category": "access-identity",
+          "got_priority": "P1",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "whole-site-or-department",
+            "business_impact": "business-stopping",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2796,
+            "output_tokens": 277
+          },
+          "should_abstain": false,
+          "expected_category": "access-identity",
+          "expected_priority": "P1"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-002",
+      "expected_category": "access-identity",
+      "expected_priority": "P2",
+      "attempts": [
+        {
+          "id": "DEV2-002",
+          "run": 1,
+          "rejected": "InvalidResponse: business-stopping requires whole-site-or-department scope",
+          "raw": {
+            "category": "access-identity",
+            "decision_factors": {
+              "affected_scope": "single-user",
+              "business_impact": "business-stopping",
+              "dated_deadline_at_risk": true
+            },
+            "clarifying_questions": [],
+            "reasoning": "The reporter is the sole payroll approver unable to authenticate to the approval portal with a named dated deadline at 14:00 today that gates staff payment, making this an access-identity issue with business-stopping impact to the payroll process.",
+            "root_cause_direction": "Check whether a recent password change has left a stale SSO session or refresh token blocking re-authentication to the approval portal, similar to INC-1001. Verify SSO session state and force sign-out across all sessions.",
+            "draft_reply": "I understand the time pressure. Sign-in loops after a password change often stem from stale SSO sessions not being invalidated by the password reset. I need to clear your SSO session from the identity provider immediately. Please sign out of the approval portal and any other systems, then try signing in again. If that does not work, let me know and we will escalate to identity access. In parallel, can you confirm whether you have tried a different browser, or cleared your browser cache and cookies for the approval portal? We need you back in before 14:00."
+          },
+          "should_abstain": false,
+          "expected_category": "access-identity",
+          "expected_priority": "P2"
+        },
+        {
+          "id": "DEV2-002",
+          "run": 2,
+          "got_category": "access-identity",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": true,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2887,
+            "output_tokens": 285
+          },
+          "should_abstain": false,
+          "expected_category": "access-identity",
+          "expected_priority": "P2"
+        },
+        {
+          "id": "DEV2-002",
+          "run": 3,
+          "got_category": "access-identity",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": true,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2887,
+            "output_tokens": 283
+          },
+          "should_abstain": false,
+          "expected_category": "access-identity",
+          "expected_priority": "P2"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-003",
+      "expected_category": "access-identity",
+      "expected_priority": "P3",
+      "attempts": [
+        {
+          "id": "DEV2-003",
+          "run": 1,
+          "got_category": "access-identity",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2791,
+            "output_tokens": 363
+          },
+          "should_abstain": false,
+          "expected_category": "access-identity",
+          "expected_priority": "P3"
+        },
+        {
+          "id": "DEV2-003",
+          "run": 2,
+          "got_category": "access-identity",
+          "got_priority": "P3",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "limited",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2791,
+            "output_tokens": 248
+          },
+          "should_abstain": false,
+          "expected_category": "access-identity",
+          "expected_priority": "P3"
+        },
+        {
+          "id": "DEV2-003",
+          "run": 3,
+          "got_category": "access-identity",
+          "got_priority": "P3",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "limited",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2791,
+            "output_tokens": 302
+          },
+          "should_abstain": false,
+          "expected_category": "access-identity",
+          "expected_priority": "P3"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-004",
+      "expected_category": "access-identity",
+      "expected_priority": "P4",
+      "attempts": [
+        {
+          "id": "DEV2-004",
+          "run": 1,
+          "got_category": "access-identity",
+          "got_priority": "P4",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "request-or-cosmetic",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2794,
+            "output_tokens": 208
+          },
+          "should_abstain": false,
+          "expected_category": "access-identity",
+          "expected_priority": "P4"
+        },
+        {
+          "id": "DEV2-004",
+          "run": 2,
+          "got_category": "access-identity",
+          "got_priority": "P4",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "request-or-cosmetic",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2794,
+            "output_tokens": 215
+          },
+          "should_abstain": false,
+          "expected_category": "access-identity",
+          "expected_priority": "P4"
+        },
+        {
+          "id": "DEV2-004",
+          "run": 3,
+          "got_category": "access-identity",
+          "got_priority": "P4",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "request-or-cosmetic",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2794,
+            "output_tokens": 194
+          },
+          "should_abstain": false,
+          "expected_category": "access-identity",
+          "expected_priority": "P4"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-005",
+      "expected_category": "integration",
+      "expected_priority": "P1",
+      "attempts": [
+        {
+          "id": "DEV2-005",
+          "run": 1,
+          "got_category": "integration",
+          "got_priority": "P1",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "whole-site-or-department",
+            "business_impact": "business-stopping",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2849,
+            "output_tokens": 267
+          },
+          "should_abstain": false,
+          "expected_category": "integration",
+          "expected_priority": "P1"
+        },
+        {
+          "id": "DEV2-005",
+          "run": 2,
+          "got_category": "integration",
+          "got_priority": "P1",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "whole-site-or-department",
+            "business_impact": "business-stopping",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2849,
+            "output_tokens": 273
+          },
+          "should_abstain": false,
+          "expected_category": "integration",
+          "expected_priority": "P1"
+        },
+        {
+          "id": "DEV2-005",
+          "run": 3,
+          "got_category": "integration",
+          "got_priority": "P1",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "whole-site-or-department",
+            "business_impact": "business-stopping",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2849,
+            "output_tokens": 213
+          },
+          "should_abstain": false,
+          "expected_category": "integration",
+          "expected_priority": "P1"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-006",
+      "expected_category": "integration",
+      "expected_priority": "P2",
+      "attempts": [
+        {
+          "id": "DEV2-006",
+          "run": 1,
+          "got_category": "integration",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2752,
+            "output_tokens": 300
+          },
+          "should_abstain": false,
+          "expected_category": "integration",
+          "expected_priority": "P2"
+        },
+        {
+          "id": "DEV2-006",
+          "run": 2,
+          "got_category": "integration",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2752,
+            "output_tokens": 332
+          },
+          "should_abstain": false,
+          "expected_category": "integration",
+          "expected_priority": "P2"
+        },
+        {
+          "id": "DEV2-006",
+          "run": 3,
+          "got_category": "integration",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2752,
+            "output_tokens": 307
+          },
+          "should_abstain": false,
+          "expected_category": "integration",
+          "expected_priority": "P2"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-007",
+      "expected_category": "integration",
+      "expected_priority": "P3",
+      "attempts": [
+        {
+          "id": "DEV2-007",
+          "run": 1,
+          "got_category": "integration",
+          "got_priority": "P3",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "limited",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2875,
+            "output_tokens": 277
+          },
+          "should_abstain": false,
+          "expected_category": "integration",
+          "expected_priority": "P3"
+        },
+        {
+          "id": "DEV2-007",
+          "run": 2,
+          "got_category": "integration",
+          "got_priority": "P3",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "limited",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2875,
+            "output_tokens": 246
+          },
+          "should_abstain": false,
+          "expected_category": "integration",
+          "expected_priority": "P3"
+        },
+        {
+          "id": "DEV2-007",
+          "run": 3,
+          "got_category": "integration",
+          "got_priority": "P3",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "limited",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2875,
+            "output_tokens": 307
+          },
+          "should_abstain": false,
+          "expected_category": "integration",
+          "expected_priority": "P3"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-008",
+      "expected_category": "integration",
+      "expected_priority": "P4",
+      "attempts": [
+        {
+          "id": "DEV2-008",
+          "run": 1,
+          "got_category": "integration",
+          "got_priority": "P4",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "request-or-cosmetic",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2767,
+            "output_tokens": 180
+          },
+          "should_abstain": false,
+          "expected_category": "integration",
+          "expected_priority": "P4"
+        },
+        {
+          "id": "DEV2-008",
+          "run": 2,
+          "got_category": "integration",
+          "got_priority": "P4",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "request-or-cosmetic",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2767,
+            "output_tokens": 204
+          },
+          "should_abstain": false,
+          "expected_category": "integration",
+          "expected_priority": "P4"
+        },
+        {
+          "id": "DEV2-008",
+          "run": 3,
+          "got_category": "integration",
+          "got_priority": "P4",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "request-or-cosmetic",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2767,
+            "output_tokens": 172
+          },
+          "should_abstain": false,
+          "expected_category": "integration",
+          "expected_priority": "P4"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-009",
+      "expected_category": "performance",
+      "expected_priority": "P1",
+      "attempts": [
+        {
+          "id": "DEV2-009",
+          "run": 1,
+          "got_category": "performance",
+          "got_priority": "P1",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "whole-site-or-department",
+            "business_impact": "business-stopping",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2900,
+            "output_tokens": 283
+          },
+          "should_abstain": false,
+          "expected_category": "performance",
+          "expected_priority": "P1"
+        },
+        {
+          "id": "DEV2-009",
+          "run": 2,
+          "got_category": "performance",
+          "got_priority": "P1",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "whole-site-or-department",
+            "business_impact": "business-stopping",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2900,
+            "output_tokens": 279
+          },
+          "should_abstain": false,
+          "expected_category": "performance",
+          "expected_priority": "P1"
+        },
+        {
+          "id": "DEV2-009",
+          "run": 3,
+          "got_category": "performance",
+          "got_priority": "P1",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "whole-site-or-department",
+            "business_impact": "business-stopping",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2900,
+            "output_tokens": 278
+          },
+          "should_abstain": false,
+          "expected_category": "performance",
+          "expected_priority": "P1"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-010",
+      "expected_category": "batch-reporting",
+      "expected_priority": "P2",
+      "attempts": [
+        {
+          "id": "DEV2-010",
+          "run": 1,
+          "got_category": "performance",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": true,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2754,
+            "output_tokens": 361
+          },
+          "should_abstain": false,
+          "expected_category": "batch-reporting",
+          "expected_priority": "P2"
+        },
+        {
+          "id": "DEV2-010",
+          "run": 2,
+          "got_category": "performance",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": true,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2754,
+            "output_tokens": 258
+          },
+          "should_abstain": false,
+          "expected_category": "batch-reporting",
+          "expected_priority": "P2"
+        },
+        {
+          "id": "DEV2-010",
+          "run": 3,
+          "got_category": "performance",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": true,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2754,
+            "output_tokens": 329
+          },
+          "should_abstain": false,
+          "expected_category": "batch-reporting",
+          "expected_priority": "P2"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-011",
+      "expected_category": "performance",
+      "expected_priority": "P3",
+      "attempts": [
+        {
+          "id": "DEV2-011",
+          "run": 1,
+          "got_category": "performance",
+          "got_priority": "P3",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "limited",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2902,
+            "output_tokens": 215
+          },
+          "should_abstain": false,
+          "expected_category": "performance",
+          "expected_priority": "P3"
+        },
+        {
+          "id": "DEV2-011",
+          "run": 2,
+          "got_category": "performance",
+          "got_priority": "P3",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "limited",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2902,
+            "output_tokens": 229
+          },
+          "should_abstain": false,
+          "expected_category": "performance",
+          "expected_priority": "P3"
+        },
+        {
+          "id": "DEV2-011",
+          "run": 3,
+          "got_category": "performance",
+          "got_priority": "P3",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "limited",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2902,
+            "output_tokens": 232
+          },
+          "should_abstain": false,
+          "expected_category": "performance",
+          "expected_priority": "P3"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-012",
+      "expected_category": "performance",
+      "expected_priority": "P3",
+      "attempts": [
+        {
+          "id": "DEV2-012",
+          "run": 1,
+          "got_category": "performance",
+          "got_priority": "P3",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "limited",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2836,
+            "output_tokens": 249
+          },
+          "should_abstain": false,
+          "expected_category": "performance",
+          "expected_priority": "P3"
+        },
+        {
+          "id": "DEV2-012",
+          "run": 2,
+          "got_category": "performance",
+          "got_priority": "P3",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "limited",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2836,
+            "output_tokens": 267
+          },
+          "should_abstain": false,
+          "expected_category": "performance",
+          "expected_priority": "P3"
+        },
+        {
+          "id": "DEV2-012",
+          "run": 3,
+          "got_category": "performance",
+          "got_priority": "P3",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "limited",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2836,
+            "output_tokens": 238
+          },
+          "should_abstain": false,
+          "expected_category": "performance",
+          "expected_priority": "P3"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-013",
+      "expected_category": "data-quality",
+      "expected_priority": "P2",
+      "attempts": [
+        {
+          "id": "DEV2-013",
+          "run": 1,
+          "got_category": "data-quality",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": true,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2874,
+            "output_tokens": 295
+          },
+          "should_abstain": false,
+          "expected_category": "data-quality",
+          "expected_priority": "P2"
+        },
+        {
+          "id": "DEV2-013",
+          "run": 2,
+          "got_category": "data-quality",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": true,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2874,
+            "output_tokens": 356
+          },
+          "should_abstain": false,
+          "expected_category": "data-quality",
+          "expected_priority": "P2"
+        },
+        {
+          "id": "DEV2-013",
+          "run": 3,
+          "got_category": "data-quality",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": true,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2874,
+            "output_tokens": 297
+          },
+          "should_abstain": false,
+          "expected_category": "data-quality",
+          "expected_priority": "P2"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-014",
+      "expected_category": "data-quality",
+      "expected_priority": "P2",
+      "attempts": [
+        {
+          "id": "DEV2-014",
+          "run": 1,
+          "got_category": "data-quality",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2798,
+            "output_tokens": 359
+          },
+          "should_abstain": false,
+          "expected_category": "data-quality",
+          "expected_priority": "P2"
+        },
+        {
+          "id": "DEV2-014",
+          "run": 2,
+          "got_category": "data-quality",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2798,
+            "output_tokens": 308
+          },
+          "should_abstain": false,
+          "expected_category": "data-quality",
+          "expected_priority": "P2"
+        },
+        {
+          "id": "DEV2-014",
+          "run": 3,
+          "got_category": "data-quality",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2798,
+            "output_tokens": 264
+          },
+          "should_abstain": false,
+          "expected_category": "data-quality",
+          "expected_priority": "P2"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-015",
+      "expected_category": "data-quality",
+      "expected_priority": "P3",
+      "attempts": [
+        {
+          "id": "DEV2-015",
+          "run": 1,
+          "got_category": "data-quality",
+          "got_priority": "P3",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "limited",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2739,
+            "output_tokens": 232
+          },
+          "should_abstain": false,
+          "expected_category": "data-quality",
+          "expected_priority": "P3"
+        },
+        {
+          "id": "DEV2-015",
+          "run": 2,
+          "got_category": "data-quality",
+          "got_priority": "P3",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "limited",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2739,
+            "output_tokens": 326
+          },
+          "should_abstain": false,
+          "expected_category": "data-quality",
+          "expected_priority": "P3"
+        },
+        {
+          "id": "DEV2-015",
+          "run": 3,
+          "got_category": "data-quality",
+          "got_priority": "P3",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "limited",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2739,
+            "output_tokens": 292
+          },
+          "should_abstain": false,
+          "expected_category": "data-quality",
+          "expected_priority": "P3"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-016",
+      "expected_category": "data-quality",
+      "expected_priority": "P4",
+      "attempts": [
+        {
+          "id": "DEV2-016",
+          "run": 1,
+          "got_category": "batch-reporting",
+          "got_priority": "P4",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "request-or-cosmetic",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2845,
+            "output_tokens": 210
+          },
+          "should_abstain": false,
+          "expected_category": "data-quality",
+          "expected_priority": "P4"
+        },
+        {
+          "id": "DEV2-016",
+          "run": 2,
+          "got_category": "batch-reporting",
+          "got_priority": "P4",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "request-or-cosmetic",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2845,
+            "output_tokens": 244
+          },
+          "should_abstain": false,
+          "expected_category": "data-quality",
+          "expected_priority": "P4"
+        },
+        {
+          "id": "DEV2-016",
+          "run": 3,
+          "got_category": "batch-reporting",
+          "got_priority": "P4",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "request-or-cosmetic",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2845,
+            "output_tokens": 240
+          },
+          "should_abstain": false,
+          "expected_category": "data-quality",
+          "expected_priority": "P4"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-017",
+      "expected_category": "batch-reporting",
+      "expected_priority": "P1",
+      "attempts": [
+        {
+          "id": "DEV2-017",
+          "run": 1,
+          "got_category": "batch-reporting",
+          "got_priority": "P1",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "whole-site-or-department",
+            "business_impact": "business-stopping",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2797,
+            "output_tokens": 248
+          },
+          "should_abstain": false,
+          "expected_category": "batch-reporting",
+          "expected_priority": "P1"
+        },
+        {
+          "id": "DEV2-017",
+          "run": 2,
+          "got_category": "batch-reporting",
+          "got_priority": "P1",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "whole-site-or-department",
+            "business_impact": "business-stopping",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2797,
+            "output_tokens": 256
+          },
+          "should_abstain": false,
+          "expected_category": "batch-reporting",
+          "expected_priority": "P1"
+        },
+        {
+          "id": "DEV2-017",
+          "run": 3,
+          "got_category": "batch-reporting",
+          "got_priority": "P1",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "whole-site-or-department",
+            "business_impact": "business-stopping",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2797,
+            "output_tokens": 256
+          },
+          "should_abstain": false,
+          "expected_category": "batch-reporting",
+          "expected_priority": "P1"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-018",
+      "expected_category": "performance",
+      "expected_priority": "P2",
+      "attempts": [
+        {
+          "id": "DEV2-018",
+          "run": 1,
+          "got_category": "performance",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": true,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2799,
+            "output_tokens": 366
+          },
+          "should_abstain": false,
+          "expected_category": "performance",
+          "expected_priority": "P2"
+        },
+        {
+          "id": "DEV2-018",
+          "run": 2,
+          "got_category": "performance",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": true,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2799,
+            "output_tokens": 282
+          },
+          "should_abstain": false,
+          "expected_category": "performance",
+          "expected_priority": "P2"
+        },
+        {
+          "id": "DEV2-018",
+          "run": 3,
+          "got_category": "performance",
+          "got_priority": "P2",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "multiple-users",
+            "business_impact": "significant-impairment",
+            "dated_deadline_at_risk": true,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2799,
+            "output_tokens": 295
+          },
+          "should_abstain": false,
+          "expected_category": "performance",
+          "expected_priority": "P2"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-019",
+      "expected_category": "batch-reporting",
+      "expected_priority": "P3",
+      "attempts": [
+        {
+          "id": "DEV2-019",
+          "run": 1,
+          "got_category": "batch-reporting",
+          "got_priority": "P3",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "limited",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2826,
+            "output_tokens": 275
+          },
+          "should_abstain": false,
+          "expected_category": "batch-reporting",
+          "expected_priority": "P3"
+        },
+        {
+          "id": "DEV2-019",
+          "run": 2,
+          "got_category": "batch-reporting",
+          "got_priority": "P3",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "limited",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2826,
+            "output_tokens": 270
+          },
+          "should_abstain": false,
+          "expected_category": "batch-reporting",
+          "expected_priority": "P3"
+        },
+        {
+          "id": "DEV2-019",
+          "run": 3,
+          "got_category": "batch-reporting",
+          "got_priority": "P3",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "limited",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2826,
+            "output_tokens": 247
+          },
+          "should_abstain": false,
+          "expected_category": "batch-reporting",
+          "expected_priority": "P3"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-020",
+      "expected_category": "batch-reporting",
+      "expected_priority": "P4",
+      "attempts": [
+        {
+          "id": "DEV2-020",
+          "run": 1,
+          "got_category": "batch-reporting",
+          "got_priority": "P4",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "request-or-cosmetic",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2881,
+            "output_tokens": 184
+          },
+          "should_abstain": false,
+          "expected_category": "batch-reporting",
+          "expected_priority": "P4"
+        },
+        {
+          "id": "DEV2-020",
+          "run": 2,
+          "got_category": "batch-reporting",
+          "got_priority": "P4",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "request-or-cosmetic",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2881,
+            "output_tokens": 201
+          },
+          "should_abstain": false,
+          "expected_category": "batch-reporting",
+          "expected_priority": "P4"
+        },
+        {
+          "id": "DEV2-020",
+          "run": 3,
+          "got_category": "batch-reporting",
+          "got_priority": "P4",
+          "abstained": false,
+          "decision_factors": {
+            "affected_scope": "single-user",
+            "business_impact": "request-or-cosmetic",
+            "dated_deadline_at_risk": false,
+            "triageable": true
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2881,
+            "output_tokens": 186
+          },
+          "should_abstain": false,
+          "expected_category": "batch-reporting",
+          "expected_priority": "P4"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-021",
+      "expected_category": "insufficient-information",
+      "expected_priority": "unknown",
+      "attempts": [
+        {
+          "id": "DEV2-021",
+          "run": 1,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2883,
+            "output_tokens": 209
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-021",
+          "run": 2,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2883,
+            "output_tokens": 243
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-021",
+          "run": 3,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2883,
+            "output_tokens": 278
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-022",
+      "expected_category": "insufficient-information",
+      "expected_priority": "unknown",
+      "attempts": [
+        {
+          "id": "DEV2-022",
+          "run": 1,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2786,
+            "output_tokens": 298
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-022",
+          "run": 2,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2786,
+            "output_tokens": 273
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-022",
+          "run": 3,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2786,
+            "output_tokens": 273
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-023",
+      "expected_category": "insufficient-information",
+      "expected_priority": "unknown",
+      "attempts": [
+        {
+          "id": "DEV2-023",
+          "run": 1,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2914,
+            "output_tokens": 326
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-023",
+          "run": 2,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2914,
+            "output_tokens": 271
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-023",
+          "run": 3,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2914,
+            "output_tokens": 247
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-024",
+      "expected_category": "insufficient-information",
+      "expected_priority": "unknown",
+      "attempts": [
+        {
+          "id": "DEV2-024",
+          "run": 1,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2891,
+            "output_tokens": 260
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-024",
+          "run": 2,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2891,
+            "output_tokens": 191
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-024",
+          "run": 3,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2891,
+            "output_tokens": 204
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-025",
+      "expected_category": "insufficient-information",
+      "expected_priority": "unknown",
+      "attempts": [
+        {
+          "id": "DEV2-025",
+          "run": 1,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2765,
+            "output_tokens": 283
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-025",
+          "run": 2,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2765,
+            "output_tokens": 248
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-025",
+          "run": 3,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2765,
+            "output_tokens": 213
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-026",
+      "expected_category": "insufficient-information",
+      "expected_priority": "unknown",
+      "attempts": [
+        {
+          "id": "DEV2-026",
+          "run": 1,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2825,
+            "output_tokens": 242
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-026",
+          "run": 2,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2825,
+            "output_tokens": 286
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-026",
+          "run": 3,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2825,
+            "output_tokens": 168
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-027",
+      "expected_category": "insufficient-information",
+      "expected_priority": "unknown",
+      "attempts": [
+        {
+          "id": "DEV2-027",
+          "run": 1,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2769,
+            "output_tokens": 201
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-027",
+          "run": 2,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2769,
+            "output_tokens": 219
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-027",
+          "run": 3,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2769,
+            "output_tokens": 228
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-028",
+      "expected_category": "insufficient-information",
+      "expected_priority": "unknown",
+      "attempts": [
+        {
+          "id": "DEV2-028",
+          "run": 1,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2850,
+            "output_tokens": 256
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-028",
+          "run": 2,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2850,
+            "output_tokens": 225
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-028",
+          "run": 3,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2850,
+            "output_tokens": 255
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-029",
+      "expected_category": "insufficient-information",
+      "expected_priority": "unknown",
+      "attempts": [
+        {
+          "id": "DEV2-029",
+          "run": 1,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2817,
+            "output_tokens": 354
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-029",
+          "run": 2,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2817,
+            "output_tokens": 323
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-029",
+          "run": 3,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2817,
+            "output_tokens": 352
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "DEV2-030",
+      "expected_category": "insufficient-information",
+      "expected_priority": "unknown",
+      "attempts": [
+        {
+          "id": "DEV2-030",
+          "run": 1,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2863,
+            "output_tokens": 326
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-030",
+          "run": 2,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2863,
+            "output_tokens": 299
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        },
+        {
+          "id": "DEV2-030",
+          "run": 3,
+          "got_category": "insufficient-information",
+          "got_priority": "unknown",
+          "abstained": true,
+          "decision_factors": {
+            "affected_scope": "unspecified",
+            "business_impact": "unspecified",
+            "dated_deadline_at_risk": false,
+            "triageable": false
+          },
+          "tokens": {
+            "model": "claude-haiku-4-5-20251001",
+            "input_tokens": 2863,
+            "output_tokens": 303
+          },
+          "should_abstain": true,
+          "expected_category": "insufficient-information",
+          "expected_priority": "unknown"
+        }
+      ]
+    }
+  ]
+}

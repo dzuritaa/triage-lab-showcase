@@ -2,6 +2,22 @@
 
 > Working name. Renaming is cheap now, annoying after the first public link.
 
+**What lives where.** This document is the plan and the threat model: why the
+project exists, what it is built on, what is still to do, and what was
+deliberately skipped. It is the only place the security section lives. Three
+other documents carry the rest, and they do not repeat each other:
+
+| Document | Holds |
+|---|---|
+| `docs/PLAN.md` (this file) | Rationale, architecture, threat model, phases, remaining work, audit log |
+| `docs/HANDOFF.md` | Current state, repository map, decisions and their reversal conditions, the log of things that went wrong |
+| `docs/MAINTENANCE.md` | Upkeep: supply-chain pins, external facts that drift, what goes stale when the prompt changes |
+| `docs/adr/` | One decision each, with the case against it |
+
+Strategic work is in §7 of this file. Tactical open items — a prompt wording to
+try, a test case to rewrite — belong in `HANDOFF.md` §6. When something appears
+in both, this file is wrong.
+
 ## 1. Why this exists
 
 Twelve years of enterprise incident management, ITSM and internal tooling:
@@ -213,7 +229,7 @@ links resolve inside the repository, CI scans more than zero commits, a planted
 key fails, and a clean tree passes. **All verified — see the closure notes in
 §8.** Lint jobs deferred to phase 1; there is no source to lint yet.
 
-### Phase 1 — Small public vertical slice
+### Phase 1 — Small public vertical slice ✅ *(closed 2026-08-12)*
 - 10 human-reviewed synthetic incidents and a small knowledge base
 - Headless CLI producing category, priority, retrieval, reply and root-cause direction
 - 10 held-out evaluation cases plus a trivial baseline
@@ -290,7 +306,21 @@ Scoring exists before there is a prompt to overfit to, hence 2–3 ahead of 4.
 **Repository is private during phase 1** and flipped public at the end, so no
 visitor meets an empty skeleton and no mid-phase mistake is public.
 
-### Phase 2 — Dataset + core + eval expansion *(the real signal)*
+### Phase 2 — Dataset + core + eval expansion *(the real signal)* — in progress
+
+**Status 2026-08-13.** The phase is named after a dataset expansion that has not
+happened and is no longer the point. A 25-document corpus and a 15-case golden
+set produced a measured priority bias, two failed prompt fixes, an abstention
+defect invisible to the golden set, and a provenance gap — more findings than
+300 generated incidents would have. Volume is not the bottleneck; label quality
+and the review gate are. The expansion stays on the list, below everything in §7.
+
+Done: abstention built, baselined and published; the model scored against its
+baselines for the first time; a development set separate from the held-out one;
+provenance hashes recorded and enforced; offline evals verified running on a
+real pull request. Not done: the trusted live-eval workflow, and the dataset
+expansion itself.
+
 - Expand the generator toward ~300 enterprise IT support incidents and ~200 KB articles
 - Label category, priority, resolution and root cause; publish a data dictionary
 - David reviews the dataset for realism and removes generator-shaped filler
@@ -379,18 +409,152 @@ fixture instead of erroring.
 | Multi-tenancy | A second consumer exists |
 | Observability dashboard (idea 9) | Phase 6 ships and there's appetite |
 | MCP server, Skills pack (ideas 2, 3) | Satellites, after launch |
+| Expanding the dataset toward 300 incidents | Label quality stops being the bottleneck. A 25-document corpus has produced more findings than volume would have. |
+| Fixing priority over-escalation by prompt alone | Never — tried twice, worse both times. ADR-002 is the answer and it is gated on §7 item 3. |
+| A sixth category for network connectivity | Real tickets show the gap. Found by a withdrawn test case; a product decision, not a bug. |
+| Astro, the docs site, the Worker and live mode | Phases 3–5. One hand-written page is still the right size, and nothing published implies otherwise. |
 
-## 7. Open items
+## 7. What is left
 
-- [ ] Recreate the GitHub repository and push the clean history
-- [ ] Confirm the name `triage-lab`
-- [ ] Domain, or start on the Cloudflare Pages subdomain
-- [x] Anthropic API key with its **own spend cap** set in the console — a
-      belt-and-braces limit independent of the Durable Object budget counter.
-      Done 2026-08-12: **auto-reload off** with a $5 credit balance, plus a $10
-      monthly spend limit. Auto-reload off is the load-bearing setting — the
-      balance is a hard stop that cannot bill the card without a human action,
-      which no amount of application-level limiting can guarantee.
+Five items, ordered by what unblocks the most. Items 1 and 2 are closed. Item 3
+is in flight and everything after it waits on a person rather than a commit.
+
+Tactical work — a prompt wording to try, a test case to rewrite — lives in
+`HANDOFF.md` §6, not here.
+
+### Closed
+
+- [x] **1. Push, and find out whether CI works.** *(2026-08-13)* Thirteen commits
+      existed only on one laptop and CI had never run on any of them. `main` is
+      pushed and green; the branch is open as draft PR #1 and passes on both the
+      `push` and `pull_request` paths, so the fork-PR claim is now tested rather
+      than asserted. Fixed a live defect on the way: four `CASE_STUDY` commit
+      links were 404ing because the commits were local.
+- [x] **2. Wire the provenance gate.** *(2026-08-13)* `evals/live.py` had
+      recorded prompt, schema and dataset hashes for a while; nothing read them
+      back. `scripts/check_page.py` now fails on a mismatch, and on a results
+      file carrying no hash at all — no grandfathering, because an exemption
+      outlives the memory of why it was granted. It immediately caught that the
+      published numbers had been measured against a superseded prompt, which was
+      then re-recorded.
+- [x] **Anthropic key spend cap.** *(2026-08-12)* Auto-reload **off** with a $5
+      balance, plus a $10 monthly limit. Auto-reload off is the load-bearing
+      setting — a balance is a hard stop that cannot bill the card without a
+      human action, which no application-level limiter can promise.
+
+### 3. Resolve the sealed-label review — in flight
+
+`golden-v2.review.json` is `pending-human-review`. `LABEL_REVIEW.md` requires a
+support-domain practitioner who is not the author and never sees model output,
+prompts or expected labels. ADR-002 stays `proposed` until this resolves, and
+items 4 and 5 of the structured-priority work sit behind it.
+
+**De-risked 2026-08-13.** An independent blind pass over all 30 cases agreed with
+the sealed labels on **category 30/30 and priority 30/30**, disagreeing only on
+`relevant_docs` in four cases. That pass was not a practitioner and cannot be the
+review, but it means a real reviewer is confirming rather than starting cold —
+call it twenty minutes rather than an hour.
+
+Two things to fix before handing the form over:
+
+- `review_relevant_docs` cannot be answered from the exported form, which
+  contains no corpus. Ship a readable index of the 25 documents alongside it.
+- `approve` demands exact agreement on all three fields for all 30 cases, so the
+  four `relevant_docs` disagreements must be adjudicated first. `G2-012` is the
+  one worth arguing: the sealed label points at gateway timeouts, but nothing in
+  that ticket times out.
+
+**Fallback, if no reviewer is available:** label as author, record
+`author-labelled` in the receipt rather than leaving it pending forever, and
+state the limitation on the page beside any number the set produces. Weaker than
+independent review, still stronger than almost any portfolio project, and much
+better than a sealed set that never unseals. Decide within the week.
+
+*Done when:* the receipt carries a status that is not `pending` and a dataset
+SHA-256 that matches the file.
+
+### 4. Close the two-golden-set fork
+
+**Why.** `evals/run.py` scores `golden.json` — 15 cases, 10 answerable and 5
+ambiguous — and every published number rests on it. `golden-v2.json` is 30 cases,
+20 answerable and 10 unknown, sealed on the feature branch. Two datasets is
+tolerable while a candidate is in flight and not after it lands.
+
+**Recommendation: v2 becomes canonical; v1 is kept as a frozen regression set.**
+Retiring v1 outright would orphan the history of every number the page has ever
+published, and it costs nothing to keep — it is offline, deterministic and runs
+in CI in under a second.
+
+**Work, in order.**
+
+1. Point `evals/run.py`'s default at `golden-v2.json`; it already takes the
+   dataset as a parameter.
+2. Re-run the offline scorecard. **Every baseline moves** — recall, category and
+   priority nearest-neighbour, the abstention oracle — because the case mix and
+   the denominator both change. Set new regression floors about ten points below
+   whatever is measured, never above.
+3. Run the sealed three-pass live evaluation. Needs item 3.
+4. Re-record the demo fixture if the prompt moved, and reconcile the page,
+   `docs/adr/001`, `PRODUCT.md` and the `HANDOFF` metrics table.
+   `scripts/check_page.py` will name every stale claim; work the list until it
+   is silent rather than hunting by eye.
+5. Keep v1 scored in CI with its own floors, so a change made for v2 that breaks
+   v1 is visible instead of silent.
+
+**Budget page work, not number substitution.** The headline — *"Nine of ten
+tickets retrieve the right past incident"* — and the ten-box tally graphics are
+built on `n=10`. On a twenty-answerable set every one of them changes shape. This
+is the expensive part of item 4 and the reason it is not a config change.
+
+*Done when:* one dataset is canonical, every published number traces to a run
+against it with matching prompt, schema and dataset hashes, and v1 still passes
+as a regression set.
+
+*Cost:* about $0.15 for the three-pass run, plus the page work.
+*Depends on:* item 3, and on item 2 being in place first so the reconciliation is
+enforced rather than trusted.
+
+### 5. Deploy
+
+**Why.** Open since phase 1. It is one static file with no build step, and until
+it is at a URL none of this argument is visible to anyone it was written for.
+This also closes the phase-4 audit finding in §8, which has been waiting on a
+tested `_headers` file.
+
+**Work.**
+
+1. Cloudflare Pages project connected to the repository, production branch
+   `main`, no build command, output directory `web`.
+2. Commit `web/_headers` with the controls promised in §4 — CSP,
+   `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`.
+3. Verify against the deployed URL with `curl -I` and record the output. The
+   audit finding's verification condition is *deployed* responses, not a
+   committed file, so a green deploy is not evidence on its own.
+4. Put the URL in the README and in §7 here.
+5. Custom domain only if wanted; the Pages subdomain is enough to start.
+
+**The CSP is not boilerplate — read this before writing it.** The page has no
+scripts at all, so `script-src 'none'` is achievable, which is as strong as that
+directive gets and worth stating publicly. Styles are the opposite: one inline
+`<style>` block and 24 inline `style` attributes, so `style-src` needs
+`'unsafe-inline'` unless the CSS is extracted to a file first. Extracting it is
+the better answer and is perhaps twenty minutes. Shipping `'unsafe-inline'` and
+calling the CSP strict would be the kind of claim this project exists not to
+make.
+
+*Done when:* a cold visitor reaches the page over HTTPS, `curl -I` shows the
+three headers, the fixture renders with zero API calls, and the §8 finding is
+closed against recorded evidence.
+
+*Cost:* an hour, plus twenty minutes if the CSS is extracted.
+*Depends on:* item 1 only, which is done. This can run in parallel with 3 and 4.
+
+### Still unscheduled
+
+- [ ] Confirm the name `triage-lab`. The repository is `triage-lab-showcase`;
+      the docs say `triage-lab`. Cosmetic, and cheapest to settle before anything
+      external links to it.
+- [ ] Delete the earlier empty private repository `dzuritaa/triage-lab`.
 
 ## 8. Audit findings and fixes — 2026-08-12
 
@@ -400,12 +564,12 @@ close it.
 
 | Status | Severity | Finding | Planned fix | Verification |
 |---|---|---|---|---|
-| OPEN → ph1 | P1 | The showcase has no runnable or visible proof yet, while the first public demo was deferred to phase 4. | Phase 1 is now a small end-to-end public slice with code, evals, one ADR, a fixture demo and CTA. | A cold visitor can understand and inspect one complete result without an API call. |
+| **CLOSED** | P1 | The showcase has no runnable or visible proof yet, while the first public demo was deferred to phase 4. | Phase 1 is now a small end-to-end public slice with code, evals, one ADR, a fixture demo and CTA. | A cold visitor can understand and inspect one complete result without an API call. **Met: `python -m core.triage --fixture` replays a real recorded result with no key, and the page renders it verbatim under `check_page`.** Still not *visible* until §7 item 5 deploys it. |
 | OPEN → ph3 | P1 | Workers KV is eventually consistent and cannot enforce the hard global cost counter reliably. | Use a strongly consistent Durable Object for the demo's atomic counters; keep the provider spend cap as the independent backstop. | Concurrent-limit tests cannot exceed the configured application cap, and the provider cap is configured separately. |
-| OPEN → ph2 | P1 | "Evals on every PR" was incompatible with public fork PRs because provider secrets are unavailable. | Split deterministic secret-free PR checks from trusted live-model eval workflows. | A fork PR passes offline evals without secrets; a trusted workflow publishes live quality, cost and latency. |
+| HALF-CLOSED → ph2 | P1 | "Evals on every PR" was incompatible with public fork PRs because provider secrets are unavailable. | Split deterministic secret-free PR checks from trusted live-model eval workflows. | Two conditions. **First met 2026-08-13:** the offline suite runs on `pull_request` with no secret and passed on PR #1, and every module in that chain is import-tested with `anthropic` absent. **Second still open:** no trusted workflow publishes live quality, cost and latency — live evals are run by hand, deliberately, because they cost money on every push. |
 | **CLOSED** | P1 | Phase 0 was marked complete despite no commit, an untracked `.gitattributes`, unstaged README work and a non-executable hook. | Reopen phase 0, commit the complete skeleton and record the hook as `100755`. | Clean git status, non-zero commit history, executable hook and passing clean/canary CI scans. |
 | **CLOSED** | P1 | `PLAN.md` sits outside the actual repository, so the README's `../PLAN.md` link will break when published. | Move the plan into `triage-lab/docs/` and update every link before the first public push. | Repository-local link checking reports no broken internal links. |
-| OPEN → ph4 | P2 | The hosting choice did not explain how promised security response headers would be applied. | Host the Astro/Starlight build on Cloudflare Pages and commit a tested `_headers` file. | Deployed responses include the documented CSP, `nosniff` and referrer policy. |
+| OPEN → §7 item 5 | P2 | The hosting choice did not explain how promised security response headers would be applied. | Cloudflare Pages with a committed `_headers` file. No Astro needed — the site is one static file. | Deployed responses include the documented CSP, `nosniff` and referrer policy, verified with `curl -I` against the live URL rather than by inspecting the committed file. See §7 item 5 for the CSP detail that makes this non-trivial. |
 | **CLOSED** | P2 | "Pinned" supply-chain dependencies used mutable version tags. | Pin GitHub Actions by commit SHA and the gitleaks container by digest; document the update process. | CI configuration contains immutable references and Dependabot/Renovate can propose reviewed updates. |
 | **CLOSED** | P2 | The README linked to future ADRs that do not exist, weakening trust at the first visit. | Ship one real ADR in phase 1; render future items as roadmap text until their files exist. | Every rendered README/docs link resolves. |
 | OPEN → ph6 | P2 | The CV cannot yet cite a public, quantified AI outcome — this project is that outcome, and it does not exist until the slice ships. | Once the vertical slice launches, add a Selected AI Project section with measurable results, and focus the headline on AI systems for support operations. | The two-page PDF includes the public project URL, measurable evidence, clickable contact links and correct metadata. |

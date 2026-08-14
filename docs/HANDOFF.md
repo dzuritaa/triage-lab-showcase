@@ -628,16 +628,20 @@ plus `checkout -- .` discards work in progress.
 
 ## 7. Audit findings still open
 
-`docs/PLAN.md` §8 carries the full table with verification conditions. Four are
-closed; the rest map to later phases:
+`docs/PLAN.md` §8 carries the full table with verification conditions, and
+`docs/PLAN.md` §7 carries the strategic work. Five findings are closed; these
+remain:
 
-| Finding | Phase |
+| Finding | Where it is tracked |
 |---|---|
-| Workers KV cannot enforce a hard cost cap (use a Durable Object) | 3 |
-| Fork PRs cannot run live-model evals (split trusted workflows) | 2 |
-| Response security headers need a tested `_headers` file | 4 |
-| CV needs a quantified Selected AI Project section | 6 |
-| Frontend accessibility/performance audit with recorded results | 6 |
+| Workers KV cannot enforce a hard cost cap (use a Durable Object) | Phase 3 |
+| No trusted workflow publishes live quality, cost and latency | Phase 2 — the fork-PR half closed 2026-08-13 |
+| Response security headers need a tested `_headers` file | §7 item 5 |
+| CV needs a quantified Selected AI Project section | Phase 6 |
+| Frontend accessibility/performance audit with recorded results | Phase 6 |
+
+Strategic items belong in `PLAN.md` §7; the tactical list below is this
+document's job. If something appears in both, `PLAN.md` is wrong.
 
 ---
 
